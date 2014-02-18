@@ -1,0 +1,1 @@
+<p>{l s='Your order on' mod='epay'} <span class="bold">{$shop_name}</span> {l s='is complete.' mod='epay'}</p>
