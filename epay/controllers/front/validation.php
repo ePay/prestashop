@@ -29,10 +29,14 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 		
 		foreach($params as $key => $value)
 		{
-			if($key != "hash" && $key != "controller")
+			if($key != "hash")
 			{
 				$mailVars['{epay_' . $key . '}'] = $value;
 				$var .= $value;
+			}
+			else
+			{
+				break;
 			}
 		}
 
@@ -47,8 +51,10 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 		$total = $cart->getOrderTotal(true, Cart::BOTH);
 		
 		if($cart->OrderExists() == 0)
-		{			
-			if($this->module->validateOrder((int)$id_cart, Configuration::get('PS_OS_PAYMENT'), $total, $this->module->displayName, null, $mailVars, null, false, $cart->secure_key))
+		{	
+			$message = "ePay Transaction ID: " . $_GET["txnid"];
+			
+			if($this->module->validateOrder((int)$id_cart, Configuration::get('PS_OS_PAYMENT'), $total, $this->module->displayName, $message, $mailVars, null, false, $cart->secure_key))
 			{
 				$this->module->recordTransaction(null, $id_cart, $_GET["txnid"], $cardid, $cardnopostfix, $currency, Tools::getValue('amount'), $transfee, $fraud);
 				
@@ -73,7 +79,7 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 						$order->total_shipping_tax_excl = $order->total_shipping_tax_excl + number_format($transfee / 100, 2, ".", "");
 						$order->save();
 						
-						$invoice = $payment[0]->getOrderInvoice($epay->currentOrder);
+						$invoice = $payment[0]->getOrderInvoice($this->module->currentOrder);
 						$invoice->total_paid_tax_incl = $invoice->total_paid_tax_incl + number_format($transfee / 100, 2, ".", "");
 						$invoice->total_paid_tax_excl = $invoice->total_paid_tax_excl + number_format($transfee / 100, 2, ".", "");
 						$invoice->total_shipping_tax_incl = $invoice->total_shipping_tax_incl + number_format($transfee / 100, 2, ".", "");
