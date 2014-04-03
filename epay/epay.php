@@ -5,6 +5,7 @@
   This program is free software. You are allowed to use the software but NOT allowed to modify the software. 
   It is also not legal to do any changes to the software and distribute it in your own name / brand. 
 */
+
 if (!defined('_PS_VERSION_'))
 	exit;
 
@@ -16,7 +17,7 @@ class EPay extends PaymentModule
 	public function __construct()
 	{
 		$this->name = 'epay';
-		$this->version = 4.7;
+		$this->version = 4.8;
 		$this->author = "ePay - Michael Korsgaard";
 		$this->tab = 'payments_gateways';
 		
@@ -25,8 +26,11 @@ class EPay extends PaymentModule
 		
 		parent::__construct();
 		
-		if(Configuration::get('EPAY_ENABLE_REMOTE_API') == 1 && !class_exists("SOAPClient"))
+		if((Configuration::get('EPAY_ENABLE_REMOTE_API') == 1 || Configuration::get('EPAY_ENABLE_PAYMENTREQUEST') == 1) && !class_exists("SOAPClient"))
 			$this->warning = $this->l('You must have SoapClient installed to use Remote API. Contact your hosting provider for further information.');
+			
+		if(Configuration::get('EPAY_ENABLE_PAYMENTREQUEST') == 1 && strlen(Configuration::get('EPAY_REMOTE_API_PASSWORD')) <= 0)
+			$this->warning = $this->l('You must set Remote API password to use payment requests. Remember to set the password in the ePay administration under the menu API / Webservices -> Access.');
 		
 		$this->displayName = 'ePay';
 		$this->description = $this->l('Accept Dankort, eDankort, VISA, Electron, MasterCard, Maestro, JCB, Diners, AMEX, Nordea and Danske Bank payments by ePay / Payment Solutions');
@@ -36,10 +40,15 @@ class EPay extends PaymentModule
 	{
 		if(!parent::install() OR !Configuration::updateValue('EPAY_GOOGLE_PAGEVIEW', '0') OR !Configuration::updateValue('EPAY_INTEGRATION', '1') OR !Configuration::updateValue('EPAY_ENABLE_INVOICE', '0') OR !$this->registerHook('payment') OR !$this->registerHook('rightColumn') OR !$this->registerHook('adminOrder') OR !$this->registerHook('paymentReturn') OR !$this->registerHook('footer'))
 			return false;
-		
-		if(!$this->_createEpayTable())
+
+		if(!$this->createEPayTransactionTable())
 			return false;
 		
+		/*
+		if(!$this->createEPayPaymentRequestTable())
+			return false;
+		*/
+
 		return true;
 	}
 	
@@ -48,7 +57,7 @@ class EPay extends PaymentModule
 		return parent::uninstall();
 	}
 	
-	function _createEpayTable()
+	private function createEPayTransactionTable()
 	{
 		$table_name = _DB_PREFIX_ . 'epay_transactions';
 		
@@ -57,6 +66,7 @@ class EPay extends PaymentModule
 			'id_order' => 'int(10) unsigned NOT NULL',
 			'id_cart' => 'int(10) unsigned NOT NULL',
 			'epay_transaction_id' => 'int(10) unsigned NOT NULL',
+			'epay_orderid' => 'varchar(20) NOT NULL',
 			'card_type' => 'int(4) unsigned NOT NULL DEFAULT 1',
 			'cardnopostfix' => 'int(4) unsigned NOT NULL DEFAULT 1',
 			'currency' => 'int(4) unsigned NOT NULL DEFAULT 0',
@@ -77,6 +87,7 @@ class EPay extends PaymentModule
 		{
 			$query .= '`' . $column_name . '` ' . $options . ', ';
 		}
+		
 		$query .= ' PRIMARY KEY (`epay_transaction_id`) )';
 		
 		if(!Db::getInstance()->Execute($query))
@@ -85,10 +96,11 @@ class EPay extends PaymentModule
 		$i = 0;
 		$previous_column = '';
 		$query = ' ALTER TABLE `' . $table_name . '` ';
-		/* Check the database fields */
+		
+		//Check the database fields
 		foreach ($columns as $column_name => $options)
 		{
-			if(!$this->_mysql_column_exists($table_name, $column_name))
+			if(!$this->mysqlColumnExists($table_name, $column_name))
 			{
 				$query .= ($i > 0 ? ', ' : '') . 'ADD `' . $column_name . '` ' . $options . ($previous_column != '' ? ' AFTER `' . $previous_column . '`' : ' FIRST');
 				$i++;
@@ -103,17 +115,71 @@ class EPay extends PaymentModule
 		return true;
 	}
 	
-	static function _mysql_column_exists($table_name, $column_name, $link = false)
+	/*
+	private function createEPayPaymentRequestTable()
+	{
+		$table_name = _DB_PREFIX_ . 'epay_paymentrequest';
+		
+		$columns = array
+		(
+		  'id' => 'int(11) NOT NULL AUTO_INCREMENT',
+		  'orderid' => 'varchar(20) DEFAULT NULL',
+		  'currency_code' => 'char(3) DEFAULT NULL',
+		  'amount' => 'int(11) DEFAULT NULL',
+		  'receiver' => 'varchar(255) DEFAULT NULL',
+		  'ispaid' => 'tinyint(4) NOT NULL DEFAULT \'0\'',
+		  'status' => 'int(11) NOT NULL DEFAULT \'0\'',
+		  'paymentrequestid' => 'bigint(20) DEFAULT NULL',
+		  'date_add' => 'datetime NOT NULL'
+		);
+		
+		$query = 'CREATE TABLE IF NOT EXISTS `' . $table_name . '` (';
+		
+		foreach ($columns as $column_name => $options)
+		{
+			$query .= '`' . $column_name . '` ' . $options . ', ';
+		}
+		
+		$query .= ' PRIMARY KEY (`epay_transaction_id`) )';
+		
+		if(!Db::getInstance()->Execute($query))
+			return false;
+		
+		$i = 0;
+		$previous_column = '';
+		$query = ' ALTER TABLE `' . $table_name . '` ';
+		
+		//Check the database fields
+		foreach ($columns as $column_name => $options)
+		{
+			if(!$this->mysqlColumnExists($table_name, $column_name))
+			{
+				$query .= ($i > 0 ? ', ' : '') . 'ADD `' . $column_name . '` ' . $options . ($previous_column != '' ? ' AFTER `' . $previous_column . '`' : ' FIRST');
+				$i++;
+			}
+			$previous_column = $column_name;
+		}
+		
+		if($i > 0)
+			if(!Db::getInstance()->Execute($query))
+				return false;
+		
+		return true;
+	}
+	*/
+	
+	private static function mysqlColumnExists($table_name, $column_name, $link = false)
 	{
 		$result = Db::getInstance()->executeS("SHOW COLUMNS FROM $table_name LIKE '$column_name'", $link);
 		
 		return (count($result) > 0);
 	}
 	
-	function recordTransaction($id_order, $id_cart = 0, $transaction_id = 0, $cardid = 0, $cardnopostfix = 0, $currency = 0, $amount = 0, $transfee = 0, $fraud = 0)
+	public function recordTransaction($id_order, $id_cart = 0, $transaction_id = 0, $card_id = 0, $cardnopostfix = 0, $currency = 0, $amount = 0, $transfee = 0, $fraud = 0)
 	{
 		if($id_cart)
 			$id_order = Order::getOrderByCartId($id_cart);
+		
 		if(!$id_order)
 			$id_order = 0;
 		
@@ -123,7 +189,7 @@ class EPay extends PaymentModule
 		$query = 'INSERT INTO ' . _DB_PREFIX_ . 'epay_transactions
 				(id_order, id_cart, epay_transaction_id, card_type, cardnopostfix, currency, amount, transfee, fraud, captured, date_add)
 				VALUES 
-				(' . $id_order . ', ' . $id_cart . ', ' . $transaction_id . ', ' . $cardid . ', ' . $cardnopostfix . ', ' . $currency . ', ' . $amount . ', ' . $transfee . ', ' . $fraud . ', ' . $captured . ', NOW() )';
+				(' . $id_order . ', ' . $id_cart . ', ' . $transaction_id . ', ' . $card_id . ', ' . $cardnopostfix . ', ' . $currency . ', ' . $amount . ', ' . $transfee . ', ' . $fraud . ', ' . $captured . ', NOW() )';
 		
 		if(!Db::getInstance()->Execute($query))
 			return false;
@@ -131,7 +197,7 @@ class EPay extends PaymentModule
 		return true;
 	}
 	
-	function setCaptured($transaction_id, $amount)
+	private function setCaptured($transaction_id, $amount)
 	{
 		$query = ' UPDATE ' . _DB_PREFIX_ . 'epay_transactions SET `captured` = 1, `amount` = ' . $amount . ' WHERE `epay_transaction_id` = ' . $transaction_id;
 		if(!Db::getInstance()->Execute($query))
@@ -139,7 +205,7 @@ class EPay extends PaymentModule
 		return true;
 	}
 	
-	function setCredited($transaction_id, $amount)
+	private function setCredited($transaction_id, $amount)
 	{
 		$query = ' UPDATE ' . _DB_PREFIX_ . 'epay_transactions SET `credited` = 1, `amount` = `amount` - ' . $amount . ' WHERE `epay_transaction_id` = ' . $transaction_id;
 		if(!Db::getInstance()->Execute($query))
@@ -147,9 +213,9 @@ class EPay extends PaymentModule
 		return true;
 	}
 	
-	function deleteTransaction($transaction_id)
+	private function deleteTransaction($transaction_id)
 	{
-		$query = ' UPDATE ' . _DB_PREFIX_ . 'epay_transactions SET `deleted` = 1' . ' WHERE `epay_transaction_id` = ' . $transaction_id;
+		$query = ' UPDATE ' . _DB_PREFIX_ . 'epay_transactions SET `deleted` = 1 WHERE `epay_transaction_id` = ' . $transaction_id;
 		if(!Db::getInstance()->Execute($query))
 			return false;
 		return true;
@@ -179,6 +245,8 @@ class EPay extends PaymentModule
 				Configuration::updateValue('EPAY_OWNRECEIPT', Tools::getValue("EPAY_OWNRECEIPT"));
 				Configuration::updateValue('EPAY_GOOGLE_PAGEVIEW', Tools::getValue("EPAY_GOOGLE_PAGEVIEW"));
 				Configuration::updateValue('EPAY_ENABLE_INVOICE', Tools::getValue("EPAY_ENABLE_INVOICE"));
+				Configuration::updateValue('EPAY_ENABLE_PAYMENTREQUEST', Tools::getValue("EPAY_ENABLE_PAYMENTREQUEST"));
+				
 	            $output .= $this->displayConfirmation($this->l('Settings updated'));
 	        }
 	    }
@@ -186,7 +254,7 @@ class EPay extends PaymentModule
 	    return $output.$this->displayForm();
 	}
 	
-	public function displayForm()
+	private function displayForm()
 	{
 		// Get default Language
 	    $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
@@ -384,6 +452,27 @@ class EPay extends PaymentModule
 							'label' => $this->l('No')
 						)
 					),
+				),
+				array(
+					'type' => 'radio',
+					'label' => $this->l('Enable payment request'),
+					'name' => 'EPAY_ENABLE_PAYMENTREQUEST',
+					'size' => 20,
+					'class' => 't',
+					'is_bool' => true,
+					'required' => true,
+					'values' => array(
+						array(
+							'id' => 'paymentrequest_yes',
+							'value' => 1,
+							'label' => $this->l('Yes')
+						),
+						array(
+							'id' => 'paymentrequest_no',
+							'value' => 0,
+							'label' => $this->l('No')
+						)
+					),
 				)
 	        ),
 	        'submit' => array(
@@ -394,7 +483,7 @@ class EPay extends PaymentModule
 	     
 	    $helper = new HelperForm();
 	     
-	    // Module, t    oken and currentIndex
+	    // Module, token and currentIndex
 	    $helper->module = $this;
 	    $helper->name_controller = $this->name;
 	    $helper->token = Tools::getAdminTokenLite('AdminModules');
@@ -436,8 +525,281 @@ class EPay extends PaymentModule
 		$helper->fields_value['EPAY_MD5KEY'] = Configuration::get('EPAY_MD5KEY');
 		$helper->fields_value['EPAY_GOOGLE_PAGEVIEW'] = Configuration::get('EPAY_GOOGLE_PAGEVIEW');
 		$helper->fields_value['EPAY_ENABLE_INVOICE'] = Configuration::get('EPAY_ENABLE_INVOICE');
+		$helper->fields_value['EPAY_ENABLE_PAYMENTREQUEST'] = Configuration::get('EPAY_ENABLE_PAYMENTREQUEST');
 		
 	    return "<div class=\"warn\"><a href=\"http://www.prestashopguiden.dk/en/configuration#407\" target=\"_blank\">". $this->l('Documentation can be found here') ."<a></div>" . $helper->generateForm($fields_form);
+	}
+	
+	private function displayPaymentRequestForm($params)
+	{
+		$order = new Order($params['id_order']);	
+		$employee = new Employee($this->context->cookie->id_employee);
+		
+		// Get default Language
+	    $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
+	     
+	    // Init Fields form array
+	    $fields_form[0]['form'] = array(
+	        'legend' => array(
+	            'title' => $this->l('Create payment request'),
+				'image' => $this->_path.'logo_small.gif'
+	        ),
+	        'input' => array(
+				array(
+					'type' => 'text',
+					'label' => $this->l('Requester name'),
+					'name' => 'epay_paymentrequest_requester_name',
+					'size' => 20,
+					'required' => true
+				),
+				array(
+					'type' => 'textarea',
+					'label' => $this->l('Requester comment'),
+					'name' => 'epay_paymentrequest_requester_comment',
+					'rows' => 3,
+					'cols' => 50,
+					'required' => false
+				),
+				array(
+					'type' => 'text',
+					'label' => $this->l('Recipient name'),
+					'name' => 'epay_paymentrequest_recipient_name',
+					'size' => 20,
+					'required' => true
+				),
+				array(
+					'type' => 'text',
+					'label' => $this->l('Recipient e-mail'),
+					'name' => 'epay_paymentrequest_recipient_email',
+					'size' => 20,
+					'required' => true
+				),
+				array(
+					'type' => 'text',
+					'label' => $this->l('Reply to name'),
+					'name' => 'epay_paymentrequest_replyto_name',
+					'size' => 20,
+					'required' => true
+				),
+				array(
+					'type' => 'text',
+					'label' => $this->l('Reply to e-mail'),
+					'name' => 'epay_paymentrequest_replyto_email',
+					'size' => 20,
+					'required' => true
+				),
+				array(
+					'type' => 'text',
+					'label' => $this->l('Amount'),
+					'name' => 'epay_paymentrequest_amount',
+					'size' => 20,
+					'suffix' => $this->context->currency->iso_code,
+					'required' => true,
+					'readonly' => true
+				),
+	        ),
+	        'submit' => array(
+	            'title' => $this->l('Send payment request'),
+	            'class' => 'button'
+	        )
+	    );
+		 
+	    $helper = new HelperForm();
+	     
+	    $helper->module = $this;
+	    $helper->name_controller = $this->name;
+	    $helper->token = Tools::getAdminTokenLite('AdminOrders');
+	    $helper->currentIndex = AdminController::$currentIndex.'&vieworder&id_order='.$params['id_order'];
+	    $helper->identifier = 'id_order';
+		$helper->id = $params['id_order'];
+		$helper->submit_action = 'sendpaymentrequest';
+		
+	    $helper->default_form_language = $default_lang;
+	    $helper->allow_employee_form_lang = $default_lang;
+	     
+	    // Title and toolbar
+	    $helper->show_toolbar = false;        // false -> remove toolbar
+		
+	    //$helper->submit_action = 'submit'.$this->name.'paymentrequest';
+	     
+	    // Load current value
+		
+	    $helper->fields_value['epay_paymentrequest_requester_name'] = Tools::getValue('epay_paymentrequest_requester_name') ? Tools::getValue('epay_paymentrequest_requester_name') : Configuration::get('PS_SHOP_NAME');
+		$helper->fields_value['epay_paymentrequest_requester_comment'] = "";
+		
+		$helper->fields_value['epay_paymentrequest_recipient_name'] = $this->context->customer->firstname . ' ' . $this->context->customer->lastname;
+		$helper->fields_value['epay_paymentrequest_recipient_email'] = $this->context->customer->email;
+		
+		$helper->fields_value['epay_paymentrequest_replyto_name'] = $employee->firstname.' '.$employee->lastname;
+		$helper->fields_value['epay_paymentrequest_replyto_email'] = $employee->email;
+
+		$helper->fields_value['epay_paymentrequest_amount'] = number_format(($order->total_paid-$order->getTotalPaid()), 2, ",", "");
+		
+	    return $helper->generateForm($fields_form);
+	}
+	
+	private function transactionInfoTableRow($name, $value)
+	{
+		$return = '<tr><td style="width: 250px;">' . $name . '</td><td><b>' . $value . '</b></td></tr>';
+	
+		return $return;
+	}
+	
+	private function displayTransactionForm($params)
+	{
+		$transactions = Db::getInstance()->executeS('
+		SELECT o.`id_order`, o.`module`, e.`id_cart`, e.`epay_transaction_id`,
+			   e.`card_type`, e.`cardnopostfix`, e.`currency`, e.`amount`, e.`transfee`,
+			   e.`fraud`, e.`captured`, e.`credited`, e.`deleted`,
+			   e.`date_add`
+		FROM ' . _DB_PREFIX_ . 'epay_transactions e
+		LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON e.`id_cart` = o.`id_cart`
+		WHERE o.`id_order` = ' . intval($params["id_order"]));
+
+		$order = new Order($params['id_order']);	
+		$employee = new Employee($this->context->cookie->id_employee);
+
+		$return = "";
+		
+		/* Process remote capture/credit/delete */
+		if(Configuration::get('EPAY_ENABLE_REMOTE_API'))
+		{
+			require_once(dirname(__FILE__ ) . '/api.php');
+			
+			try
+			{
+				$remote_result = $this->procesRemote($params);
+				$return = '<br><div class="conf">';
+				if(@$remote_result->captureResult == "true")
+					$return .= $this->l('Payment captured') . '</div>';
+				elseif(@$remote_result->creditResult == "true")
+					$return .= $this->l('Payment credited') . '</div>';
+				elseif(@$remote_result->deleteResult == "true")
+					$return .= $this->l('Payment deleted') . '</div>';
+				elseif(@$remote_result->move_as_capturedResult == "true")
+					$return .= $this->l('Payment closed') . '</div>';
+				else
+					$return = '';
+				
+				$activate_api = true;
+			}
+			catch(Exception $e)
+			{
+				$activate_api = false;
+				$return .= $this->displayError($e->getMessage());
+			}
+		}
+		
+		// Init Fields form array
+		foreach($transactions as $transaction)
+		{
+			$currency = new Currency(Currency::getIdByIsoCodeNum($transaction["currency"]));
+			$currency_code = $currency->iso_code;
+			
+			if(isset($transaction["epay_transaction_id"]) && $transaction["module"] == "epay")
+			{
+				$return .= '
+					<br />
+						<fieldset>
+							<legend>
+								<img src="../modules/' . $this->name . '/logo_small.gif" /> ' . $this->l('ePay transaction') . ': ' . $transaction["epay_transaction_id"] . '
+							</legend>
+							<table class="table" cellspacing="0" cellpadding="0" style="width: 100%">
+								<div style="float: right; position: relative; right: 0px; top: -10px;">
+									<img src="../modules/' . $this->name . '/img/' . $transaction["card_type"] . '.png" alt="' . $this->getCardNameById(intval($transaction["card_type"])) . '" title="' . $this->getCardNameById(intval($transaction["card_type"])) . '" align="middle">
+								</div>
+							' . $this->transactionInfoTableRow($this->l('ePay administration'), '<a href="https://ssl.ditonlinebetalingssystem.dk/admin/login.asp" title="ePay login" target="_blank">' . $this->l('Open') . '</a>') . '
+							' . $this->transactionInfoTableRow($this->l('ePay "Order ID"'), $transaction["id_cart"]);
+
+							if($transaction["cardnopostfix"] > 1)
+								$return .= $this->transactionInfoTableRow($this->l('Postfix'), 'XXXX XXXX XXXX ' . $transaction["cardnopostfix"]);
+								
+							if($transaction["fraud"])
+								$return .= $this->transactionInfoTableRow($this->l('Fraud'), '<span style="color:red;font-weight:bold;"><img src="../img/admin/bullet_red.png" />' . $this->l('Suspicious Payment!') . '</span>');
+								
+				if(!$activate_api)
+					$return .= $currency_code . ' ' . number_format(($result["amount"] + $result["transfee"]) / 100, 2, ",", "");
+				
+				$return .= '</table><br>';
+							
+				if(Configuration::get('EPAY_ENABLE_REMOTE_API') && $activate_api)
+				{
+					try
+					{
+						$api = new EPayApi();
+						$soap_result = $api->gettransactionInformation(Configuration::get('EPAY_MERCHANTNUMBER'), $transaction["epay_transaction_id"]);
+						
+						if($soap_result)
+						{
+							if(!$soap_result->capturedamount or $soap_result->capturedamount == $soap_result->authamount)
+								$epay_amount = number_format($soap_result->authamount / 100, 2, ".", "");
+							elseif($soap_result->status == 'PAYMENT_CAPTURED')
+								$epay_amount = number_format(($soap_result->capturedamount) / 100, 2, ".", "");
+							else
+								$epay_amount = number_format(($soap_result->authamount - $soap_result->capturedamount) / 100, 2, ".", "");
+							
+							if($soap_result->status != 'PAYMENT_DELETED' AND !$soap_result->creditedamount)
+							{
+								$return .= '<form name="epay_remote" action="' . $_SERVER["REQUEST_URI"] . '" method="post" style="display:inline">' . '<input type="hidden" name="epay_transaction_id" value="' . $transaction["epay_transaction_id"] . '" />' . '<input type="hidden" name="epay_order_id" value="' . $transaction["id_cart"] . '" />' . $currency_code . ' ' . '<input type="text" id="epay_amount" name="epay_amount" value="' . $epay_amount . '" size="' . strlen($epay_amount) . '" />';
+								
+								if(!$soap_result->capturedamount or ($soap_result->splitpayment and $soap_result->status != 'PAYMENT_CAPTURED' and ($soap_result->capturedamount != $soap_result->authamount)))
+								{
+									$return .= ' <input class="button" name="epay_capture" type="submit" value="' . $this->l('Capture') . '" />' . ' <input class="button" name="epay_delete" type="submit" value="' . $this->l('Delete') . '" 
+													 		onclick="return confirm(\'' . $this->l('Really want to delete?') . '\');" />';
+									if($soap_result->splitpayment)
+										$return .= '<br /><input class="button" name="epay_move_as_captured" type="submit" value="' . $this->l('Close transaction') . '" /> ';
+									
+								}
+								elseif($soap_result->status == 'PAYMENT_CAPTURED' OR $soap_result->acquirer == 'EUROLINE')
+									$return .= ' <input class="button" name="epay_credit" type="submit" value="' . $this->l('Credit') . '"onclick="return confirm(\'' . $this->l('Do you want to credit:') . ' ' . $currency_code . ' \'+getE(\'epay_amount\').value);" />';
+								
+								$return .= '</form>';
+							}
+							else
+							{
+								$return .= $currency_code . ' ' . $epay_amount;
+								$return .= ($soap_result->status == 'PAYMENT_DELETED' ? ' <span style="color:red;font-weight:bold;">' . $this->l('Deleted') . '</span>' : '');
+							}
+							
+							$return .= '<br><div style="margin-top: 10px;">
+									<table class="table" cellspacing="0" cellpadding="0"><tr><th>' . $this->l('Date') . '</th><th>' . $this->l('Event') . '</th></tr>';
+							
+							$historyArray = $soap_result->history->TransactionHistoryInfo;
+							
+							if(!array_key_exists(0, $soap_result->history->TransactionHistoryInfo))
+							{
+								$historyArray = array($soap_result->history->TransactionHistoryInfo);
+								// convert to array
+							}
+							
+							for($i = 0; $i < count($historyArray); $i++)
+							{
+								$return .= "<tr><td>" . str_replace("T", " ", $historyArray[$i]->created) . "</td>";
+								$return .= "<td>";
+								if(strlen($historyArray[$i]->username) > 0)
+								{
+									$return .= ($historyArray[$i]->username . ": ");
+								}
+								$return .= $historyArray[$i]->eventMsg . "</td></tr>";
+							}
+							
+							
+							$return .= '</table></div>';
+						}
+					}
+					catch (Exception $e)
+					{
+						$activate_api = false;
+						$this->displayError($e->getMessage());	
+					}
+					
+				}
+							
+				$return .= '</fieldset>';
+			}
+		}
+		
+		return $return;
 	}
 	
 	function getEPayLanguage($strlan)
@@ -529,6 +891,7 @@ class EPay extends PaymentModule
 	{
 		if (!$this->active)
 			return;
+		
 		if (!$this->checkCurrency($this->context->cart))
 			return;
 				
@@ -552,7 +915,7 @@ class EPay extends PaymentModule
 		$parameters["epay_orderid"]  = $this->context->cart->id;
 		
 		if(Configuration::get('EPAY_ENABLE_INVOICE'))
-			$parameters["epay_invoice"]  = $this->getInvoiceData($this->context->customer, $this->context->cart->getSummaryDetails());
+			$parameters["epay_invoice"]  = $this->jsonRemoveUnicodeSequences($this->getInvoiceData($this->context->customer, $this->context->cart->getSummaryDetails()));
 		
 		$parameters["epay_cancelurl"] = $this->context->link->getPageLink('order', true, NULL, "step=3");
 		
@@ -571,8 +934,11 @@ class EPay extends PaymentModule
 		$parameters["epay_hash"] = md5($hash . Configuration::get('EPAY_MD5KEY'));
 		
 		$this->context->smarty->assign(array('parameters' => $parameters, 'this_path_epay' => $this->_path));
-
-		return $this->display(__FILE__ , "payment.tpl");
+		
+		if(_PS_VERSION_ >= "1.6.0.0")
+			return $this->display(__FILE__ , "payment16.tpl");
+		else
+			return $this->display(__FILE__ , "payment.tpl");
 	}
 	
 	function hookFooter($params)
@@ -626,6 +992,7 @@ class EPay extends PaymentModule
 	function hookLeftColumn($params)
 	{
 		$merchantnumber = Configuration::get('EPAY_MERCHANTNUMBER');
+		
 		$this->context->smarty->assign(array('merchantnumber' => $merchantnumber));
 		
 		return $this->display(__FILE__ , 'blockepaymentlogo.tpl');
@@ -637,193 +1004,123 @@ class EPay extends PaymentModule
 	}
 	
 	function hookAdminOrder($params)
-	{
-		$message = '';
-		$activate_api = false;
+	{	
+		$order = new Order($params['id_order']);
 		
-		$result = Db::getInstance()->getRow('
-			SELECT o.`id_order`, o.`module`, e.`id_cart`, e.`epay_transaction_id`,
-				   e.`card_type`, e.`cardnopostfix`, e.`currency`, e.`amount`, e.`transfee`,
-				   e.`fraud`, e.`captured`, e.`credited`, e.`deleted`,
-				   e.`date_add`
-			FROM ' . _DB_PREFIX_ . 'epay_transactions e
-			LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON e.`id_cart` = o.`id_cart`
-			WHERE o.`id_order` = ' . intval($params["id_order"]));
+		$html = $this->displayTransactionForm($params)	. '<br>';
 		
-		$currency = new Currency(Currency::getIdByIsoCodeNum($result["currency"]));
-		$currency_code = $currency->iso_code;
-		
-		if(!isset($result["epay_transaction_id"]) OR $result["module"] != "epay")
-			return '';
-		else
+		if(Configuration::get('EPAY_ENABLE_PAYMENTREQUEST') == 1 && strlen(Configuration::get('EPAY_REMOTE_API_PASSWORD')) > 0 && ($order->total_paid-$order->getTotalPaid()) > 0)
 		{
-			/* Process remote capture/credit/delete */
-			if(Configuration::get('EPAY_ENABLE_REMOTE_API'))
-			{
-				require_once (dirname(__FILE__ ) . '/api.php');
-				
-				try
-				{
-					$remote_result = $this->_procesRemote($params);
-					$message = '<div class="conf">';
-					if(@$remote_result->captureResult == "true")
-						$message .= $this->l('Payment captured') . '</div>';
-					elseif(@$remote_result->creditResult == "true")
-						$message .= $this->l('Payment credited') . '</div>';
-					elseif(@$remote_result->deleteResult == "true")
-						$message .= $this->l('Payment deleted') . '</div>';
-					elseif(@$remote_result->move_as_capturedResult == "true")
-						$message .= $this->l('Payment closed') . '</div>';
-					else
-						$message = '';
-						
-					$activate_api = true;
-				}
-				catch (Exception $e)
-				{
-					$activate_api = false;
-					$message = $this->displayError($e->getMessage());	
-				}
-			}
+			if(Tools::isSubmit('sendpaymentrequest'))
+				$html .= $this->createPaymentRequest(
+					$order, 
+					$params['id_order'], 
+					Tools::getValue('epay_paymentrequest_amount'), 
+					$this->context->currency->iso_code,
+					Tools::getValue('epay_paymentrequest_requester_name'), 
+					Tools::getValue('epay_paymentrequest_requester_comment'), 
+					Tools::getValue('epay_paymentrequest_recipient_email'), 
+					Tools::getValue('epay_paymentrequest_recipient_name'), 
+					Tools::getValue('epay_paymentrequest_replyto_email'), 
+					Tools::getValue('epay_paymentrequest_replyto_name')
+				);
 			
-			$html = '<br />
-					<fieldset>
-						<legend>
-							<img src="../modules/' . $this->name . '/logo_small.gif" /> ' . $this->l('ePay info') . '
-						</legend>
-						' . $message . '
-						<table  style="width: 100%;">
-							<tr>
-								<td align="right" style="width: 30%;">
-									' . $this->l('ePay control panel:') . '
-								</td>
-								<td>
-									&nbsp;<a href="https://ssl.ditonlinebetalingssystem.dk/admin/login.asp" title="ePay login" target="_blank">.../admin/login.asp</a>
-									' . '
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									' . $this->l('ePay transaction ID:') . '
-								</td>
-								<td>
-									&nbsp;<b>' . $result["epay_transaction_id"] . '</b>' . '
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									' . $this->l('ePay "Order ID":') . '
-								</td>
-								<td>
-									&nbsp;<b>' . $result["id_cart"] . '</b> (id_cart)' . '
-								</td>
-							</tr>';
-							if($result["cardnopostfix"] > 1)
-							{
-							$html .= '<tr>
-								<td align="right">
-									' . $this->l('Postfix :') . '
-								</td>
-								<td>
-									&nbsp;<b>XXXX XXXX XXXX ' . $result["cardnopostfix"] . '</b>' . ($result["fraud"] ? '</td>
-							</tr>
-							<tr>
-								<td align="center" colspan="2">
-									<span style="color:red;font-weight:bold;">' . $this->l('Suspicious Payment!') . '</span>' : '') . '
-								</td>
-							</tr>';
-							}
-							$html .= '<tr>
-								<td align="center" colspan="2">
-									<img src="../modules/' . $this->name . '/img/' . $result["card_type"] . '.png" alt="' . $this->getCardNameById(intval($result["card_type"])) . '" title="' . $this->getCardNameById(intval($result["card_type"])) . '" align="middle">';
-			
-			if(Configuration::get('EPAY_ENABLE_REMOTE_API') && $activate_api)
-			{
-				try
-				{
-					$api = new EPayApi();
-					$soap_result = $api->gettransactionInformation(Configuration::get('EPAY_MERCHANTNUMBER'), $result["epay_transaction_id"]);
-					
-					if(!$soap_result->capturedamount or $soap_result->capturedamount == $soap_result->authamount)
-					{
-						$epay_amount = number_format($soap_result->authamount / 100, 2, ".", "");
-					}
-					elseif($soap_result->status == 'PAYMENT_CAPTURED')
-					{
-						$epay_amount = number_format(($soap_result->capturedamount) / 100, 2, ".", "");
-					}
-					else
-					{
-						$epay_amount = number_format(($soap_result->authamount - $soap_result->capturedamount) / 100, 2, ".", "");
-					}
-					
-					if($soap_result->status != 'PAYMENT_DELETED' AND !$soap_result->creditedamount)
-					{
-						$html .= '<form name="epay_remote" action="' . $_SERVER["REQUEST_URI"] . '" method="post" style="display:inline">' . '<input type="hidden" name="epay_transaction_id" value="' . $result["epay_transaction_id"] . '" />' . '<input type="hidden" name="epay_order_id" value="' . $result["id_cart"] . '" />' . $currency_code . ' ' . '<input type="text" id="epay_amount" name="epay_amount" value="' . $epay_amount . '" size="' . strlen($epay_amount) . '" />';
-						
-						if(!$soap_result->capturedamount or ($soap_result->splitpayment and $soap_result->status != 'PAYMENT_CAPTURED' and ($soap_result->capturedamount != $soap_result->authamount)))
-						{
-							$html .= ' <input class="button" name="epay_capture" type="submit" value="' . $this->l('Capture') . '" />' . ' <input class="button" name="epay_delete" type="submit" value="' . $this->l('Delete') . '" 
-												 		onclick="return confirm(\'' . $this->l('Really want to delete?') . '\');" />';
-							if($soap_result->splitpayment)
-								$html .= '<br /><input class="button" name="epay_move_as_captured" type="submit" value="' . $this->l('Close transaction') . '" /> ';
-							
-						}
-						elseif($soap_result->status == 'PAYMENT_CAPTURED' OR $soap_result->acquirer == 'EUROLINE')
-							$html .= ' <input class="button" name="epay_credit" type="submit" value="' . $this->l('Credit') . '"onclick="return confirm(\'' . $this->l('Do you want to credit:') . ' ' . $currency_code . ' \'+getE(\'epay_amount\').value);" />';
-						
-						$html .= '</form>';
-					}
-					else
-					{
-						$html .= $currency_code . ' ' . $epay_amount;
-						$html .= ($soap_result->status == 'PAYMENT_DELETED' ? ' <span style="color:red;font-weight:bold;">' . $this->l('Deleted') . '</span>' : '');
-					}
-					
-					$html .= '<div style="margin-top: 10px;">
-								<table class="table" cellspacing="0" cellpadding="0"><tr><th>' . $this->l('Date') . '</th><th>' . $this->l('Event') . '</th></tr>';
-					
-					$historyArray = $soap_result->history->TransactionHistoryInfo;
-					
-					if(!array_key_exists(0, $soap_result->history->TransactionHistoryInfo))
-					{
-						$historyArray = array($soap_result->history->TransactionHistoryInfo);
-						// convert to array
-					}
-					
-					for($i = 0; $i < count($historyArray); $i++)
-					{
-						$html .= "<tr><td>" . str_replace("T", " ", $historyArray[$i]->created) . "</td>";
-						$html .= "<td>";
-						if(strlen($historyArray[$i]->username) > 0)
-						{
-							$html .= ($historyArray[$i]->username . ": ");
-						}
-						$html .= $historyArray[$i]->eventMsg . "</td></tr>";
-					}
-					
-					
-					$html .= '</table></div>';
-				}
-				catch (Exception $e)
-				{
-					$activate_api = false;
-					$this->displayError($e->getMessage());	
-				}
-				
-			}
-			
-			if(!$activate_api)
-				$html .= $currency_code . ' ' . number_format(($result["amount"] + $result["transfee"]) / 100, 2, ",", "");
-			
-			$html .= '</td></tr></table>
-								</fieldset>';
-			
-			return $html;
+			$html .= $this->displayPaymentRequestForm($params) . '<br>';
 		}
+		
+		return $html;
 	}
 	
-	function _procesRemote($params)
+	private function createPaymentRequest($order, $orderid, $amount, $currency, $requester, $comment, $recipient_email, $recipient_name, $replyto_email, $replyto_name)
+	{
+		$return = "";
+		
+		try
+		{
+			//Get ordernumber
+			$sql = 'SELECT COUNT(*) FROM '._DB_PREFIX_.'epay_transactions WHERE `id_order` = ' . intval($orderid);
+			$orderPostfix = Db::getInstance()->getValue($sql) + 1;
+			
+			$params = array();
+			
+			$params["authentication"] = array();
+			$params["authentication"]["merchantnumber"] = Configuration::get('EPAY_MERCHANTNUMBER');
+			$params["authentication"]["password"] = Configuration::get('EPAY_REMOTE_API_PASSWORD');
+			
+			$params["paymentrequest"] = array();
+			$params["paymentrequest"]["reference"] = $orderid;
+			$params["paymentrequest"]["closeafterxpayments"] = 1;
+			
+			$params["paymentrequest"]["parameters"] = array();
+			$params["paymentrequest"]["parameters"]["amount"] = floatval($amount) * 100;
+			$params["paymentrequest"]["parameters"]["callbackurl"] = $this->context->link->getModuleLink('epay', 'paymentrequest', array('id_order' => $orderid, 'id_cart' => $order->id_cart), true);
+			$params["paymentrequest"]["parameters"]["currency"] = $currency;
+			$params["paymentrequest"]["parameters"]["group"] = Configuration::get('EPAY_GROUP');
+			$params["paymentrequest"]["parameters"]["instantcapture"] = Configuration::get('EPAY_INSTANTCAPTURE') == "1" ? "automatic" : "manual";
+			$params["paymentrequest"]["parameters"]["orderid"] = $orderid . "PAYREQ" . $orderPostfix;
+			$params["paymentrequest"]["parameters"]["windowid"] = Configuration::get('EPAY_WINDOWID');
+			
+			$soapClient = new SoapClient("https://paymentrequest.api.epay.eu/v1/PaymentRequestSOAP.svc?wsdl");
+			$createPaymentRequest = $soapClient->createpaymentrequest(array('createpaymentrequestrequest' => $params));
+			
+			if($createPaymentRequest->createpaymentrequestResult->result)
+			{
+				$sendParams = array();
+				
+				$sendParams["authentication"] = $params["authentication"];
+				
+				$sendParams["email"] = array();
+				$sendParams["email"]["comment"] = $comment;
+				$sendParams["email"]["requester"] = $requester;
+				
+				$sendParams["email"]["recipient"] = array();
+				$sendParams["email"]["recipient"]["emailaddress"] = $recipient_email;
+				$sendParams["email"]["recipient"]["name"] = $recipient_name;
+				
+				$sendParams["email"]["replyto"] = array();
+				$sendParams["email"]["replyto"]["emailaddress"] = $replyto_email;
+				$sendParams["email"]["replyto"]["name"] = $recipient_name;
+				
+				$sendParams["paymentrequest"] = array();
+				$sendParams["paymentrequest"]["paymentrequestid"] = $createPaymentRequest->createpaymentrequestResult->paymentrequest->paymentrequestid;
+				
+				$sendPaymentRequest = $soapClient->sendpaymentrequest(array('sendpaymentrequestrequest' => $sendParams));
+				
+				if($sendPaymentRequest->sendpaymentrequestResult->result)
+				{
+					$message = "Payment request (" . $createPaymentRequest->createpaymentrequestResult->paymentrequest->paymentrequestid . ") created and sent to: " . $recipient_email;
+										
+					$msg = new Message();
+					$message = strip_tags($message, '<br>');
+					if (Validate::isCleanHtml($message))
+					{
+						$msg->message = $message;
+						$msg->id_order = intval($orderid);
+						$msg->private = 1;
+						$msg->add();
+					}
+					
+					$return = $this->displayConfirmation($this->l('Payment request is sent.'));
+				}
+				else
+				{
+					throw new Exception ($sendPaymentRequest->sendpaymentrequestResult->message);
+				}
+			}
+			else
+			{
+				throw new Exception ($createPaymentRequest->createpaymentrequestResult->message);
+			}
+		}
+		catch(Exception $e)
+		{
+			$return = $this->displayError($e->getMessage());
+		}
+		
+		return $return;
+	}
+	
+	private function procesRemote($params)
 	{
 		if((Tools::isSubmit('epay_capture') OR Tools::isSubmit('epay_move_as_captured') OR Tools::isSubmit('epay_credit') OR Tools::isSubmit('epay_delete')) AND Tools::getIsset('epay_transaction_id'))
 		{
@@ -867,9 +1164,9 @@ class EPay extends PaymentModule
 		}
 	}
 	
-	static function getCardNameById($cardid)
+	static function getCardNameById($card_id)
 	{
-		switch($cardid)
+		switch($card_id)
 		{
 			case 1:
 				return 'Dankort / VISA/Dankort';
