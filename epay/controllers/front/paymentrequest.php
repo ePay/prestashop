@@ -24,9 +24,13 @@ class EPayPaymentRequestModuleFrontController extends ModuleFrontController
 		
 		foreach($params as $key => $value)
 		{
-			if($key != "hash" && $key != "controller")
+			if($key != "hash")
 			{
 				$var .= $value;
+			}
+			else
+			{
+				break;
 			}
 		}
 
