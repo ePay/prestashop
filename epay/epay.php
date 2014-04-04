@@ -945,7 +945,7 @@ class EPay extends PaymentModule
 	{
 		$output = '';
 		
-		if(Configuration::get('EPAY_GOOGLE_PAGEVIEW') == 1 and strlen(Configuration::get('GANALYTICS_ID')) > 0)
+		if(Configuration::get('EPAY_GOOGLE_PAGEVIEW') == 1 && strlen(Configuration::get('GANALYTICS_ID')) > 0)
 		{
 			$output .= '
 			<script type="text/javascript">
@@ -1037,6 +1037,8 @@ class EPay extends PaymentModule
 		
 		try
 		{
+			$languageIso = Language::getIsoById($this->context->language->id);
+			
 			//Get ordernumber
 			$sql = 'SELECT COUNT(*) FROM '._DB_PREFIX_.'epay_transactions WHERE `id_order` = ' . intval($orderid);
 			$orderPostfix = Db::getInstance()->getValue($sql) + 1;
@@ -1046,6 +1048,8 @@ class EPay extends PaymentModule
 			$params["authentication"] = array();
 			$params["authentication"]["merchantnumber"] = Configuration::get('EPAY_MERCHANTNUMBER');
 			$params["authentication"]["password"] = Configuration::get('EPAY_REMOTE_API_PASSWORD');
+			
+			$params["language"] = ($languageIso == "da" ? "da" : "en"); 
 			
 			$params["paymentrequest"] = array();
 			$params["paymentrequest"]["reference"] = $orderid;
@@ -1068,6 +1072,8 @@ class EPay extends PaymentModule
 				$sendParams = array();
 				
 				$sendParams["authentication"] = $params["authentication"];
+				
+				$sendParams["language"] = ($languageIso == "da" ? "da" : "en"); 
 				
 				$sendParams["email"] = array();
 				$sendParams["email"]["comment"] = $comment;
