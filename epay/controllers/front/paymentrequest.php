@@ -58,8 +58,10 @@ class EPayPaymentRequestModuleFrontController extends ModuleFrontController
 			$msg->add();
 		}
 		
-		$invoice = new OrderInvoice($order->invoice_number);		
-		$order->addOrderPayment($amount, $this->module->displayName, $_GET["txnid"], new Currency($order->id_currency), null, $invoice);
+		$invoice = new OrderInvoice($order->invoice_number);
+		$currency = new Currency(Currency::getIdByIsoCodeNum($_GET["currency"]));
+		$currency_code = $currency->iso_code;
+		$order->addOrderPayment($amount, $this->module->displayName, $_GET["txnid"], $currency_code, null, $invoice);
 		
 		$payments = $order->getOrderPayments();
 		$payment = $payments[count($payments) - 1];
