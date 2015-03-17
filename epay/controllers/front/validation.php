@@ -89,9 +89,8 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 						
 						$invoice->save();
 					}
-					
-					$payment[0]->save();
 				}
+				$payment[0]->save();
 			}
 		}
 		
