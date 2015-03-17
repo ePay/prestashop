@@ -54,7 +54,7 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 		{	
 			$message = "ePay Transaction ID: " . $_GET["txnid"];
 			
-			if($this->module->validateOrder((int)$id_cart, Configuration::get('PS_OS_PAYMENT'), $amount, $this->module->displayName, $message, $mailVars, $currencyid, false, $cart->secure_key))
+			if($this->module->validateOrder((int)$id_cart, Configuration::get('PS_OS_PAYMENT'), $amount, $this->module->getCardnameById($cardid), $message, $mailVars, $currencyid, false, $cart->secure_key))
 			{
 				$this->module->recordTransaction(null, $id_cart, $_GET["txnid"], $cardid, $cardnopostfix, $currency, Tools::getValue('amount'), $transfee, $fraud);
 				
