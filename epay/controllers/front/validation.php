@@ -63,6 +63,8 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 				$payment = $order->getOrderPayments();
 				$payment[0]->transaction_id = Tools::getValue('txnid');
 				$payment[0]->amount = $amount;
+				$payment[0]->card_number = 'XXXX XXXX XXXX ' . $cardnopostfix;
+				$payment[0]->card_brand = $this->module->getCardnameById($cardid);
 				
 				if($transfee > 0)
 				{
