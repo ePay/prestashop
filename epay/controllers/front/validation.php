@@ -50,13 +50,11 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 				die(Tools::displayError('Error in MD5 data! Please review your passwords in both ePay and your Prestashop admin!'));
 		}
 		
-		$total = $cart->getOrderTotal(true, Cart::BOTH);
-		
 		if($cart->OrderExists() == 0)
 		{	
 			$message = "ePay Transaction ID: " . $_GET["txnid"];
 			
-			if($this->module->validateOrder((int)$id_cart, Configuration::get('PS_OS_PAYMENT'), $total, $this->module->displayName, $message, $mailVars, $currencyid, false, $cart->secure_key))
+			if($this->module->validateOrder((int)$id_cart, Configuration::get('PS_OS_PAYMENT'), $amount, $this->module->displayName, $message, $mailVars, $currencyid, false, $cart->secure_key))
 			{
 				$this->module->recordTransaction(null, $id_cart, $_GET["txnid"], $cardid, $cardnopostfix, $currency, Tools::getValue('amount'), $transfee, $fraud);
 				
