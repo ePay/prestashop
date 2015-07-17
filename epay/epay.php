@@ -38,7 +38,7 @@ class EPay extends PaymentModule
 	
 	public function install()
 	{
-		if(!parent::install() OR !Configuration::updateValue('EPAY_GOOGLE_PAGEVIEW', '0') OR !Configuration::updateValue('EPAY_INTEGRATION', '1') OR !Configuration::updateValue('EPAY_ENABLE_INVOICE', '0') OR !$this->registerHook('payment') OR !$this->registerHook('rightColumn') OR !$this->registerHook('adminOrder') OR !$this->registerHook('paymentReturn') OR !$this->registerHook('footer'))
+		if(!parent::install() OR !Configuration::updateValue('EPAY_GOOGLE_PAGEVIEW', '0') OR !Configuration::updateValue('EPAY_INTEGRATION', '1') OR !Configuration::updateValue('EPAY_ENABLE_INVOICE', '0') OR !$this->registerHook('payment') OR !$this->registerHook('leftColumn') OR !$this->registerHook('rightColumn') OR !$this->registerHook('adminOrder') OR !$this->registerHook('paymentReturn') OR !$this->registerHook('footer'))
 			return false;
 
 		if(!$this->createEPayTransactionTable())
