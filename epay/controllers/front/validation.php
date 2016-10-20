@@ -17,6 +17,8 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 		$id_cart = Tools::getValue('orderid');
 		$cart = new Cart($id_cart);
 		$currency = Tools::getValue('currency');
+		if (!$currencyid = Currency::getIdByIsoCodeNum($currency))
+			$currencyid = NULL;
 		$cardid = Tools::getValue('paymenttype');
 		$cardnopostfix = (isset($_GET['cardno']) ? substr($_GET['cardno'],  - 4) : 0);
 		$transfee = (isset($_GET['txnfee']) ? $_GET['txnfee'] : 0);
@@ -48,13 +50,11 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 				die(Tools::displayError('Error in MD5 data! Please review your passwords in both ePay and your Prestashop admin!'));
 		}
 		
-		$total = $cart->getOrderTotal(true, Cart::BOTH);
-		
 		if($cart->OrderExists() == 0)
 		{	
 			$message = "ePay Transaction ID: " . $_GET["txnid"];
 			
-			if($this->module->validateOrder((int)$id_cart, Configuration::get('PS_OS_PAYMENT'), $total, $this->module->displayName, $message, $mailVars, null, false, $cart->secure_key))
+			if($this->module->validateOrder((int)$id_cart, Configuration::get('PS_OS_PAYMENT'), $amount, $this->module->getCardnameById($cardid), null /* $message */, $mailVars, $currencyid, false, $cart->secure_key))
 			{
 				$this->module->recordTransaction(null, $id_cart, $_GET["txnid"], $cardid, $cardnopostfix, $currency, Tools::getValue('amount'), $transfee, $fraud);
 				
@@ -63,6 +63,8 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 				$payment = $order->getOrderPayments();
 				$payment[0]->transaction_id = Tools::getValue('txnid');
 				$payment[0]->amount = $amount;
+				$payment[0]->card_number = 'XXXX XXXX XXXX ' . $cardnopostfix;
+				$payment[0]->card_brand = $this->module->getCardnameById($cardid);
 				
 				if($transfee > 0)
 				{
@@ -87,9 +89,8 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 						
 						$invoice->save();
 					}
-					
-					$payment[0]->save();
 				}
+				$payment[0]->save();
 			}
 		}
 		
