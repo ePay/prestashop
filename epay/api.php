@@ -10,7 +10,7 @@ class EPayApi extends PaymentModule
 		$epay_params = array();
 		$epay_params['merchantnumber'] = $merchantnumber;
 		$epay_params['transactionid'] = $transactionid;
-		$epay_params['amount'] = $amount;
+		$epay_params['amount'] = (string)$amount;
 		$epay_params['pwd'] = strval(Configuration::get('EPAY_REMOTE_API_PASSWORD'));
 		$epay_params['pbsResponse'] = "-1";
 		$epay_params['epayresponse'] = "-1";
@@ -38,7 +38,7 @@ class EPayApi extends PaymentModule
 		$epay_params = array();
 		$epay_params['merchantnumber'] = $merchantnumber;
 		$epay_params['transactionid'] = $transactionid;
-		$epay_params['amount'] = $amount;
+		$epay_params['amount'] = (string)$amount;
 		$epay_params['pwd'] = strval(Configuration::get('EPAY_REMOTE_API_PASSWORD'));
 		$epay_params['epayresponse'] = "-1";
 		$epay_params['pbsresponse'] = "-1";
