@@ -718,7 +718,7 @@ class EPay extends PaymentModule
 								$return .= $this->transactionInfoTableRow($this->l('Fraud'), '<span style="color:red;font-weight:bold;"><img src="../img/admin/bullet_red.png" />' . $this->l('Suspicious Payment!') . '</span>');
 								
 				if(!$activate_api)
-					$return .= $currency_code . ' ' . number_format(($result["amount"] + $result["transfee"]) / 100, 2, ",", "");
+					$return .= $currency_code . ' ' . number_format(($transaction["amount"] + $transaction["transfee"]) / 100, 2, ",", "");
 				
 				$return .= '</table><br>';
 							
