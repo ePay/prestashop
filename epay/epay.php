@@ -17,7 +17,7 @@ class EPay extends PaymentModule
 	public function __construct()
 	{
 		$this->name = 'epay';
-		$this->version = '4.8.1';
+		$this->version = '4.9.0';
 		$this->author = "ePay A/S (a Bambora Company)";
 		$this->tab = 'payments_gateways';
 
