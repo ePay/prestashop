@@ -1,0 +1,25 @@
+﻿.epay_paymentwindow_container p.payment_module a.epay_payment_content {
+    background: url("../epay.png");
+    background-position: 15px center;
+    background-repeat: no-repeat;
+    background-color: #fbfbfb;
+    padding-left: 115px;
+}
+
+.epay_paymentwindow_container p.payment_module a.epay_payment_content:hover {
+    background-color: #f6f6f6;
+}
+
+.epay_paymentwindow_container p.payment_module a.epay_payment_content::after {
+    display: block;
+    content: "\f054";
+    position: absolute;
+    right: 15px;
+    margin-top: -11px;
+    top: 50%;
+    font-family: "FontAwesome";
+    font-size: 25px;
+    height: 22px;
+    width: 14px;
+    color: #777;
+}

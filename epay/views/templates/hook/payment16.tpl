@@ -7,11 +7,11 @@
 		{/if}
 	{/foreach}
 </form>
-
+<div class="epay_paymentwindow_container">
 <p class="payment_module">
-	<a title="{l s='Pay using ePay' mod='epay'}" href="javascript: ePayForm.submit();">
-		<img src="{$this_path_epay}epay.png" alt="{l s='Pay using ePay' mod='epay'}" style="float:left; margin-right: 15px;" />
+	<a class="epay_payment_content" title="{l s='Pay using ePay' mod='epay'}" href="javascript: ePayForm.submit();">
 		<span id="epay_card_logos">Cards</span>		
 	</a>
 </p>
+  </div>
 <script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/paymentlogos/PaymentLogos.aspx?merchantnumber={$parameters["epay_merchantnumber"]}&direction=2&padding=2&rows=2&logo=0&showdivs=0&cardwidth=45&divid=epay_card_logos"></script>
