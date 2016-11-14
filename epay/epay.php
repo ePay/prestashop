@@ -618,6 +618,7 @@ class EPay extends PaymentModule
 
 		$order = new Order($params['id_order']);
 		$employee = new Employee($this->context->cookie->id_employee);
+        $activate_api = false;
 
 		$return = "";
         $process_remote_result = "";
@@ -626,21 +627,25 @@ class EPay extends PaymentModule
 		if(Configuration::get('EPAY_ENABLE_REMOTE_API'))
 		{
 			require_once(dirname(__FILE__ ) . '/api.php');
-
 			try
 			{
-				$remote_result = $this->procesRemote($params);
-				$process_remote_result = '<div class="alert alert-success" style="width:250px;">';
-				if(@$remote_result->captureResult == "true")
-					$process_remote_result .= $this->l('Payment captured') . '</div>';
-				elseif(@$remote_result->creditResult == "true")
-					$process_remote_result .= $this->l('Payment credited') . '</div>';
-				elseif(@$remote_result->deleteResult == "true")
-					$process_remote_result .= $this->l('Payment deleted') . '</div>';
-				elseif(@$remote_result->move_as_capturedResult == "true")
-					$process_remote_result .= $this->l('Payment closed') . '</div>';
-				else
-					$process_remote_result = '';
+				$remote_result = $this->processRemote($params);
+                if(@$remote_result->captureResult == "true")
+                {
+                    $process_remote_result .= '<div class="alert alert-success" style="width:250px;">' . $this->l('Payment captured') . '</div>';
+                }
+                elseif(@$remote_result->creditResult == "true")
+                {
+                    $process_remote_result .= '<div class="alert alert-success" style="width:250px;">' . $this->l('Payment credited') . '</div>';
+                }
+                elseif(@$remote_result->deleteResult == "true")
+                {
+                    $process_remote_result .= '<div class="alert alert-success" style="width:250px;">' . $this->l('Payment deleted') . '</div>';
+                }
+                elseif(@$remote_result->move_as_capturedResult == "true")
+                {
+                    $process_remote_result .= '<div class="alert alert-success" style="width:250px;">' . $this->l('Payment closed') . '</div>';
+                }
 
 				$activate_api = true;
 			}
@@ -659,14 +664,14 @@ class EPay extends PaymentModule
 
 			if(isset($transaction["epay_transaction_id"]) && $transaction["module"] == "epay")
 			{
+
 				$return .= '
-					<br />
 						<div class="panel">
 							<div class="panel-heading">
                                 <img src="../modules/' . $this->name . '/logo_small.gif"/> ePay
 							</div>
 
-							<table class="table" cellspacing="0" cellpadding="0">
+							<div class="row"><div class="col-xs-12 col-md-6 col-lg-6 col-sm-12" ><table class="table" cellspacing="0" cellpadding="0">
 
 							' . $this->transactionInfoTableRow($this->l('ePay Administration'), '<a href="https://admin.ditonlinebetalingssystem.dk/admin/login.asp" title="ePay login" target="_blank">' . $this->l('Open') . '</a>') . '
 							' . $this->transactionInfoTableRow($this->l('ePay "Order ID"'), $transaction["id_cart"]) .'
@@ -675,7 +680,7 @@ class EPay extends PaymentModule
                 if($transaction["fraud"])
                     $return .= $this->transactionInfoTableRow($this->l('Fraud'), '<span style="color:red;font-weight:bold;"><img src="../img/admin/bullet_red.png" />' . $this->l('Suspicious Payment!') . '</span>');
 
-                $paymentTypeColumn .= '<div style="display: flex; align-items: center;"><img src="../modules/' . $this->name . '/img/' . $transaction["card_type"] . '.png" alt="' . $this->getCardNameById(intval($transaction["card_type"])) . '" title="' . $this->getCardNameById(intval($transaction["card_type"])) . '" style="margin-right:3px;"/><div>'.$this->getCardNameById(intval($transaction["card_type"]));
+                $paymentTypeColumn = '<div style="display: flex; align-items: center;"><img src="../modules/' . $this->name . '/img/' . $transaction["card_type"] . '.png" alt="' . $this->getCardNameById(intval($transaction["card_type"])) . '" title="' . $this->getCardNameById(intval($transaction["card_type"])) . '" style="margin-right:3px;"/><div>'.$this->getCardNameById(intval($transaction["card_type"]));
 
                 if($transaction["cardnopostfix"] > 1)
                 {
@@ -685,12 +690,10 @@ class EPay extends PaymentModule
                 $paymentTypeColumn .= '</div></div>';
                 $return .= $this->transactionInfoTableRow($this->l('Payment type'), $paymentTypeColumn);
 
-				if(!$activate_api)
+                if(!$activate_api)
                 {
-                    $return .= $this->transactionInfoTableRow($this->l('Amount') ,$currency_code . ' ' . number_format(($transaction["amount"] + $transaction["transfee"]) / 100, 2, ",", ""));
+                    $return .= $this->transactionInfoTableRow($this->l('Authorized amount') ,number_format(($transaction["amount"] + $transaction["transfee"]) / 100, 2, ",", ""). ' ' . $currency_code);
                 }
-
-				$return .= '</table><br>'.$process_remote_result;
 
 				if(Configuration::get('EPAY_ENABLE_REMOTE_API') && $activate_api)
 				{
@@ -701,37 +704,56 @@ class EPay extends PaymentModule
 
 						if($soap_result)
 						{
-							if(!$soap_result->capturedamount or $soap_result->capturedamount == $soap_result->authamount)
-								$epay_amount = number_format($soap_result->authamount / 100, 2, ",", "");
-							elseif($soap_result->status == 'PAYMENT_CAPTURED')
-								$epay_amount = number_format(($soap_result->capturedamount) / 100, 2, ",", "");
-							else
-								$epay_amount = number_format(($soap_result->authamount - $soap_result->capturedamount) / 100, 2, ",", "");
+                            $return .= $this->transactionInfoTableRow($this->l('Authorized amount') ,number_format($soap_result->authamount / 100, 2, ",", ""). ' ' . $currency_code);
+                            $return .= $this->transactionInfoTableRow($this->l('Captured amount') ,number_format($soap_result->capturedamount / 100, 2, ",", ""). ' ' . $currency_code);
+                            $return .= $this->transactionInfoTableRow($this->l('Credited amount') ,number_format($soap_result->creditedamount / 100, 2, ",", ""). ' ' . $currency_code);
+                            $return .= '</table></br>';
 
-							if($soap_result->status != 'PAYMENT_DELETED' AND !$soap_result->creditedamount)
+                            $form = $process_remote_result.'';
+
+
+							if($soap_result->status == 'PAYMENT_CAPTURED')
+                            {
+                                $epay_amount = number_format(($soap_result->capturedamount - $soap_result->creditedamount) / 100, 2, ",", "");
+                            }
+                            else
+                            {
+                                $epay_amount = number_format(($soap_result->authamount - $soap_result->capturedamount) / 100, 2, ",", "");
+                            }
+
+							if($soap_result->status != 'PAYMENT_DELETED')
 							{
-								$return .= '<form name="epay_remote" action="' . $_SERVER["REQUEST_URI"] . '" method="post" style="display:inline; width: 49%;">' . '<input type="hidden" name="epay_transaction_id" value="' . $transaction["epay_transaction_id"] . '" />' . '<input type="hidden" name="epay_order_id" value="' . $transaction["id_cart"] . '" /><div class="input-group" style="width: 250px;"><div class="input-group-addon">'. $currency_code . '</div><input type="text" id="epay_amount" name="epay_amount" value="' . $epay_amount . '"/></div>';
+								$form_start = '<form name="epay_remote" action="' . $_SERVER["REQUEST_URI"] . '" method="post">' . '<input type="hidden" name="epay_transaction_id" value="' . $transaction["epay_transaction_id"] . '" />' . '<input type="hidden" name="epay_order_id" value="' . $transaction["id_cart"] . '" /><div class="input-group" style="width: 250px;"><div class="input-group-addon">'. $currency_code . '</div><input type="text" id="epay_amount" name="epay_amount" value="' . $epay_amount . '"/></div>';
+                                $form_end = '</form>';
 
-								if(!$soap_result->capturedamount or ($soap_result->splitpayment and $soap_result->status != 'PAYMENT_CAPTURED' and ($soap_result->capturedamount != $soap_result->authamount)))
+								if((!$soap_result->capturedamount && $soap_result->status != 'PAYMENT_CAPTURED') or ($soap_result->splitpayment and $soap_result->status != 'PAYMENT_CAPTURED' and ($soap_result->capturedamount != $soap_result->authamount)))
 								{
-									$return .= '<input class="btn btn-success" name="epay_capture" style="margin: 3px 3px 3px 0;" type="submit" value="' . $this->l('Capture') . '" />' . '<input class="btn btn-danger" name="epay_delete" style="margin: 3px 3px 3px 0;" type="submit" value="' . $this->l('Delete') . '"
-													 		onclick="return confirm(\'' . $this->l('Really want to delete?') . '\');" />';
-									if($soap_result->splitpayment)
-										$return .= '<input class="btn btn-warning" style="margin: 3px 3px 3px 0;" name="epay_move_as_captured" type="submit" value="' . $this->l('Close transaction') . '" /> ';
+                                    $form .= $form_start;
+									$form .= '<input class="btn btn-success" name="epay_capture" style="margin: 3px 3px 3px 0;" type="submit" value="' . $this->l('Capture') . '" />';
+									if(!$soap_result->capturedamount)
+                                    {
+                                        $form .=  '<input class="btn btn-danger" name="epay_delete" style="margin: 3px 3px 3px 0;" type="submit" value="' . $this->l('Delete') . '"onclick="return confirm(\'' . $this->l('Really want to delete?') . '\');" />';
+                                    }
 
+                                    if($soap_result->splitpayment)
+                                    {
+                                        $form .= '<input class="btn btn-warning" style="margin: 3px 3px 3px 0;" name="epay_move_as_captured" type="submit" value="' . $this->l('Close transaction') . '"onclick="return confirm(\'' . $this->l('Really want to close transaction?') . '\');" />';
+                                    }
+                                    $form .= $form_end;
 								}
-								elseif($soap_result->status == 'PAYMENT_CAPTURED' OR $soap_result->acquirer == 'EUROLINE')
-									$return .= ' <input class="btn btn-warning" name="epay_credit" style="margin: 3px 3px 3px 0;" type="submit" value="' . $this->l('Credit') . '"onclick="return confirm(\'' . $this->l('Do you want to credit:') . ' ' . $currency_code . ' \'+getE(\'epay_amount\').value);" />';
-
-								$return .= '</form>';
+								elseif((($soap_result->status == 'PAYMENT_CAPTURED' && !$soap_result->creditedamount) OR ($soap_result->acquirer == 'EUROLINE')) && ($soap_result->creditedamount < $soap_result->capturedamount))
+                                {
+                                    $form .= $form_start;
+                                    $form .= ' <input class="btn btn-warning" name="epay_credit" style="margin: 3px 3px 3px 0;" type="submit" value="' . $this->l('Credit') . '"onclick="return confirm(\'' . $this->l('Do you want to credit:') . ' ' . $currency_code . ' \'+getE(\'epay_amount\').value);" />';
+                                    $form .= $form_end;
+                                }
 							}
 							else
 							{
-								$return .= '<div class="input-group" style="width: 250px;"><div class="input-group-addon">'. $currency_code . '</div><input type="text" id="epay_amount" name="epay_amount" disabled value="' . $epay_amount . '"/></div>';
-								$return .= ($soap_result->status == 'PAYMENT_DELETED' ? ' <span style="color:red;font-weight:bold;">' . $this->l('Deleted') . '</span>' : '');
+								$form .= ($soap_result->status == 'PAYMENT_DELETED' ? ' <span style="color:red;font-weight:bold;">' . $this->l('Deleted') . '</span>' : '');
 							}
 
-							$return .= '</br></br><div class="row"><div class="col-xs-12 col-md-8 col-lg-6 col-sm-12 panel panel-sm"><div class="panel-heading"><i class="icon-time"></i> '.$this->l('Transaction Log').'</div>
+							$return .= $form.'</div><div class="col-xs-12 col-md-6 col-lg-6 col-sm-12"><div class="panel panel-sm"><div class="panel-heading"><i class="icon-time"></i> '.$this->l('Transaction Log').'</div>
 									<table class="table" cellspacing="0" cellpadding="0"><thead><tr><th><span class="title_box">' . $this->l('Date') . '</span></th><th><span class="title_box">' . $this->l('Event') . '</span></th></tr><thead><tbody>';
 
 							$historyArray = $soap_result->history->TransactionHistoryInfo;
@@ -752,18 +774,24 @@ class EPay extends PaymentModule
 								}
 								$return .= $historyArray[$i]->eventMsg . "</td></tr>";
 							}
-
-
-							$return .= '</tbody></table></div></div>';
+							$return .= '</tbody></table></div></div></div>';
 						}
+                        else
+                        {
+                            $return .= '</table></br></div></div>';
+                        }
+
 					}
 					catch (Exception $e)
 					{
 						$activate_api = false;
 						$this->displayError($e->getMessage());
 					}
-
 				}
+                else
+                {
+                    $return .= '</table></div></div>';
+                }
 
 				$return .= '</div>';
 			}
@@ -1111,48 +1139,68 @@ class EPay extends PaymentModule
 		return $return;
 	}
 
-	private function procesRemote($params)
+	private function processRemote($params)
 	{
-		if((Tools::isSubmit('epay_capture') OR Tools::isSubmit('epay_move_as_captured') OR Tools::isSubmit('epay_credit') OR Tools::isSubmit('epay_delete')) AND Tools::getIsset('epay_transaction_id'))
-		{
-			require_once (dirname(__FILE__) . '/api.php');
+        if((Tools::isSubmit('epay_capture') OR Tools::isSubmit('epay_move_as_captured') OR Tools::isSubmit('epay_credit') OR Tools::isSubmit('epay_delete')) AND Tools::getIsset('epay_transaction_id'))
+        {
+            require_once (dirname(__FILE__) . '/api.php');
 
-			$api = new EPayApi();
+            $api = new EPayApi();
 
-			if(Tools::isSubmit('epay_capture'))
-				$result = $api->capture(Configuration::get('EPAY_MERCHANTNUMBER'), Tools::getValue('epay_transaction_id'), $this->handleUserAmountInput(Tools::getValue('epay_amount')) * 100);
-			elseif(Tools::isSubmit('epay_credit'))
-				$result = $api->credit(Configuration::get('EPAY_MERCHANTNUMBER'), Tools::getValue('epay_transaction_id'), $this->handleUserAmountInput(Tools::getValue('epay_amount')) * 100);
-			elseif(Tools::isSubmit('epay_delete'))
-				$result = $api->delete(Configuration::get('EPAY_MERCHANTNUMBER'), Tools::getValue('epay_transaction_id'));
-			elseif(Tools::isSubmit('epay_move_as_captured'))
-				$result = $api->moveascaptured(Configuration::get('EPAY_MERCHANTNUMBER'), Tools::getValue('epay_transaction_id'));
+            if(Tools::isSubmit('epay_capture'))
+            {
+                $result = $api->capture(Configuration::get('EPAY_MERCHANTNUMBER'), Tools::getValue('epay_transaction_id'), $this->handleUserAmountInput(Tools::getValue('epay_amount')) * 100);
+            }
+            elseif(Tools::isSubmit('epay_credit'))
+            {
+                $result = $api->credit(Configuration::get('EPAY_MERCHANTNUMBER'), Tools::getValue('epay_transaction_id'), $this->handleUserAmountInput(Tools::getValue('epay_amount')) * 100);
+            }
+            elseif(Tools::isSubmit('epay_delete'))
+            {
+                $result = $api->delete(Configuration::get('EPAY_MERCHANTNUMBER'), Tools::getValue('epay_transaction_id'));
+            }
+            elseif(Tools::isSubmit('epay_move_as_captured'))
+            {
+                $result = $api->moveascaptured(Configuration::get('EPAY_MERCHANTNUMBER'), Tools::getValue('epay_transaction_id'));
+            }
 
-			if(@$result->captureResult == "true")
-				$this->setCaptured(Tools::getValue('epay_transaction_id'), $this->handleUserAmountInput(Tools::getValue('epay_amount')) * 100);
-			elseif(@$result->creditResult == "true")
-				$this->setCredited(Tools::getValue('epay_transaction_id'), $this->handleUserAmountInput(Tools::getValue('epay_amount')) * 100);
-			elseif(@$result->deleteResult == "true")
-				$this->deleteTransaction(Tools::getValue('epay_transaction_id'));
-			elseif(@$result->move_as_capturedResult == "true")
-			{
-				//Do nothing
-			}
-			else
-			{
-				if(Tools::isSubmit('epay_capture'))
-					$pbsresponse = $result->pbsResponse;
-				elseif(!Tools::isSubmit('epay_delete') && !Tools::isSubmit('epay_move_as_captured'))
-					$pbsresponse = $result->pbsresponse;
+            if(@$result->captureResult == "true")
+            {
+                $this->setCaptured(Tools::getValue('epay_transaction_id'), $this->handleUserAmountInput(Tools::getValue('epay_amount')) * 100);
+            }
+            elseif(@$result->creditResult == "true")
+            {
+                $this->setCredited(Tools::getValue('epay_transaction_id'), $this->handleUserAmountInput(Tools::getValue('epay_amount')) * 100);
+            }
+            elseif(@$result->deleteResult == "true")
+            {
+                $this->deleteTransaction(Tools::getValue('epay_transaction_id'));
+            }
+            elseif(@$result->move_as_capturedResult == "true")
+            {
+                //Do nothing
+            }
+            else
+            {
+                if(Tools::isSubmit('epay_capture'))
+                {
+                    $pbsresponse = $result->pbsResponse;
+                }
+                elseif(!Tools::isSubmit('epay_delete') && !Tools::isSubmit('epay_move_as_captured'))
+                {
+                    $pbsresponse = $result->pbsresponse;
+                }
 
-				$api->getEpayError(Configuration::get('EPAY_MERCHANTNUMBER'), $result->epayresponse);
+                $api->getEpayError(Configuration::get('EPAY_MERCHANTNUMBER'), $result->epayresponse);
 
-				if(!Tools::isSubmit('epay_delete') && !Tools::isSubmit('epay_move_as_captured'))
-					$api->getPbsError(Configuration::get('EPAY_MERCHANTNUMBER'), $pbsresponse);
-			}
+                if(!Tools::isSubmit('epay_delete') && !Tools::isSubmit('epay_move_as_captured'))
+                {
+                    $api->getPbsError(Configuration::get('EPAY_MERCHANTNUMBER'), $pbsresponse);
+                }
+            }
 
-			return $result;
-		}
+            return $result;
+        }
 	}
 
 	static function getCardNameById($card_id)
