@@ -10,6 +10,6 @@
 
 <!-- Block ePay-ment logo module -->
 <div id="paiement_logo_block_left" class="paiement_logo_block">
-	<script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/PaymentLogos/PaymentLogos.aspx?merchantnumber={$merchantnumber}&padding=5&cols=2"></script>
+	<script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/PaymentLogos/PaymentLogos.aspx?merchantnumber={$merchantnumber}&direction=2&padding=5&rows=2"></script>
 </div>
 <!-- /Block ePay-ment logo module -->

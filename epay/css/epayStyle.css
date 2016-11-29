@@ -23,3 +23,8 @@
     width: 14px;
     color: #777;
 }
+
+.epay_input_text_fixed_width_xs {
+    max-width: 200px !important;
+    min-width: 150px !important;
+}

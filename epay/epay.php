@@ -20,6 +20,7 @@ class EPay extends PaymentModule
 		$this->version = '4.9.1';
 		$this->author = "ePay A/S (a Bambora Company)";
 		$this->tab = 'payments_gateways';
+        $this->bootstrap = true;
 
 		$this->currencies = true;
 		$this->currencies_mode = 'checkbox';
@@ -206,6 +207,7 @@ class EPay extends PaymentModule
 				Configuration::updateValue('EPAY_GOOGLE_PAGEVIEW', Tools::getValue("EPAY_GOOGLE_PAGEVIEW"));
 				Configuration::updateValue('EPAY_ENABLE_INVOICE', Tools::getValue("EPAY_ENABLE_INVOICE"));
 				Configuration::updateValue('EPAY_ENABLE_PAYMENTREQUEST', Tools::getValue("EPAY_ENABLE_PAYMENTREQUEST"));
+				Configuration::updateValue('EPAY_ENABLE_PAYMENTLOGOBLOCK', Tools::getValue("EPAY_ENABLE_PAYMENTLOGOBLOCK"));
 
 	            $output .= $this->displayConfirmation($this->l('Settings updated'));
 	        }
@@ -225,15 +227,16 @@ class EPay extends PaymentModule
 	            'title' => $this->l('Settings'),
 				'image' => $this->_path.'logo_small.gif'
 	        ),
+            'description' => '<a href="http://www.prestashopguiden.dk/en/configuration#407" target="_blank">'. $this->l('Documentation can be found here') .'</a>',
 	        'input' => array(
 				array(
 					'type' => 'text',
 					'label' => $this->l('Merchant number'),
 					'name' => 'EPAY_MERCHANTNUMBER',
-					'size' => 20,
+                    'class' => 'epay_input_text_fixed_width_xs',
 					'required' => true
 				),
-				 array(
+				    array(
 					'type' => 'radio',
 					'label' => $this->l('Window state'),
 					'name' => 'EPAY_WINDOWSTATE',
@@ -256,14 +259,13 @@ class EPay extends PaymentModule
 					'type' => 'text',
 					'label' => $this->l('Window ID'),
 					'name' => 'EPAY_WINDOWID',
-					'size' => 20,
+                    'class' => 'epay_input_text_fixed_width_xs',
 					'required' => false
 				),
 				array(
 					'type' => 'radio',
 					'label' => $this->l('Enable Remote API'),
 					'name' => 'EPAY_ENABLE_REMOTE_API',
-					'size' => 20,
 					'class' => 't',
 					'is_bool' => true,
 					'required' => true,
@@ -284,14 +286,13 @@ class EPay extends PaymentModule
 					'type' => 'text',
 					'label' => $this->l('Remote API password'),
 					'name' => 'EPAY_REMOTE_API_PASSWORD',
-					'size' => 20,
+					'class' => 'epay_input_text_fixed_width_xs',
 					'required' => false
 				),
 				array(
 					'type' => 'radio',
 					'label' => $this->l('Use own receipt'),
 					'name' => 'EPAY_OWNRECEIPT',
-					'size' => 20,
 					'class' => 't',
 					'is_bool' => true,
 					'required' => true,
@@ -312,7 +313,6 @@ class EPay extends PaymentModule
 					'type' => 'radio',
 					'label' => $this->l('Use instant capture'),
 					'name' => 'EPAY_INSTANTCAPTURE',
-					'size' => 20,
 					'class' => 't',
 					'is_bool' => true,
 					'required' => true,
@@ -333,7 +333,6 @@ class EPay extends PaymentModule
 					'type' => 'radio',
 					'label' => $this->l('Add transaction fee to shipping'),
 					'name' => 'EPAY_ADDFEETOSHIPPING',
-					'size' => 20,
 					'class' => 't',
 					'is_bool' => true,
 					'required' => true,
@@ -354,28 +353,27 @@ class EPay extends PaymentModule
 					'type' => 'text',
 					'label' => $this->l('Group'),
 					'name' => 'EPAY_GROUP',
-					'size' => 20,
+					'class' => 'epay_input_text_fixed_width_xs',
 					'required' => false
 				),
 				array(
 					'type' => 'text',
 					'label' => $this->l('Auth mail'),
 					'name' => 'EPAY_AUTHMAIL',
-					'size' => 20,
+					'class' => 'epay_input_text_fixed_width_xs',
 					'required' => false
 				),
 				array(
 					'type' => 'text',
 					'label' => $this->l('MD5 Key'),
 					'name' => 'EPAY_MD5KEY',
-					'size' => 20,
+					'class' => 'epay_input_text_fixed_width_xs',
 					'required' => false
 				),
 				array(
 					'type' => 'radio',
 					'label' => $this->l('Use Google Pageview Tracking'),
 					'name' => 'EPAY_GOOGLE_PAGEVIEW',
-					'size' => 20,
 					'class' => 't',
 					'is_bool' => true,
 					'required' => true,
@@ -396,7 +394,6 @@ class EPay extends PaymentModule
 					'type' => 'radio',
 					'label' => $this->l('Enable invoice data'),
 					'name' => 'EPAY_ENABLE_INVOICE',
-					'size' => 20,
 					'class' => 't',
 					'is_bool' => true,
 					'required' => true,
@@ -417,7 +414,6 @@ class EPay extends PaymentModule
 					'type' => 'radio',
 					'label' => $this->l('Enable payment request'),
 					'name' => 'EPAY_ENABLE_PAYMENTREQUEST',
-					'size' => 20,
 					'class' => 't',
 					'is_bool' => true,
 					'required' => true,
@@ -433,13 +429,42 @@ class EPay extends PaymentModule
 							'label' => $this->l('No')
 						)
 					),
+				),
+                array(
+					'type' => 'select',
+					'label' => $this->l('Display payment logo block'),
+					'name' => 'EPAY_ENABLE_PAYMENTLOGOBLOCK',
+                    'desc' => $this->l('Control if and where the ePay payment logo block, with the available payment options, is shown'),
+					'required' => false,
+					'options' => array(
+                        'query' => array(
+						    array(
+							    'id_option' => 'left_column',
+							    'name' => $this->l('Left Column')
+						    ),
+                            array(
+							    'id_option' => 'right_column',
+							    'name' => $this->l('Right Column')
+						    ),
+                            array(
+							    'id_option' => 'footer',
+							    'name' => $this->l('Footer')
+						    ),
+                            array(
+							    'id_option' => 'hide',
+							    'name' => $this->l('Hide')
+						    )
+					    ),
+                        'id' => 'id_option',
+                        'name' => 'name'
+                    ),
 				)
 	        ),
 	        'submit' => array(
 	            'title' => $this->l('Save'),
 	            'class' => 'button'
 	        )
-	    );
+        );
 
 	    $helper = new HelperForm();
 
@@ -486,8 +511,9 @@ class EPay extends PaymentModule
 		$helper->fields_value['EPAY_GOOGLE_PAGEVIEW'] = Configuration::get('EPAY_GOOGLE_PAGEVIEW');
 		$helper->fields_value['EPAY_ENABLE_INVOICE'] = Configuration::get('EPAY_ENABLE_INVOICE');
 		$helper->fields_value['EPAY_ENABLE_PAYMENTREQUEST'] = Configuration::get('EPAY_ENABLE_PAYMENTREQUEST');
+        $helper->fields_value['EPAY_ENABLE_PAYMENTLOGOBLOCK'] = Configuration::get('EPAY_ENABLE_PAYMENTLOGOBLOCK');
 
-	    return "<div class=\"warn\"><a href=\"http://www.prestashopguiden.dk/en/configuration#407\" target=\"_blank\">". $this->l('Documentation can be found here') ."<a></div>" . $helper->generateForm($fields_form);
+	    return $helper->generateForm($fields_form);
 	}
 
 	private function displayPaymentRequestForm($params)
@@ -856,6 +882,8 @@ class EPay extends PaymentModule
 			);
 		}
 
+
+
 		$invoice["lines"][] = array
 			(
 				"id" => $this->l('shipping'),
@@ -967,6 +995,15 @@ class EPay extends PaymentModule
 			</script>';
 		}
 
+        if(Configuration::get('EPAY_ENABLE_PAYMENTLOGOBLOCK') === 'footer')
+        {
+            $merchantnumber = Configuration::get('EPAY_MERCHANTNUMBER');
+
+            $this->context->smarty->assign(array('merchantnumber' => $merchantnumber));
+
+            $output .= $this->display(__FILE__ , 'blockepaymentlogo.tpl');
+        }
+
 		return $output;
 	}
 
@@ -1004,16 +1041,26 @@ class EPay extends PaymentModule
 
 	function hookLeftColumn($params)
 	{
-		$merchantnumber = Configuration::get('EPAY_MERCHANTNUMBER');
+        if(Configuration::get('EPAY_ENABLE_PAYMENTLOGOBLOCK') === 'left_column')
+        {
+            $merchantnumber = Configuration::get('EPAY_MERCHANTNUMBER');
 
-		$this->context->smarty->assign(array('merchantnumber' => $merchantnumber));
+            $this->context->smarty->assign(array('merchantnumber' => $merchantnumber));
 
-		return $this->display(__FILE__ , 'blockepaymentlogo.tpl');
+            return $this->display(__FILE__ , 'blockepaymentlogo.tpl');
+        }
 	}
 
 	function hookRightColumn($params)
 	{
-		return $this->hookLeftColumn($params);
+        if(Configuration::get('EPAY_ENABLE_PAYMENTLOGOBLOCK') === 'right_column')
+        {
+            $merchantnumber = Configuration::get('EPAY_MERCHANTNUMBER');
+
+            $this->context->smarty->assign(array('merchantnumber' => $merchantnumber));
+
+            return $this->display(__FILE__ , 'blockepaymentlogo.tpl');
+        }
 	}
 
 	function hookAdminOrder($params)
