@@ -28,3 +28,7 @@
     max-width: 200px !important;
     min-width: 150px !important;
 }
+
+.epay_payment_logo_block {
+    display: inline-block !important;
+}
