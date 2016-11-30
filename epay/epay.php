@@ -882,6 +882,17 @@ class EPay extends PaymentModule
 			);
 		}
 
+        if($summary["total_wrapping"] > 0)
+        {
+            $invoice["lines"][] = array
+            (
+                "id" => $this->l('wrapping'),
+                "description" => $this->l('Gift wrapping'),
+                "quantity" => 1,
+                "price" => intval((string)round($summary["total_wrapping_tax_exc"],2)*100),
+                "vat" => ($summary["total_wrapping_tax_exc"] > 0 ? ((float)round((string)((round($summary["total_wrapping"],2)-round($summary["total_wrapping_tax_exc"],2))/round((string)$summary["total_wrapping_tax_exc"],2))*100, 2)) : 0)
+            );
+        }
 
 
 		$invoice["lines"][] = array
@@ -904,6 +915,8 @@ class EPay extends PaymentModule
 				"vat" => (float)round((string)((round($discount["value_real"],2)-round($discount["value_tax_exc"],2))/round((string)$discount["value_tax_exc"],2))*100, 2)
 			);
 		}
+
+
         $json_invoice = json_encode($invoice, JSON_UNESCAPED_UNICODE);
 		return $json_invoice;
 	}
