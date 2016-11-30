@@ -2,7 +2,7 @@
 <module>
 	<name>epay</name>
 	<displayName><![CDATA[ePay]]></displayName>
-	<version><![CDATA[4.9.3]]></version>
+	<version><![CDATA[4.9.4]]></version>
 	<description><![CDATA[Accept Dankort, eDankort, VISA, Electron, MasterCard, Maestro, JCB, Diners, AMEX, Nordea and Danske Bank payments by ePay / Payment Solutions]]></description>
 	<author><![CDATA[ePay A/S (a Bambora Company)]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
