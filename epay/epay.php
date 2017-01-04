@@ -157,6 +157,24 @@ class EPay extends PaymentModule
 
 		return true;
 	}
+	
+	public function updateTransaction($id_cart)
+	{
+		if(!$id_cart)
+			return false;
+
+		$id_order = Order::getOrderByCartId($id_cart);
+		
+		if(!$id_order)
+			return false;
+		
+		$query = 'UPDATE '  . _DB_PREFIX_ . 'epay_transactions SET id_order="' . pSQL($id_order) . '" WHERE id_cart="'.pSQL($id_cart).'"';
+		
+		if(!Db::getInstance()->Execute($query))
+			return false;
+		
+		return true;
+	}
 
 	private function setCaptured($transaction_id, $amount)
 	{
