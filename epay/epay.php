@@ -14,11 +14,15 @@ class EPay extends PaymentModule
 	private $_html = '';
 	private $_postErrors = array();
 
+    const MODULE_NAME = 'epay';
+    const MODULE_VERSION = '4.9.4';
+    const MODULE_AUTHOR = 'ePay A/S (a Bambora Company)';
+
 	public function __construct()
 	{
-		$this->name = 'epay';
-		$this->version = '4.9.4';
-		$this->author = "ePay A/S (a Bambora Company)";
+		$this->name = $this::MODULE_NAME;
+		$this->version = $this::MODULE_VERSION;
+		$this->author = $this::MODULE_AUTHOR;
 		$this->tab = 'payments_gateways';
         $this->bootstrap = true;
 
@@ -39,18 +43,19 @@ class EPay extends PaymentModule
 
 	public function install()
 	{
-		if(!parent::install() OR
-            !Configuration::updateValue('EPAY_GOOGLE_PAGEVIEW', '0') OR
-            !Configuration::updateValue('EPAY_INTEGRATION', '1') OR
-            !Configuration::updateValue('EPAY_ENABLE_INVOICE', '0') OR
-            !$this->registerHook('payment') OR
-            !$this->registerHook('rightColumn') OR
-            !$this->registerHook('leftColumn') OR
-            !$this->registerHook('adminOrder') OR
-            !$this->registerHook('paymentReturn') OR
-            !$this->registerHook('footer') OR
-            !$this->registerHook('backOfficeHeader') OR
-			!$this->registerHook('displayHeader'))
+		if(!parent::install()
+            || !Configuration::updateValue('EPAY_GOOGLE_PAGEVIEW', '0')
+            || !Configuration::updateValue('EPAY_INTEGRATION', '1')
+            || !Configuration::updateValue('EPAY_ENABLE_INVOICE', '0')
+            || !$this->registerHook('payment')
+            || !$this->registerHook('rightColumn')
+            || !$this->registerHook('leftColumn')
+            || !$this->registerHook('adminOrder')
+            || !$this->registerHook('paymentReturn')
+            || !$this->registerHook('footer')
+            || !$this->registerHook('backOfficeHeader')
+			|| !$this->registerHook('displayHeader')
+            || !$this->registerHook('displayBackOfficeHeader'))
         {
             return false;
         }
@@ -136,24 +141,29 @@ class EPay extends PaymentModule
 		return (count($result) > 0);
 	}
 
-	public function recordTransaction($id_order, $id_cart = 0, $transaction_id = 0, $card_id = 0, $cardnopostfix = 0, $currency = 0, $amount = 0, $transfee = 0, $fraud = 0)
+	public function recordTransaction($id_order, $id_cart = 0, $transaction_id = 0, $epay_orderid = 0, $card_id = 0, $cardnopostfix = 0, $currency = 0, $amount = 0, $transfee = 0, $fraud = 0)
 	{
 		if($id_cart)
-			$id_order = Order::getOrderByCartId($id_cart);
+        {
+            $id_order = Order::getOrderByCartId($id_cart);
+        }
 
 		if(!$id_order)
+        {
 			$id_order = 0;
-
+        }
 		$captured = (Configuration::get('EPAY_INSTANTCAPTURE') ? 1 : 0);
 
 		/* Tilføj transaktionsid til ordren */
 		$query = 'INSERT INTO ' . _DB_PREFIX_ . 'epay_transactions
-				(id_order, id_cart, epay_transaction_id, card_type, cardnopostfix, currency, amount, transfee, fraud, captured, date_add)
+				(id_order, id_cart, epay_transaction_id, epay_orderid, card_type, cardnopostfix, currency, amount, transfee, fraud, captured, date_add)
 				VALUES
-				(' . $id_order . ', ' . $id_cart . ', ' . $transaction_id . ', ' . $card_id . ', ' . $cardnopostfix . ', ' . $currency . ', ' . $amount . ', ' . $transfee . ', ' . $fraud . ', ' . $captured . ', NOW() )';
+				(' . pSQL($id_order) . ', ' . pSQL($id_cart) . ', ' . pSQL($transaction_id) . ', ' . pSQL($epay_orderid) . ', ' . pSQL($card_id) . ', ' . pSQL($cardnopostfix) . ', ' . pSQL($currency) . ', ' . pSQL($amount) . ', ' . pSQL($transfee) . ', ' . pSQL($fraud) . ', ' . pSQL($captured) . ', NOW() )';
 
 		if(!Db::getInstance()->Execute($query))
-			return false;
+        {
+            return false;
+        }
 
 		return true;
 	}
@@ -938,7 +948,7 @@ class EPay extends PaymentModule
 
 		$parameters["epay_encoding"] = "UTF-8";
 		$parameters["epay_merchantnumber"] = Configuration::get('EPAY_MERCHANTNUMBER');
-		$parameters["epay_cms"] = 'prestashop' . $this->version;
+		$parameters["epay_cms"] = $this->getModuleHeaderInfo();
 		$parameters["epay_windowstate"] = Configuration::get('EPAY_WINDOWSTATE');
 
 		if(Configuration::get('EPAY_WINDOWID'))
@@ -991,8 +1001,18 @@ class EPay extends PaymentModule
 		}
 	}
 
-    public function hookBackOfficeHeader($params) {
-        $this->context->controller->addCSS($this->_path.'css/epayStyle.css', 'all');
+    public function hookBackOfficeHeader($params)
+    {
+        if ($this->context->controller != null)
+		{
+            $this->context->controller->addCSS($this->_path.'css/epayStyle.css', 'all');
+        }
+    }
+
+    public function hookDisplayBackOfficeHeader($params)
+    {
+        $this->hookBackOfficeHeader($params);
+
     }
 
 	function hookFooter($params)
@@ -1391,6 +1411,13 @@ class EPay extends PaymentModule
 
         return floatval($ret);
     }
-}
 
-?>
+    public function getModuleHeaderInfo()
+    {
+        $ePayVersion = $this::MODULE_VERSION;
+        $prestashopVersion = _PS_VERSION_;
+        $result = 'Prestashop/' . $prestashopVersion . ' Module/' . $ePayVersion;
+
+        return $result;
+    }
+}
