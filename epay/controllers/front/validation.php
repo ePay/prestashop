@@ -80,7 +80,7 @@ class EPayValidationModuleFrontController extends ModuleFrontController
 
             if($this->module->validateOrder((int)$id_cart, Configuration::get('PS_OS_PAYMENT'), $amount, $paymentMethod, null, $mailVars, $currencyid, false, $cart->secure_key))
             {
-                $order = Order::getOrderByCartId($id_cart);
+                $order = new Order($this->module->currentOrder);
 
                 $this->module->recordTransaction($order->id, $id_cart, $_GET["txnid"], $_GET["orderid"], $cardid, $cardnopostfix, $currency, Tools::getValue('amount'), $transfee, $fraud);
 
