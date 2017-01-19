@@ -134,36 +134,24 @@ class EPay extends PaymentModule
 		return true;
 	}
 
-	private static function mysqlColumnExists($table_name, $column_name, $link = false)
+    private static function mysqlColumnExists($table_name, $column_name)
 	{
-		$result = Db::getInstance()->executeS("SHOW COLUMNS FROM $table_name LIKE '$column_name'", $link);
+		$result = Db::getInstance()->Execute("SELECT {$column_name} FROM {$table_name} ORDER BY {$column_name} LIMIT 1");
 
-		return (count($result) > 0);
+		return $result;
 	}
 
-	public function recordTransaction($id_order, $id_cart = 0, $transaction_id = 0, $epay_orderid = 0, $card_id = 0, $cardnopostfix = 0, $currency = 0, $amount = 0, $transfee = 0, $fraud = 0)
+	public function recordTransaction($id_order, $id_cart, $transaction_id, $epay_orderid, $card_id, $cardnopostfix, $currency, $amount, $transfee, $fraud)
 	{
-		if($id_cart)
-        {
-            $id_order = Order::getOrderByCartId($id_cart);
-        }
-
-		if(!$id_order)
-        {
-			$id_order = 0;
-        }
 		$captured = (Configuration::get('EPAY_INSTANTCAPTURE') ? 1 : 0);
 
-		/* Tilføj transaktionsid til ordren */
-		$query = 'INSERT INTO ' . _DB_PREFIX_ . 'epay_transactions
+        $query = 'INSERT INTO ' . _DB_PREFIX_ . 'epay_transactions
 				(id_order, id_cart, epay_transaction_id, epay_orderid, card_type, cardnopostfix, currency, amount, transfee, fraud, captured, date_add)
 				VALUES
 				(' . pSQL($id_order) . ', ' . pSQL($id_cart) . ', ' . pSQL($transaction_id) . ', ' . pSQL($epay_orderid) . ', ' . pSQL($card_id) . ', ' . pSQL($cardnopostfix) . ', ' . pSQL($currency) . ', ' . pSQL($amount) . ', ' . pSQL($transfee) . ', ' . pSQL($fraud) . ', ' . pSQL($captured) . ', NOW() )';
 
 		if(!Db::getInstance()->Execute($query))
-        {
-            return false;
-        }
+			return false;
 
 		return true;
 	}
