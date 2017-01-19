@@ -15,7 +15,7 @@ class EPay extends PaymentModule
 	private $_postErrors = array();
 
     const MODULE_NAME = 'epay';
-    const MODULE_VERSION = '4.9.6';
+    const MODULE_VERSION = '4.9.7';
     const MODULE_AUTHOR = 'ePay A/S (a Bambora Company)';
 
 	public function __construct()
