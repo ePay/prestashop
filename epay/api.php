@@ -76,6 +76,7 @@ class EPayApi extends PaymentModule
         $epay_params['language'] = 2;
         $epay_params['epayresponsecode'] = $epay_response_code;
         $epay_params['epayresponse'] = "-1";
+        $epay_params['pwd'] = strval(Configuration::get('EPAY_REMOTE_API_PASSWORD'));
 
         $result = $this->_soapcall()->getEpayError($epay_params);
 
