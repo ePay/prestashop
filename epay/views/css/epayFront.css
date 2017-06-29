@@ -1,0 +1,53 @@
+.epay_paymentwindow_container p.payment_module a.epay_payment_content {
+    background: url("../img/epay.png");
+    background-position: 15px center;
+    background-repeat: no-repeat;
+    background-color: #fbfbfb;
+    padding-left: 115px;
+}
+
+.epay_paymentwindow_container p.payment_module a.epay_payment_content:hover {
+    background-color: #f6f6f6;
+}
+
+.epay_paymentwindow_container p.payment_module a.epay_payment_content::after {
+    display: block;
+    content: "\f054";
+    position: absolute;
+    right: 15px;
+    margin-top: -11px;
+    top: 50%;
+    font-family: "FontAwesome";
+    font-size: 25px;
+    height: 22px;
+    width: 14px;
+    color: #777;
+}
+
+.epay_input_text_fixed_width_xs {
+    max-width: 200px !important;
+    min-width: 150px !important;
+}
+
+.epay_payment_logo_block {
+    display: inline-block !important;
+}
+
+.epay-compleated-container #epay_completed_payment {
+    font-size: 18px;
+    color: #000;
+    display: inline-block;
+}
+
+.epay-compleated-container .icon-check {
+    color: green;
+    font-size: 50px;
+    display: inline-block;
+}
+.epay_section_container {
+    margin-bottom: 10px;
+}
+
+.epay_section_text {
+    margin-bottom: 5px;
+}

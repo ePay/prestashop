@@ -15,7 +15,7 @@
 
 include('baseaction.php');
 
-class EPayPaymentRequestModuleFrontController extends BaseAction
+class EPayCallbackModuleFrontController extends BaseAction
 {
     /**
      * @see FrontController::postProcess()
@@ -25,8 +25,8 @@ class EPayPaymentRequestModuleFrontController extends BaseAction
         $message = "";
         $responseCode = 400;
         $cart = null;
-        if ($this->validateAction(true, $message, $cart)) {
-            $message = $this->processAction($cart, true, $responseCode);
+        if ($this->validateAction(false, $message, $cart)) {
+            $message = $this->processAction($cart, false, $responseCode);
         } else {
             $message = empty($message) ? "Unknown error" : $message;
             $this->createLogMessage($message, 3, $cart);
