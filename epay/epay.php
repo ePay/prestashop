@@ -1555,7 +1555,7 @@ class EPay extends PaymentModule
                     $captureResponse = $api->capture($merchantNumber, $transactionId, $amount);
                     if ($captureResponse->captureResult == "true") {
                         $this->setCaptured($transactionId, $amount);
-                        $captureText = $this->l('The Payment was') . ' ' . $this -> l('captured') .' '.$this->l('successfully');
+                        $captureText = $this->l('The Payment was captured successfully');
                         $epayUiMessage = $this->createEpayUiMessage("success", $captureText);
                     } else {
                         $errorMessage = $this->getApiErrorMessage($api, $merchantNumber, $captureResponse);
@@ -1565,7 +1565,7 @@ class EPay extends PaymentModule
                     $creditResponse = $api->credit($merchantNumber, $transactionId, $amount);
                     if ($creditResponse->creditResult == "true") {
                         $this->setCredited($transactionId, $amount);
-                        $creditText = $this->l('The Payment was') . ' ' . $this -> l('credited') .' '.$this->l('successfully');
+                        $creditText = $this->l('The Payment was credited successfully');
                         $epayUiMessage = $this->createEpayUiMessage("success", $creditText);
                     } else {
                         $errorMessage = $this->getApiErrorMessage($api, $merchantNumber, $creditResponse);
@@ -1575,7 +1575,7 @@ class EPay extends PaymentModule
                     $deleteResponse = $api->delete($merchantNumber, $transactionId);
                     if ($deleteResponse->deleteResult == "true") {
                         $this->deleteTransaction($transactionId);
-                        $deleteText = $this->l('The Payment was') . ' ' . $this -> l('deleted') .' '.$this->l('successfully');
+                        $deleteText = $this->l('The Payment was deleted successfully');
                         $epayUiMessage = $this->createEpayUiMessage("success", $deleteText);
                     } else {
                         $errorMessage = $this->getApiErrorMessage($api, $merchantNumber, $deleteResponse);
@@ -1584,7 +1584,7 @@ class EPay extends PaymentModule
                 } elseif (Tools::isSubmit('epay_move_as_captured')) {
                     $moveascapturedResponse = $api->moveascaptured($merchantNumber, $transactionId);
                     if ($moveascapturedResponse->move_as_capturedResult == "true") {
-                        $moveascapturedText = $this->l('The Payment was') . ' ' . $this -> l('moved') .' '.$this->l('successfully');
+                        $moveascapturedText = $this->l('The Payment was moved successfully');
                         $epayUiMessage = $this->createEpayUiMessage("success", $moveascapturedText);
                     } else {
                         $errorMessage = $this->getApiErrorMessage($api, $merchantNumber, $moveascapturedResponse);
