@@ -1029,7 +1029,7 @@ class EPay extends PaymentModule
         $parameters["epay_ownreceipt"]  = Configuration::get('EPAY_OWNRECEIPT');
         $parameters["epay_currency"]  = $this->context->currency->iso_code;
         $parameters["epay_language"]  = EpayTools::getEPayLanguage(Language::getIsoById($this->context->language->id));
-        $parameters["epay_amount"]  = $this->context->cart->getOrderTotal()*100;
+        $parameters["epay_amount"]  = round($this->context->cart->getOrderTotal()*100);
         $parameters["epay_orderid"]  = $this->context->cart->id;
         $parameters["epay_accepturl"] = $this->context->link->getModuleLink('epay', 'accept', array(), true);
         $parameters["epay_cancelurl"] = $this->context->link->getPageLink('order', true, null, "step=3");
