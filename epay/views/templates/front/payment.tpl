@@ -38,4 +38,4 @@
   </a>
 </p>
 
-<script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/paymentlogos/PaymentLogos.aspx?merchantnumber={$epayMerchant|escape:'htmlall':'UTF-8'}&direction=2&padding=2&rows=2&logo=0&showdivs=0&cardwidth=45&divid=epay_card_logos"></script>
+<script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/paymentlogos/PaymentLogos.aspx?merchantnumber={$epayMerchant|escape:'htmlall':'UTF-8'}&direction=2&padding=2&rows=2&logo=0&showdivs=0&divid=epay_card_logos"></script>

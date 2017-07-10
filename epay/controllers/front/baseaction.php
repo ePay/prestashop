@@ -13,8 +13,6 @@
  *
  */
 
-//include('../../lib/epayTools.php');
-
 abstract class BaseAction extends ModuleFrontController
 {
     /**
@@ -93,25 +91,27 @@ abstract class BaseAction extends ModuleFrontController
                 $transaction_Id = Tools::getValue("txnid");
                 $epayOrderId = Tools::getValue('orderid');
                 $cardId = Tools::getValue('paymenttype');
-                $cardnopostfix = Tools::getIsset('cardno')? Tools::substr(Tools::getValue('cardno'), - 4) : 0;
-                $currency = Tools::getValue('currency', null);
+                $cardnopostfix = Tools::getIsset('cardno') ? Tools::substr(Tools::getValue('cardno'), - 4) : 0;
+                $epayCurrency = Tools::getValue('currency', null);
+                $currency = new Currency($cart->id_currency);
                 $amountInMinorunits = Tools::getValue('amount');
-                $amount = number_format($amountInMinorunits / 100, 2, ".", "");
-                $transfee = Tools::getValue('txnfee', 0);
+                $minorunits = EpayTools::getCurrencyMinorunits($currency->iso_code);
+                $amount = EpayTools::convertPriceFromMinorUnits($amountInMinorunits, $minorunits);
+                $transfeeInMinorunits = Tools::getValue('txnfee', 0);
                 $fraud = Tools::getValue('fraud', 0);
 
-                if ($this->module->recordTransaction(
+                if ($this->module->addDbTransaction(
                     0,
                     $id_cart,
                     $transaction_Id,
                     $epayOrderId,
                     $cardId,
                     $cardnopostfix,
-                    $currency,
+                    $epayCurrency,
                     $amountInMinorunits,
-                    $transfee,
+                    $transfeeInMinorunits,
                     $fraud)) {
-                    
+
                     $cardName = EpayTools::getCardNameById($cardId);
                     $paymentMethod = "{$this->module->displayName} ({$cardName})";
                     $truncatedCard = "XXXX XXXX XXXX {$cardnopostfix}";
@@ -119,7 +119,7 @@ abstract class BaseAction extends ModuleFrontController
                     $mailVars = array('TransactionId'=>$transaction_Id,
                                       'PaymentType'=>$paymentMethod,
                                       'CardNumber'=>$truncatedCard);
-                    
+
                     if (!$isPaymentRequest) {
                         try {
                             $this->module->validateOrder(
@@ -135,13 +135,13 @@ abstract class BaseAction extends ModuleFrontController
                         } catch (Exception $ex) {
                             $message = "Prestashop threw an exception on validateOrder: " . $ex->getMessage();
                             $responseCode = 500;
-                            $this->module->deleteRecordedTransaction($transaction_Id);
+                            $this->module->deleteDbRecordedTransaction($transaction_Id);
                             return $message;
                         }
                     }
 
                     $id_order = Order::getOrderByCartId($id_cart);
-                    $this->module->addOrderIdToRecordedTransaction($transaction_Id, $id_order);
+                    $this->module->addDbOrderIdToRecordedTransaction($transaction_Id, $id_order);
                     $order = new Order($id_order);
 
                     if ($isPaymentRequest) {
@@ -165,25 +165,26 @@ abstract class BaseAction extends ModuleFrontController
                     $payment[0]->card_brand = EpayTools::getCardnameById($cardId);
                     $payment[0]->payment_method = $paymentMethod;
 
-                    if ($transfee > 0) {
-                        $payment[0]->amount = $payment[0]->amount + number_format($transfee / 100, 2, ".", "");
+                    if ($transfeeInMinorunits > 0) {
+                        $transFee = EpayTools::convertPriceFromMinorUnits($transfeeInMinorunits, $minorunits);
+                        $payment[0]->amount = $payment[0]->amount + $transFee;
 
                         if (Configuration::get('EPAY_ADDFEETOSHIPPING')) {
-                            $order->total_paid = $order->total_paid + number_format($transfee / 100, 2, ".", "");
-                            $order->total_paid_tax_incl = $order->total_paid_tax_incl + number_format($transfee / 100, 2, ".", "");
-                            $order->total_paid_tax_excl = $order->total_paid_tax_excl + number_format($transfee / 100, 2, ".", "");
-                            $order->total_paid_real = $order->total_paid_real + number_format($transfee / 100, 2, ".", "");
-                            $order->total_shipping = $order->total_shipping + number_format($transfee / 100, 2, ".", "");
-                            $order->total_shipping_tax_incl = $order->total_shipping_tax_incl + number_format($transfee / 100, 2, ".", "");
-                            $order->total_shipping_tax_excl = $order->total_shipping_tax_excl + number_format($transfee / 100, 2, ".", "");
+                            $order->total_paid = $order->total_paid + $transFee;
+                            $order->total_paid_tax_incl = $order->total_paid_tax_incl + $transFee;
+                            $order->total_paid_tax_excl = $order->total_paid_tax_excl + $transFee;
+                            $order->total_paid_real = $order->total_paid_real + $transFee;
+                            $order->total_shipping = $order->total_shipping + $transFee;
+                            $order->total_shipping_tax_incl = $order->total_shipping_tax_incl + $transFee;
+                            $order->total_shipping_tax_excl = $order->total_shipping_tax_excl + $transFee;
                             $order->save();
 
                             $invoice = new OrderInvoice($order->invoice_number);
                             if (isset($invoice->id)) {
-                                $invoice->total_paid_tax_incl = $invoice->total_paid_tax_incl + number_format($transfee / 100, 2, ".", "");
-                                $invoice->total_paid_tax_excl = $invoice->total_paid_tax_excl + number_format($transfee / 100, 2, ".", "");
-                                $invoice->total_shipping_tax_incl = $invoice->total_shipping_tax_incl + number_format($transfee / 100, 2, ".", "");
-                                $invoice->total_shipping_tax_excl = $invoice->total_shipping_tax_excl + number_format($transfee / 100, 2, ".", "");
+                                $invoice->total_paid_tax_incl = $invoice->total_paid_tax_incl + $transFee;
+                                $invoice->total_paid_tax_excl = $invoice->total_paid_tax_excl + $transFee;
+                                $invoice->total_shipping_tax_incl = $invoice->total_shipping_tax_incl + $transFee;
+                                $invoice->total_shipping_tax_excl = $invoice->total_shipping_tax_excl + $transFee;
                                 $invoice->save();
                             }
                         }
