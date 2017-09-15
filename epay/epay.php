@@ -853,7 +853,7 @@ class EPay extends PaymentModule
 
         if(!$transaction) {
             $transaction = $this->getDbTransactionsByCartId($order->id_cart);
-            if(!$transaction) {
+            if(!$transaction || !$transaction["epay_transaction_id"]) {
                 return "";
             }
         }
