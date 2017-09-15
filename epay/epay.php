@@ -1281,6 +1281,10 @@ class EPay extends PaymentModule
         $html = '';
 
         $transaction = $this->getDbTransactionsByOrderId($order->id);
+	    
+	if(!$transaction) {
+            $transaction = $this->getDbTransactionsByCartId($order->id_cart);
+        }
 
         if (!$transaction) {
             $html .= 'No payment transaction was found';
