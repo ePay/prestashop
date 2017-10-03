@@ -1926,7 +1926,7 @@ class EPay extends PaymentModule
             $params["paymentrequest"]["closeafterxpayments"] = 1;
 
             $params["paymentrequest"]["parameters"] = array();
-            $amountSanitized = (float)str_replace(',', '.', $amount);
+            $amountSanitized = (float)filter_var($amount,FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
             $params["paymentrequest"]["parameters"]["amount"] = EpayTools::convertPriceToMinorUnits($amountSanitized, $minorunits, Configuration::get('EPAY_ROUNDING_MODE'));
             $params["paymentrequest"]["parameters"]["callbackurl"] = $this->context->link->getModuleLink('epay', 'paymentrequest', array('id_cart' => $order->id_cart), true);
             $params["paymentrequest"]["parameters"]["currency"] = $currency;
