@@ -23,7 +23,7 @@ if (!defined('_PS_VERSION_')) {
 
 class EPay extends PaymentModule
 {
-    const MODULE_VERSION = '5.0.1';
+    const MODULE_VERSION = '5.0.2';
     const V15 = '15';
     const V16 = '16';
     const V17 = '17';
@@ -31,7 +31,7 @@ class EPay extends PaymentModule
     public function __construct()
     {
         $this->name = 'epay';
-        $this->version = '5.0.1';
+        $this->version = '5.0.2';
         $this->author = 'Bambora Online';
         $this->tab = 'payments_gateways';
 
@@ -1281,7 +1281,7 @@ class EPay extends PaymentModule
         $html = '';
 
         $transaction = $this->getDbTransactionsByOrderId($order->id);
-	    
+
 	if(!$transaction) {
             $transaction = $this->getDbTransactionsByCartId($order->id_cart);
         }
@@ -1843,13 +1843,14 @@ class EPay extends PaymentModule
                     'label' => $this->l('Amount'),
                     'name' => 'epay_paymentrequest_amount',
                     'size' => 20,
-                    'suffix' => Currency::getCurrency($order->id_currency)["iso_code"],
+                    'suffix' => $this->context->currency->iso_code,
                     'required' => true,
                     'readonly' => false
                 ),
             ),
             'submit' => array(
                 'title' => $this->l('Send payment request'),
+                'id' => 'epay_paymentrequest_submit',
                 'class' => 'button'
             )
         );
@@ -1880,9 +1881,11 @@ class EPay extends PaymentModule
         $helper->fields_value['epay_paymentrequest_replyto_name'] = $employee->firstname.' '.$employee->lastname;
         $helper->fields_value['epay_paymentrequest_replyto_email'] = $employee->email;
 
-        $helper->fields_value['epay_paymentrequest_amount'] = number_format($order->total_paid, 2,".","");
+        $helper->fields_value['epay_paymentrequest_amount'] = number_format($order->total_paid, 2, ".", "");
 
-        return $helper->generateForm($fields_form);
+        $html = '<div id="epay_paymentrequest_format_error" class="alert alert-danger"><strong>'.$this->l('Warning').' </strong>'.$this->l('The amount you entered was in the wrong format. Please try again!').'</div>';
+        $html .= $helper->generateForm($fields_form);
+        return $html;
     }
 
     /**

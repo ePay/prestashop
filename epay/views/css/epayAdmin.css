@@ -140,7 +140,8 @@
     padding: 5px;
     text-align: left;
 }
-#epay_format_error {
+#epay_format_error,
+#epay_paymentrequest_format_error {
     display: none;
     margin-top: 10px;
     margin-bottom: 10px;

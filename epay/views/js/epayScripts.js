@@ -33,12 +33,57 @@ $(document).ready(function () {
     }
 
     (function () {
-        var inputField = $("#epay_amount");
+        var captureCreditinputField = $("#epay_amount");
+        var paymentRequestInputField = $("#epay_paymentrequest_amount");
         var epayCapture = $("#epay_capture");
         var epayCredit = $("#epay_credit");
+        var epayPaymentRequestSubmit = $("#epay_paymentrequest_submit");
         var epayFormatError = $("#epay_format_error");
+        var epayPaymentRequestFormatError = $("#epay_paymentrequest_format_error");
 
-        inputField.keydown(function (e) {
+        captureCreditinputField.keydown(function (e) {
+            return keydownFilter(e);
+        });
+
+        paymentRequestInputField.keydown(function (e) {
+            return keydownFilter(e);
+        });
+
+        epayPaymentRequestSubmit.click(function (e) {
+            var isValid = validateInputField(paymentRequestInputField, epayPaymentRequestFormatError);
+            if (! isValid) {
+                e.preventDefault();
+            }
+            return isValid;
+        }); 
+
+        captureCreditinputField.focus(function () {
+            if (epayFormatError.css("display") !== "none") {
+                epayFormatError.toggle();
+            }
+        });
+
+        epayFormatError.click(function() {
+            if (epayFormatError.css("display") !== "none") {
+                epayFormatError.toggle();
+            }
+        });
+
+        epayPaymentRequestFormatError.click(function() {
+            if (epayPaymentRequestFormatError.css("display") !== "none") {
+                epayPaymentRequestFormatError.toggle();
+            }
+        });
+
+        epayCapture.click(function () {
+            return validateInputField(captureCreditinputField, epayFormatError);
+        });
+
+        epayCredit.click(function () {
+            return validateInputField(captureCreditinputField, epayFormatError);
+        });
+
+        function keydownFilter(e) {
             var digit = String.fromCharCode(e.which || e.keyCode);
             if (e.which !== 8 &&
                 e.which !== 46 &&
@@ -56,26 +101,12 @@ $(document).ready(function () {
                 }
             }
             return true;
-        });
+        }
 
-        inputField.focus(function () {
-            if (epayFormatError.css("display") !== "none") {
-                epayFormatError.toggle();
-            }
-        });
-
-        epayCapture.click(function () {
-            return validateInputField();
-        });
-
-        epayCredit.click(function () {
-            return validateInputField();
-        });
-
-        function validateInputField() {
+        function validateInputField(inputField, errorElement) {
             var reg = new RegExp(/^(?:[\d]+([,.]?[\d]{0,3}))$/);
             if (inputField.length > 0 && !reg.test(inputField.val())) {
-                epayFormatError.toggle();
+                errorElement.toggle();
                 return false;
             }
             return true;
