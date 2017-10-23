@@ -1880,7 +1880,7 @@ class EPay extends PaymentModule
         $helper->fields_value['epay_paymentrequest_replyto_name'] = $employee->firstname.' '.$employee->lastname;
         $helper->fields_value['epay_paymentrequest_replyto_email'] = $employee->email;
 
-        $helper->fields_value['epay_paymentrequest_amount'] = number_format($order->total_paid, 2);
+        $helper->fields_value['epay_paymentrequest_amount'] = number_format($order->total_paid, 2,".","");
 
         return $helper->generateForm($fields_form);
     }
