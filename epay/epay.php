@@ -160,7 +160,8 @@ class EPay extends PaymentModule
             if ($result) {
                 return true;
             }
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             //Nothing to do here
         }
         return false;
@@ -189,8 +190,9 @@ class EPay extends PaymentModule
                 Configuration::updateValue('EPAY_ENABLE_PAYMENTREQUEST', Tools::getValue("EPAY_ENABLE_PAYMENTREQUEST"));
                 Configuration::updateValue('EPAY_ENABLE_PAYMENTLOGOBLOCK', Tools::getValue("EPAY_ENABLE_PAYMENTLOGOBLOCK"));
                 Configuration::updateValue('EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT', Tools::getValue("EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT"));
+                Configuration::updateValue('EPAY_DISABLE_MOBILE_PAYMENTWINDOW', Tools::getValue("EPAY_DISABLE_MOBILE_PAYMENTWINDOW"));
                 Configuration::updateValue('EPAY_CAPTUREONSTATUSCHANGED', Tools::getValue("EPAY_CAPTUREONSTATUSCHANGED"));
-                Configuration::updateValue('EPAY_CAPTUREONSTATUS', Tools::getValue("EPAY_CAPTUREONSTATUS"));
+                Configuration::updateValue('EPAY_CAPTURE_ON_STATUS', serialize(Tools::getValue("EPAY_CAPTURE_ON_STATUS")));
                 Configuration::updateValue('EPAY_AUTOCAPTURE_FAILUREEMAIL', Tools::getValue("EPAY_AUTOCAPTURE_FAILUREEMAIL"));
                 Configuration::updateValue('EPAY_TITLE', Tools::getValue("EPAY_TITLE"));
                 Configuration::updateValue('EPAY_ROUNDING_MODE', Tools::getValue("EPAY_ROUNDING_MODE"));
@@ -227,7 +229,7 @@ class EPay extends PaymentModule
         $statuses = OrderState::getOrderStates($this->context->language->id);
         $selectCaptureStatus = array();
         foreach ($statuses as $status) {
-            $selectCaptureStatus[] = array('type' => $status["id_order_state"], 'name' => $status["name"]);
+            $selectCaptureStatus[] = array('key' => $status["id_order_state"], 'name' => $status["name"]);
         }
 
         $rounding_modes = array(
@@ -355,6 +357,14 @@ class EPay extends PaymentModule
                 ),
                 array(
                   'type' => 'switch',
+                    'label' => 'Disable Mobile Payment Window',
+                    'name' => 'EPAY_DISABLE_MOBILE_PAYMENTWINDOW',
+                    'is_bool' => true,
+                    'required' => false,
+                    'values' => $switch_options
+                ),
+                array(
+                  'type' => 'switch',
                     'label' => 'Capture payment on status changed',
                     'name' => 'EPAY_CAPTUREONSTATUSCHANGED',
                     'is_bool' => true,
@@ -364,11 +374,13 @@ class EPay extends PaymentModule
                 array(
                     'type' => 'select',
                     'label' => 'Capture on status changed to',
-                    'name' => 'EPAY_CAPTUREONSTATUS',
+                    'name' => 'EPAY_CAPTURE_ON_STATUS[]',
+                    'class' => 'chosen',
+                    'multiple' => true,
                     'required' => false,
                     'options' => array(
                        'query' => $selectCaptureStatus,
-                       'id' => 'type',
+                       'id' => 'key',
                        'name' => 'name'
                     )
                 ),
@@ -453,8 +465,9 @@ class EPay extends PaymentModule
         $helper->fields_value['EPAY_ENABLE_PAYMENTREQUEST'] = Configuration::get('EPAY_ENABLE_PAYMENTREQUEST');
         $helper->fields_value['EPAY_ENABLE_PAYMENTLOGOBLOCK'] = Configuration::get('EPAY_ENABLE_PAYMENTLOGOBLOCK');
         $helper->fields_value['EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT'] = Configuration::get('EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT');
+        $helper->fields_value['EPAY_DISABLE_MOBILE_PAYMENTWINDOW'] = Configuration::get('EPAY_DISABLE_MOBILE_PAYMENTWINDOW');
         $helper->fields_value['EPAY_CAPTUREONSTATUSCHANGED'] = Configuration::get('EPAY_CAPTUREONSTATUSCHANGED');
-        $helper->fields_value['EPAY_CAPTUREONSTATUS'] = Configuration::get('EPAY_CAPTUREONSTATUS');
+        $helper->fields_value['EPAY_CAPTURE_ON_STATUS[]'] = unserialize(Configuration::get('EPAY_CAPTURE_ON_STATUS'));
         $helper->fields_value['EPAY_AUTOCAPTURE_FAILUREEMAIL'] = Configuration::get('EPAY_AUTOCAPTURE_FAILUREEMAIL');
         $helper->fields_value['EPAY_TITLE'] = Configuration::get('EPAY_TITLE');
         $helper->fields_value['EPAY_ROUNDING_MODE'] = Configuration::get('EPAY_ROUNDING_MODE');
@@ -558,6 +571,11 @@ class EPay extends PaymentModule
                         <div>
                             <h4>Only show payment logos at checkout</h4>
                             <p>Disable this to only display payment logos at checkout</p>
+                        </div>
+                        <br />
+                        <div>
+                            <h4>Disable the Mobile Payment Window</h4>
+                            <p>Disabling the Mobile Payment Window allows the customer to use Klarna when using a mobile device</p>
                         </div>
                         <br />
                         <div>
@@ -748,7 +766,8 @@ class EPay extends PaymentModule
             if (!Db::getInstance()->Execute($query)) {
                 return false;
             }
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             return false;
         }
 
@@ -886,7 +905,7 @@ class EPay extends PaymentModule
     {
         $html = '';
         $order = new Order($params['id_order']);
-        if (isset($order) && $order->module == 'epay') {
+        if (isset($order) && $order->module == $this->name) {
             $html = '<div id="epay_admin_order">';
             $html .= '<script type="text/javascript" src="'.$this->_path.'views/js/epayScripts.js" charset="UTF-8"></script>';
 
@@ -1024,16 +1043,16 @@ class EPay extends PaymentModule
             try {
                 $newOrderStatus = $params['newOrderStatus'];
                 $order = new Order($params['id_order']);
-
-                if ($newOrderStatus->id == Configuration::get('EPAY_CAPTUREONSTATUS') && $order->module == 'epay') {
+                $allowedOrderStatuses = unserialize(Configuration::get('EPAY_CAPTURE_ON_STATUS'));
+                if (is_array($allowedOrderStatuses) && $order->module == $this->name && in_array($newOrderStatus->id, $allowedOrderStatuses)) {
                     $transactions = Db::getInstance()->executeS('
-                SELECT o.`id_order`, o.`module`, e.`id_cart`, e.`epay_transaction_id`,
+                        SELECT o.`id_order`, o.`module`, e.`id_cart`, e.`epay_transaction_id`,
 		                e.`card_type`, e.`cardnopostfix`, e.`currency`, e.`amount`, e.`transfee`,
 		                e.`fraud`, e.`captured`, e.`credited`, e.`deleted`,
 		                e.`date_add`
-                FROM ' . _DB_PREFIX_ . 'epay_transactions e
-                LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON e.`id_cart` = o.`id_cart`
-                WHERE o.`id_order` = ' . (int)($params["id_order"]));
+                        FROM ' . _DB_PREFIX_ . 'epay_transactions e
+                        LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON e.`id_cart` = o.`id_cart`
+                        WHERE o.`id_order` = ' . (int)($params["id_order"]));
 
                     if (!isset($transactions) || count($transactions) === 0) {
                         return "";
@@ -1055,7 +1074,8 @@ class EPay extends PaymentModule
                     $message = "Autocapture was successfull";
                     $this->createStatusChangesMessage($params["id_order"], $message);
                 }
-            } catch (Exception $e) {
+            }
+            catch (Exception $e) {
                 $message = "Autocapture failed with message: " . $e->getMessage();
                 $this->createStatusChangesMessage($params["id_order"], $message);
                 $id_lang = (int)$this->context->language->id;
@@ -1099,16 +1119,16 @@ class EPay extends PaymentModule
         $parameters["epay_ownreceipt"]  = Configuration::get('EPAY_OWNRECEIPT');
         $parameters["epay_currency"]  = $currency;
         $parameters["epay_language"]  = EpayTools::getEPayLanguage(Language::getIsoById($this->context->language->id));
-
+        $parameters["mobile"] = Configuration::get('EPAY_DISABLE_MOBILE_PAYMENTWINDOW') === "1" ? 0 : 1;
         $minorunits = EpayTools::getCurrencyMinorunits($currency);
         $amount = $this->context->cart->getOrderTotal();
         $amountInMinorunits = EpayTools::convertPriceToMinorUnits($amount, $minorunits, Configuration::get('EPAY_ROUNDING_MODE'));
 
         $parameters["epay_amount"]  = $amountInMinorunits;
         $parameters["epay_orderid"]  = $this->context->cart->id;
-        $parameters["epay_accepturl"] = $this->context->link->getModuleLink('epay', 'accept', array(), true);
+        $parameters["epay_accepturl"] = $this->context->link->getModuleLink($this->name, 'accept', array(), true);
         $parameters["epay_cancelurl"] = $this->context->link->getPageLink('order', true, null, "step=3");
-        $parameters["epay_callbackurl"] = $this->context->link->getModuleLink('epay', 'callback', array(), true);
+        $parameters["epay_callbackurl"] = $this->context->link->getModuleLink($this->name, 'callback', array(), true);
         $parameters["instantcallback"] = 0;
 
         if (Configuration::get('EPAY_ENABLE_INVOICE')) {
@@ -1282,7 +1302,7 @@ class EPay extends PaymentModule
 
         $transaction = $this->getDbTransactionsByOrderId($order->id);
 
-	if(!$transaction) {
+        if(!$transaction) {
             $transaction = $this->getDbTransactionsByCartId($order->id_cart);
         }
 
@@ -1435,7 +1455,8 @@ class EPay extends PaymentModule
             }
             $html .= '</tbody></table>';
             $html .= '</div>';
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             $this->displayError($e->getMessage());
         }
 
@@ -1677,7 +1698,8 @@ class EPay extends PaymentModule
                         $epayUiMessage = $this->createEpayUiMessage("issue", $errorTitle, $errorMessage);
                     }
                 }
-            } catch (Exception $e) {
+            }
+            catch (Exception $e) {
                 $this->displayError($e->getMessage());
             }
         }
@@ -1931,7 +1953,7 @@ class EPay extends PaymentModule
             $params["paymentrequest"]["parameters"] = array();
             $amountSanitized = (float)str_replace(',', '.', $amount);
             $params["paymentrequest"]["parameters"]["amount"] = EpayTools::convertPriceToMinorUnits($amountSanitized, $minorunits, Configuration::get('EPAY_ROUNDING_MODE'));
-            $params["paymentrequest"]["parameters"]["callbackurl"] = $this->context->link->getModuleLink('epay', 'paymentrequest', array('id_cart' => $order->id_cart), true);
+            $params["paymentrequest"]["parameters"]["callbackurl"] = $this->context->link->getModuleLink($this->name, 'paymentrequest', array('id_cart' => $order->id_cart), true);
             $params["paymentrequest"]["parameters"]["currency"] = $currency;
             $params["paymentrequest"]["parameters"]["group"] = Configuration::get('EPAY_GROUP');
             $params["paymentrequest"]["parameters"]["instantcapture"] = Configuration::get('EPAY_INSTANTCAPTURE') == "1" ? "automatic" : "manual";
@@ -1984,7 +2006,8 @@ class EPay extends PaymentModule
             } else {
                 throw new Exception($createPaymentRequest->createpaymentrequestResult->message);
             }
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             $html = $this->displayError($e->getMessage());
         }
 
