@@ -56,24 +56,50 @@ class EpayTools
     public static function getEPayLanguage($strlan)
     {
         switch ($strlan) {
-            case "dk":
-                return 1;
+            case "dan":
             case "da":
                 return 1;
+            case "eng":
             case "en":
                 return 2;
-            case "se":
-                return 3;
+            case "swe":
             case "sv":
                 return 3;
+            case "nob":
+            case "nb":
+            case "nno":
+            case "nn":
+            case "nor":
             case "no":
                 return 4;
+            case "kal":
+            case "kl":
             case "gl":
                 return 5;
+            case "isl":
             case "is":
                 return 6;
+            case "deu":
             case "de":
                 return 7;
+            case "fin":
+            case "fi":
+                return 8;
+            case "spa":
+            case "es":
+                return 9;
+            case "fra":
+            case "fr":
+                return 10;
+            case "pol":
+            case "pl":
+                return 11;
+            case "ita":
+            case "it":
+                return 12;
+            case "nld":
+            case "nl":
+                return 13;
         }
 
         return 0;
