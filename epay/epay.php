@@ -1176,7 +1176,7 @@ class EPay extends PaymentModule
         foreach ($summary["products"] as $product) {
             $invoice["lines"][] = array(
                 "id" => ($product["reference"] == "" ? $product["id_product"] : $product["reference"]),
-                "description" => $this->removeSpecialCharacters($product["name"] . ($product["attributes_small"] ? (" " . $product["attributes_small"]) : "")),
+                "description" => $this->removeSpecialCharacters($product["name"]),
                 "quantity" => (int)$product["cart_quantity"],
                 "price" => EpayTools::convertPriceToMinorUnits($product["price"], $minorunits, $roundingMode),
                 "vat" => $product["rate"]
