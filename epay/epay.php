@@ -23,7 +23,7 @@ if (!defined('_PS_VERSION_')) {
 
 class EPay extends PaymentModule
 {
-    const MODULE_VERSION = '5.0.5';
+    const MODULE_VERSION = '5.0.6';
     const V15 = '15';
     const V16 = '16';
     const V17 = '17';
@@ -31,7 +31,7 @@ class EPay extends PaymentModule
     public function __construct()
     {
         $this->name = 'epay';
-        $this->version = '5.0.5';
+        $this->version = '5.0.6';
         $this->author = 'Bambora Online';
         $this->tab = 'payments_gateways';
 
@@ -1361,7 +1361,7 @@ class EPay extends PaymentModule
     /**
      * Build the start of the Transaction Form Body
      *
-     * @param mixed $orderId
+     * @param mixed $order
      * @param mixed $transactionId
      * @param mixed $fraud
      * @param mixed $cardType
@@ -1369,13 +1369,13 @@ class EPay extends PaymentModule
      * @param mixed $amountInMinorunits
      * @return string
      */
-    private function buildTransactionFormBodyStart($orderId, $transactionId, $fraud, $cardType, $cardno, $amountInMinorunits)
+    private function buildTransactionFormBodyStart($order, $transactionId, $fraud, $cardType, $cardno, $amountInMinorunits)
     {
         $html = '';
         if ($transactionId) {
             $html .= '<table class="table" cellspacing="0" cellpadding="0">';
             $html .= $this->transactionInfoTableRow($this->l('ePay Administration'), '<a href="https://admin.ditonlinebetalingssystem.dk/admin/login.asp" title="ePay login" target="_blank">' . $this->l('Open') . '</a>');
-            $html .= $this->transactionInfoTableRow($this->l('ePay "Order ID"'), $orderId);
+            $html .= $this->transactionInfoTableRow($this->l('ePay "Order ID"'), $order->id);
             $html .= $this->transactionInfoTableRow($this->l('ePay "Transaction ID"'), $transactionId);
 
             if ($fraud) {
@@ -1397,8 +1397,9 @@ class EPay extends PaymentModule
             $paymentTypeColumn .= '</div></div>';
             $html .= $this->transactionInfoTableRow($this->l('Payment type'), $paymentTypeColumn);
 
-            $currency_code = $this->context->currency->iso_code;
-            $minorunits = EpayTools::getCurrencyMinorunits($currency_code);
+            $currency = new Currency($order->id_currency);
+            $currencyIsoCode = $currency->iso_code;
+            $minorunits = EpayTools::getCurrencyMinorunits($currencyIsoCode);
             $amount = EpayTools::convertPriceFromMinorUnits($amountInMinorunits, $minorunits);
 
             $html .= $this->transactionInfoTableRow($this->l('Authorized amount'), Tools::displayPrice($amount));
@@ -1413,12 +1414,14 @@ class EPay extends PaymentModule
      * @param mixed $epayTransaction
      * @return string
      */
-    private function buildTransactionFormBodyActions($epayTransaction)
+    private function buildTransactionFormBodyActions($epayTransaction, $order)
     {
         $html = '';
         try {
-            $currency_code = $this->context->currency->iso_code;
-            $minorunits = EpayTools::getCurrencyMinorunits($currency_code);
+
+            $currency = new Currency($order->id_currency);
+            $currencyIsoCode = $currency->iso_code;
+            $minorunits = EpayTools::getCurrencyMinorunits($currencyIsoCode);
 
             $capturedAmount = EpayTools::convertPriceFromMinorUnits($epayTransaction->capturedamount, $minorunits);
             $html .= $this->transactionInfoTableRow($this->l('Captured amount'), Tools::displayPrice($capturedAmount));
@@ -1426,7 +1429,7 @@ class EPay extends PaymentModule
             $html .= $this->transactionInfoTableRow($this->l('Credited amount'), Tools::displayPrice($creditedAmount));
             $html .= "</table>";
 
-            $html .= $this->buildButtonsForm($epayTransaction, $currency_code);
+            $html .= $this->buildButtonsForm($epayTransaction, $currencyIsoCode);
 
             $html .= '</div>';
             $html .= '<div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">';
@@ -1805,7 +1808,8 @@ class EPay extends PaymentModule
     {
         $order = new Order($params['id_order']);
         $employee = new Employee($this->context->cookie->id_employee);
-
+        $currency = new Currency($order->id_currency);
+        $currencyIsoCode = $currency->iso_code;
         // Get default Language
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
 
@@ -1865,7 +1869,7 @@ class EPay extends PaymentModule
                     'label' => $this->l('Amount'),
                     'name' => 'epay_paymentrequest_amount',
                     'size' => 20,
-                    'suffix' => $this->context->currency->iso_code,
+                    'suffix' => $currencyIsoCode,
                     'required' => true,
                     'readonly' => false
                 ),
@@ -1924,14 +1928,15 @@ class EPay extends PaymentModule
         try {
             $orderid = $order->id;
             $amount = Tools::getValue('epay_paymentrequest_amount');
-            $currency = $this->context->currency->iso_code;
+            $currency = new Currency($order->id_currency);
+            $currencyIsoCode = $currency->iso_code;
             $requester = Tools::getValue('epay_paymentrequest_requester_name');
             $comment = Tools::getValue('epay_paymentrequest_requester_comment');
             $recipient_email = Tools::getValue('epay_paymentrequest_recipient_email');
             $recipient_name = Tools::getValue('epay_paymentrequest_recipient_name');
             $replyto_email = Tools::getValue('epay_paymentrequest_replyto_email');
             $replyto_name = Tools::getValue('epay_paymentrequest_replyto_name');
-            $minorunits = EpayTools::getCurrencyMinorunits($currency);
+            $minorunits = EpayTools::getCurrencyMinorunits($currencyIsoCode);
             $languageIso = Language::getIsoById($this->context->language->id);
 
             //Get ordernumber
@@ -1954,7 +1959,7 @@ class EPay extends PaymentModule
             $amountSanitized = (float)str_replace(',', '.', $amount);
             $params["paymentrequest"]["parameters"]["amount"] = EpayTools::convertPriceToMinorUnits($amountSanitized, $minorunits, Configuration::get('EPAY_ROUNDING_MODE'));
             $params["paymentrequest"]["parameters"]["callbackurl"] = $this->context->link->getModuleLink($this->name, 'paymentrequest', array('id_cart' => $order->id_cart), true);
-            $params["paymentrequest"]["parameters"]["currency"] = $currency;
+            $params["paymentrequest"]["parameters"]["currency"] = $currencyIsoCode;
             $params["paymentrequest"]["parameters"]["group"] = Configuration::get('EPAY_GROUP');
             $params["paymentrequest"]["parameters"]["instantcapture"] = Configuration::get('EPAY_INSTANTCAPTURE') == "1" ? "automatic" : "manual";
             $params["paymentrequest"]["parameters"]["orderid"] = $orderid . "PAYREQ" . $orderPostfix;
