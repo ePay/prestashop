@@ -191,7 +191,7 @@ class EPay extends PaymentModule
                 Configuration::updateValue('EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT', Tools::getValue("EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT"));
                 Configuration::updateValue('EPAY_DISABLE_MOBILE_PAYMENTWINDOW', Tools::getValue("EPAY_DISABLE_MOBILE_PAYMENTWINDOW"));
                 Configuration::updateValue('EPAY_CAPTUREONSTATUSCHANGED', Tools::getValue("EPAY_CAPTUREONSTATUSCHANGED"));
-                Configuration::updateValue('EPAY_CAPTURE_ON_STATUS', serialize(Tools::getValue("EPAY_CAPTURE_ON_STATUS")));
+                Configuration::updateValue('EPAY_CAPTURE_ON_STATUS', json_encode(Tools::getValue("EPAY_CAPTURE_ON_STATUS")));
                 Configuration::updateValue('EPAY_AUTOCAPTURE_FAILUREEMAIL', Tools::getValue("EPAY_AUTOCAPTURE_FAILUREEMAIL"));
                 Configuration::updateValue('EPAY_TITLE', Tools::getValue("EPAY_TITLE"));
                 Configuration::updateValue('EPAY_ROUNDING_MODE', Tools::getValue("EPAY_ROUNDING_MODE"));
@@ -466,7 +466,7 @@ class EPay extends PaymentModule
         $helper->fields_value['EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT'] = Configuration::get('EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT');
         $helper->fields_value['EPAY_DISABLE_MOBILE_PAYMENTWINDOW'] = Configuration::get('EPAY_DISABLE_MOBILE_PAYMENTWINDOW');
         $helper->fields_value['EPAY_CAPTUREONSTATUSCHANGED'] = Configuration::get('EPAY_CAPTUREONSTATUSCHANGED');
-        $helper->fields_value['EPAY_CAPTURE_ON_STATUS[]'] = unserialize(Configuration::get('EPAY_CAPTURE_ON_STATUS'));
+        $helper->fields_value['EPAY_CAPTURE_ON_STATUS[]'] = json_decode(Configuration::get('EPAY_CAPTURE_ON_STATUS'));
         $helper->fields_value['EPAY_AUTOCAPTURE_FAILUREEMAIL'] = Configuration::get('EPAY_AUTOCAPTURE_FAILUREEMAIL');
         $helper->fields_value['EPAY_TITLE'] = Configuration::get('EPAY_TITLE');
         $helper->fields_value['EPAY_ROUNDING_MODE'] = Configuration::get('EPAY_ROUNDING_MODE');
@@ -1041,7 +1041,7 @@ class EPay extends PaymentModule
             try {
                 $newOrderStatus = $params['newOrderStatus'];
                 $order = new Order($params['id_order']);
-                $allowedOrderStatuses = unserialize(Configuration::get('EPAY_CAPTURE_ON_STATUS'));
+                $allowedOrderStatuses = json_decode(Configuration::get('EPAY_CAPTURE_ON_STATUS'));
                 if (is_array($allowedOrderStatuses) && $order->module == $this->name && in_array($newOrderStatus->id, $allowedOrderStatuses)) {
                     $transactions = Db::getInstance()->executeS('
                         SELECT o.`id_order`, o.`module`, e.`id_cart`, e.`epay_transaction_id`,
