@@ -160,8 +160,7 @@ class EPay extends PaymentModule
             if ($result) {
                 return true;
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             //Nothing to do here
         }
         return false;
@@ -679,8 +678,8 @@ class EPay extends PaymentModule
      * @param mixed $id_order
      * @return mixed
      */
-    private function getDbTransactionsByOrderId($id_order) {
-
+    private function getDbTransactionsByOrderId($id_order)
+    {
         $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'epay_transactions WHERE id_order = ' . pSQL($id_order);
         return $this->getDbTransactions($query);
     }
@@ -691,8 +690,8 @@ class EPay extends PaymentModule
      * @param mixed $id_cart
      * @return mixed
      */
-    private function getDbTransactionsByCartId($id_cart) {
-
+    private function getDbTransactionsByCartId($id_cart)
+    {
         $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'epay_transactions WHERE id_cart = ' . pSQL($id_cart);
         return $this->getDbTransactions($query);
     }
@@ -766,8 +765,7 @@ class EPay extends PaymentModule
             if (!Db::getInstance()->Execute($query)) {
                 return false;
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 
@@ -870,9 +868,9 @@ class EPay extends PaymentModule
 
         $transaction = $this->getDbTransactionsByOrderId($order->id);
 
-        if(!$transaction) {
+        if (!$transaction) {
             $transaction = $this->getDbTransactionsByCartId($order->id_cart);
-            if(!$transaction || !$transaction["epay_transaction_id"]) {
+            if (!$transaction || !$transaction["epay_transaction_id"]) {
                 return "";
             }
         }
@@ -882,7 +880,7 @@ class EPay extends PaymentModule
 
         $this->context->smarty->assign('epay_completed_paymentText', $this->l('You completed your payment.'));
         $this->context->smarty->assign('epay_completed_transactionText', $this->l('Your transaction ID for this payment is:'));
-        $this->context->smarty->assign('epay_completed_transactionValue', $transactionId );
+        $this->context->smarty->assign('epay_completed_transactionValue', $transactionId);
 
         $cardNoPostFixFormated = "XXXX XXXX XXXX {$cardNoPostFix}";
         $this->context->smarty->assign('epay_completed_cardNoPostFixText', $this->l('The transaction was made with card:'));
@@ -922,14 +920,14 @@ class EPay extends PaymentModule
             if (Configuration::get('EPAY_ENABLE_PAYMENTREQUEST') == 1 && Configuration::get('EPAY_ENABLE_REMOTE_API') == 1) {
                 $containPaymentWithTransactionId = false;
                 $payments = $order->getOrderPayments();
-                foreach($payments as $payment) {
-                    if(!empty($payment->transaction_id)) {
+                foreach ($payments as $payment) {
+                    if (!empty($payment->transaction_id)) {
                         $containPaymentWithTransactionId = true;
                         break;
                     }
                 }
 
-                if(!$containPaymentWithTransactionId) {
+                if (!$containPaymentWithTransactionId) {
                     if (Tools::isSubmit('sendpaymentrequest')) {
                         $html .= $this->createPaymentRequest($order);
                     }
@@ -1074,8 +1072,7 @@ class EPay extends PaymentModule
                     $message = "Autocapture was successfull";
                     $this->createStatusChangesMessage($params["id_order"], $message);
                 }
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 $message = "Autocapture failed with message: " . $e->getMessage();
                 $this->createStatusChangesMessage($params["id_order"], $message);
                 $id_lang = (int)$this->context->language->id;
@@ -1302,7 +1299,7 @@ class EPay extends PaymentModule
 
         $transaction = $this->getDbTransactionsByOrderId($order->id);
 
-        if(!$transaction) {
+        if (!$transaction) {
             $transaction = $this->getDbTransactionsByCartId($order->id_cart);
         }
 
@@ -1322,7 +1319,8 @@ class EPay extends PaymentModule
             $transaction["fraud"],
             $transaction["card_type"],
             $transaction["cardnopostfix"],
-            $amountInclFeeInMinorunits );
+            $amountInclFeeInMinorunits
+        );
 
         if (Configuration::get('EPAY_ENABLE_REMOTE_API') == 1) {
             $pwd = Configuration::get("EPAY_REMOTE_API_PASSWORD");
@@ -1418,7 +1416,6 @@ class EPay extends PaymentModule
     {
         $html = '';
         try {
-
             $currency = new Currency($order->id_currency);
             $currencyIsoCode = $currency->iso_code;
             $minorunits = EpayTools::getCurrencyMinorunits($currencyIsoCode);
@@ -1458,8 +1455,7 @@ class EPay extends PaymentModule
             }
             $html .= '</tbody></table>';
             $html .= '</div>';
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->displayError($e->getMessage());
         }
 
@@ -1701,8 +1697,7 @@ class EPay extends PaymentModule
                         $epayUiMessage = $this->createEpayUiMessage("issue", $errorTitle, $errorMessage);
                     }
                 }
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 $this->displayError($e->getMessage());
             }
         }
@@ -2011,8 +2006,7 @@ class EPay extends PaymentModule
             } else {
                 throw new Exception($createPaymentRequest->createpaymentrequestResult->message);
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $html = $this->displayError($e->getMessage());
         }
 
