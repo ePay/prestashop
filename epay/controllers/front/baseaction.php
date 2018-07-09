@@ -110,8 +110,8 @@ abstract class BaseAction extends ModuleFrontController
                     $epayCurrency,
                     $amountInMinorunits,
                     $transfeeInMinorunits,
-                    $fraud)) {
-
+                    $fraud
+                )) {
                     $cardName = EpayTools::getCardNameById($cardId);
                     $paymentMethod = "{$this->module->displayName} ({$cardName})";
                     $truncatedCard = "XXXX XXXX XXXX {$cardnopostfix}";
@@ -131,7 +131,8 @@ abstract class BaseAction extends ModuleFrontController
                                 $mailVars,
                                 null,
                                 false,
-                                $cart->secure_key );
+                                $cart->secure_key
+                            );
                         } catch (Exception $ex) {
                             $message = "Prestashop threw an exception on validateOrder: " . $ex->getMessage();
                             $responseCode = 500;
