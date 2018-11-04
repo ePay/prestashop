@@ -1072,9 +1072,9 @@ class EPay extends PaymentModule
                 if (is_array($allowedOrderStatuses) && $order->module == $this->name && in_array($newOrderStatus->id, $allowedOrderStatuses)) {
                     $transactions = Db::getInstance()->executeS('
                         SELECT o.`id_order`, o.`module`, e.`id_cart`, e.`epay_transaction_id`,
-		                e.`card_type`, e.`cardnopostfix`, e.`currency`, e.`amount`, e.`transfee`,
-		                e.`fraud`, e.`captured`, e.`credited`, e.`deleted`,
-		                e.`date_add`
+                        e.`card_type`, e.`cardnopostfix`, e.`currency`, e.`amount`, e.`transfee`,
+                        e.`fraud`, e.`captured`, e.`credited`, e.`deleted`,
+                        e.`date_add`
                         FROM '._DB_PREFIX_.'epay_transactions e
                         LEFT JOIN '._DB_PREFIX_.'orders o ON e.`id_cart` = o.`id_cart`
                         WHERE o.`id_order` = '.(int) ($params['id_order']));
@@ -1331,13 +1331,12 @@ class EPay extends PaymentModule
     {
         $html = '';
 
+        $transaction = $this->getDbTransactionsByOrderId($order->id);
+
         if (!$transaction) {
             $transaction = $this->getDbTransactionsByCartId($order->id_cart);
             $html .= 'No payment transaction was found';
-
             return $html;
-        } else {
-            $transaction = $this->getDbTransactionsByOrderId($order->id);
         }
 
         $transactionId = $transaction['epay_transaction_id'];
