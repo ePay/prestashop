@@ -8,7 +8,7 @@
  * All use of the payment modules happens at your own risk. We offer a free test account that you can use to test the module.
  *
  * @author    ePay A/S (a Bambora Company)
- * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
+ * @copyright Bambora (https://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
  */
 include 'baseaction.php';
