@@ -19,7 +19,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class Epay extends PaymentModule
+class EPay extends PaymentModule
 {
     const MODULE_VERSION = '5.0.6';
     const V15 = '15';
@@ -33,7 +33,10 @@ class Epay extends PaymentModule
         $this->author = 'Bambora Online';
         $this->tab = 'payments_gateways';
 
-        $this->ps_versions_compliancy = array('min' => '1.5', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = array(
+            'min' => '1.5',
+            'max' => _PS_VERSION_,
+        );
         $this->controllers = array('accept', 'callback', 'payment', 'paymentrequest');
         $this->is_eu_compatible = 1;
         $this->bootstrap = true;
