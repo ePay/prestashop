@@ -11,7 +11,7 @@
  * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
  */
-class epayTools
+class EpayTools
 {
     const ROUND_UP = 'round_up';
     const ROUND_DOWN = 'round_down';

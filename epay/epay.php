@@ -19,7 +19,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class epay extends PaymentModule
+class Epay extends PaymentModule
 {
     const MODULE_VERSION = '5.0.6';
     const V15 = '15';

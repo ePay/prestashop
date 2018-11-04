@@ -11,7 +11,7 @@
  * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
  */
-abstract class baseaction extends ModuleFrontController
+abstract class BaseAction extends ModuleFrontController
 {
     /**
      * Validate the callback.
