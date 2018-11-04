@@ -11,9 +11,9 @@
  * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
  */
-class EPayApi
+class epayApi
 {
-    private $pwd = "";
+    private $pwd = '';
     private $client = null;
 
     const PAYMENT_WSDL = 'https://ssl.ditonlinebetalingssystem.dk/remote/payment.asmx?WSDL';
@@ -25,11 +25,12 @@ class EPayApi
     }
 
     /**
-     * Capture the payment
+     * Capture the payment.
      *
      * @param mixed $merchantnumber
      * @param mixed $transactionid
      * @param mixed $amount
+     *
      * @return mixed
      */
     public function capture($merchantnumber, $transactionid, $amount)
@@ -37,20 +38,22 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['amount'] = (string)$amount;
-        $epay_params['pwd'] = (string)$this->pwd;
-        $epay_params['pbsResponse'] = "-1";
-        $epay_params['epayresponse'] = "-1";
+        $epay_params['amount'] = (string) $amount;
+        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['pbsResponse'] = '-1';
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->capture($epay_params);
+
         return $result;
     }
 
     /**
-     * Move the payment as captured
+     * Move the payment as captured.
      *
      * @param mixed $merchantnumber
      * @param mixed $transactionid
+     *
      * @return mixed
      */
     public function moveascaptured($merchantnumber, $transactionid)
@@ -58,19 +61,21 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['epayresponse'] = "-1";
-        $epay_params['pwd'] = (string)$this->pwd;
+        $epay_params['epayresponse'] = '-1';
+        $epay_params['pwd'] = (string) $this->pwd;
 
         $result = $this->client->move_as_captured($epay_params);
+
         return $result;
     }
 
     /**
-     * Credit the payment
+     * Credit the payment.
      *
      * @param mixed $merchantnumber
      * @param mixed $transactionid
      * @param mixed $amount
+     *
      * @return mixed
      */
     public function credit($merchantnumber, $transactionid, $amount)
@@ -78,20 +83,22 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['amount'] = (string)$amount;
-        $epay_params['pwd'] = (string)$this->pwd;
-        $epay_params['epayresponse'] = "-1";
-        $epay_params['pbsresponse'] = "-1";
+        $epay_params['amount'] = (string) $amount;
+        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['epayresponse'] = '-1';
+        $epay_params['pbsresponse'] = '-1';
 
         $result = $this->client->credit($epay_params);
+
         return $result;
     }
 
     /**
-     * Delete the payment
+     * Delete the payment.
      *
      * @param mixed $merchantnumber
      * @param mixed $transactionid
+     *
      * @return mixed
      */
     public function delete($merchantnumber, $transactionid)
@@ -99,19 +106,21 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['pwd'] = (string)$this->pwd;
-        $epay_params['epayresponse'] = "-1";
+        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->delete($epay_params);
+
         return $result;
     }
 
     /**
-     * Get ePay error message
+     * Get ePay error message.
      *
      * @param mixed $merchantnumber
      * @param mixed $epay_response_code
      * @param mixed $language
+     *
      * @return mixed
      */
     public function getEpayError($merchantnumber, $epay_response_code, $language)
@@ -119,24 +128,25 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['language'] = $language;
-        $epay_params['pwd'] = (string)$this->pwd;
+        $epay_params['pwd'] = (string) $this->pwd;
         $epay_params['epayresponsecode'] = $epay_response_code;
-        $epay_params['epayresponse'] = "-1";
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->getEpayError($epay_params);
         if ($result->getEpayErrorResult) {
             return $result->epayresponsestring;
         } else {
-            return "";
+            return '';
         }
     }
 
     /**
-     * Get PBS error message
+     * Get PBS error message.
      *
      * @param mixed $merchantnumber
      * @param mixed $pbs_response_code
      * @param mixed $language
+     *
      * @return mixed
      */
     public function getPbsError($merchantnumber, $pbs_response_code, $language)
@@ -145,23 +155,24 @@ class EPayApi
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['language'] = $language;
         $epay_params['pbsresponsecode'] = $pbs_response_code;
-        $epay_params['pwd'] = (string)$this->pwd;
-        $epay_params['epayresponse'] = "-1";
+        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->getPbsError($epay_params);
 
         if ($result->getPbsErrorResult) {
             return $result->pbsresponsestring;
         } else {
-            return "";
+            return '';
         }
     }
 
     /**
-     * Get a transaction
+     * Get a transaction.
      *
      * @param mixed $merchantnumber
      * @param mixed $transactionid
+     *
      * @return mixed
      */
     public function gettransaction($merchantnumber, $transactionid)
@@ -169,18 +180,20 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['pwd'] = (string)$this->pwd;
-        $epay_params["epayresponse"] = "-1";
+        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->gettransaction($epay_params);
+
         return $result;
     }
 
     /**
-     * Get information about a transaction
+     * Get information about a transaction.
      *
      * @param mixed $merchantnumber
      * @param mixed $transactionid
+     *
      * @return mixed
      */
     public function gettransactionInformation($merchantnumber, $transactionid)
@@ -188,12 +201,12 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['pwd'] = (string)$this->pwd;
-        $epay_params["epayresponse"] = "-1";
+        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->gettransaction($epay_params);
 
-        if ($result->gettransactionResult == true) {
+        if (true == $result->gettransactionResult) {
             return $result->transactionInformation;
         } else {
             return false;
@@ -201,13 +214,14 @@ class EPayApi
     }
 
     /**
-     * Get card information
+     * Get card information.
      *
      * @param mixed $merchantnumber
      * @param mixed $cardno_prefix
      * @param mixed $amount
      * @param mixed $currency
      * @param mixed $acquirer
+     *
      * @return mixed
      */
     public function getcardinfo($merchantnumber, $cardno_prefix, $amount, $currency, $acquirer)
@@ -218,8 +232,8 @@ class EPayApi
         $epay_params['amount'] = $amount;
         $epay_params['currency'] = $currency;
         $epay_params['acquirer'] = $acquirer;
-        $epay_params['pwd'] = (string)$this->pwd;
-        $epay_params["epayresponse"] = "-1";
+        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->getcardinfo($epay_params);
 

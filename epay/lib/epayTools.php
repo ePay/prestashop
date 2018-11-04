@@ -11,14 +11,14 @@
  * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
  */
-class EpayTools
+class epayTools
 {
-    const ROUND_UP = "round_up";
-    const ROUND_DOWN = "round_down";
-    const ROUND_DEFAULT = "round_default";
+    const ROUND_UP = 'round_up';
+    const ROUND_DOWN = 'round_down';
+    const ROUND_DEFAULT = 'round_default';
 
     /**
-     * Get the module header information
+     * Get the module header information.
      *
      * @return string
      */
@@ -26,21 +26,21 @@ class EpayTools
     {
         $ePayVersion = EPay::MODULE_VERSION;
         $prestashopVersion = _PS_VERSION_;
-        $result = 'Prestashop/' . $prestashopVersion . ' Module/' . $ePayVersion . ' PHP/'. phpversion();
+        $result = 'Prestashop/'.$prestashopVersion.' Module/'.$ePayVersion.' PHP/'.PHP_VERSION;
 
         return $result;
     }
 
     /**
-     * Get Ps Version
+     * Get Ps Version.
      *
      * @return string
      */
     public static function getPsVersion()
     {
-        if (_PS_VERSION_ < "1.6.0.0") {
+        if (_PS_VERSION_ < '1.6.0.0') {
             return EPay::V15;
-        } elseif (_PS_VERSION_ >= "1.6.0.0" && _PS_VERSION_ < "1.7.0.0") {
+        } elseif (_PS_VERSION_ >= '1.6.0.0' && _PS_VERSION_ < '1.7.0.0') {
             return EPay::V16;
         } else {
             return EPay::V17;
@@ -48,57 +48,58 @@ class EpayTools
     }
 
     /**
-     * Get ePay language id by string country
+     * Get ePay language id by string country.
      *
      * @param string $strlan
-     * @return integer
+     *
+     * @return int
      */
     public static function getEPayLanguage($strlan)
     {
         switch ($strlan) {
-            case "dan":
-            case "da":
+            case 'dan':
+            case 'da':
                 return 1;
-            case "eng":
-            case "en":
+            case 'eng':
+            case 'en':
                 return 2;
-            case "swe":
-            case "sv":
+            case 'swe':
+            case 'sv':
                 return 3;
-            case "nob":
-            case "nb":
-            case "nno":
-            case "nn":
-            case "nor":
-            case "no":
+            case 'nob':
+            case 'nb':
+            case 'nno':
+            case 'nn':
+            case 'nor':
+            case 'no':
                 return 4;
-            case "kal":
-            case "kl":
-            case "gl":
+            case 'kal':
+            case 'kl':
+            case 'gl':
                 return 5;
-            case "isl":
-            case "is":
+            case 'isl':
+            case 'is':
                 return 6;
-            case "deu":
-            case "de":
+            case 'deu':
+            case 'de':
                 return 7;
-            case "fin":
-            case "fi":
+            case 'fin':
+            case 'fi':
                 return 8;
-            case "spa":
-            case "es":
+            case 'spa':
+            case 'es':
                 return 9;
-            case "fra":
-            case "fr":
+            case 'fra':
+            case 'fr':
                 return 10;
-            case "pol":
-            case "pl":
+            case 'pol':
+            case 'pl':
                 return 11;
-            case "ita":
-            case "it":
+            case 'ita':
+            case 'it':
                 return 12;
-            case "nld":
-            case "nl":
+            case 'nld':
+            case 'nl':
                 return 13;
         }
 
@@ -106,9 +107,10 @@ class EpayTools
     }
 
     /**
-     * Get card name by card id
+     * Get card name by card id.
      *
      * @param mixed $card_id
+     *
      * @return string
      */
     public static function getCardNameById($card_id)
@@ -180,39 +182,41 @@ class EpayTools
     }
 
     /**
-     * Get Phone Number
+     * Get Phone Number.
      *
      * @param mixed $invoiceAddress
+     *
      * @return mixed
      */
     public function getPhoneNumber($address)
     {
-        if ($address->phone_mobile != "" || $address->phone != "") {
-            return $address->phone_mobile != "" ? $address->phone_mobile : $address->phone;
+        if ('' != $address->phone_mobile || '' != $address->phone) {
+            return '' != $address->phone_mobile ? $address->phone_mobile : $address->phone;
         } else {
-            return "";
+            return '';
         }
     }
 
     /**
-     * Convert Price To MinorUnits
+     * Convert Price To MinorUnits.
      *
      * @param mixed $amount
      * @param mixed $minorunits
      * @param mixed $defaultMinorUnits
-     * @return double|integer
+     *
+     * @return float|int
      */
     public static function convertPriceToMinorUnits($amount, $minorunits, $rounding)
     {
-        if ($amount == "" || $amount == null) {
+        if ('' == $amount || null == $amount) {
             return 0;
         }
 
         switch ($rounding) {
-            case EpayTools::ROUND_UP:
+            case self::ROUND_UP:
                 $amount = ceil($amount * pow(10, $minorunits));
                 break;
-            case EpayTools::ROUND_DOWN:
+            case self::ROUND_DOWN:
                 $amount = floor($amount * pow(10, $minorunits));
                 break;
             default:
@@ -224,10 +228,11 @@ class EpayTools
     }
 
     /**
-     * Convert Price From MinorUnits
+     * Convert Price From MinorUnits.
      *
      * @param mixed $amount
      * @param mixed $minorunits
+     *
      * @return float
      */
     public static function convertPriceFromMinorUnits($amount, $minorunits)
@@ -236,14 +241,15 @@ class EpayTools
             return 0;
         }
 
-        return ($amount / pow(10, $minorunits));
+        return $amount / pow(10, $minorunits);
     }
 
     /**
-     * Get Currency MinorUnits
+     * Get Currency MinorUnits.
      *
      * @param mixed $currencyCode
-     * @return integer
+     *
+     * @return int
      */
     public static function getCurrencyMinorunits($currencyCode)
     {
@@ -253,8 +259,8 @@ class EpayTools
         'PYG' => 0, 'JPY' => 0, 'CLP' => 0, 'XAF' => 0, 'TRL' => 0,
         'VUV' => 0, 'CLF' => 0, 'KRW' => 0, 'XOF' => 0, 'RWF' => 0,
         'IQD' => 3, 'TND' => 3, 'BHD' => 3, 'JOD' => 3, 'OMR' => 3,
-        'KWD' => 3, 'LYD' => 3);
+        'KWD' => 3, 'LYD' => 3, );
 
-        return key_exists($currencyCode, $currencyArray) ? $currencyArray[$currencyCode] : 2;
+        return array_key_exists($currencyCode, $currencyArray) ? $currencyArray[$currencyCode] : 2;
     }
 }

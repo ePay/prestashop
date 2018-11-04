@@ -10,9 +10,7 @@
  * @author    ePay A/S (a Bambora Company)
  * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
- *
  */
-
 class EpayPaymentModuleFrontController extends ModuleFrontController
 {
     /**
@@ -21,16 +19,16 @@ class EpayPaymentModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
         $cart = $this->context->cart;
-        if ($cart->id_customer == 0 ||
-            $cart->id_address_delivery == 0 ||
-            $cart->id_address_invoice == 0 ||
+        if (0 == $cart->id_customer ||
+            0 == $cart->id_address_delivery ||
+            0 == $cart->id_address_invoice ||
             !$this->module->active) {
             Tools::redirect('index.php?controller=order&step=1');
         }
 
         $authorized = false;
         foreach (Module::getPaymentModules() as $module) {
-            if ($module['name'] == 'epay') {
+            if ('epay' == $module['name']) {
                 $authorized = true;
                 break;
             }
@@ -47,12 +45,12 @@ class EpayPaymentModuleFrontController extends ModuleFrontController
             Tools::redirect('index.php?controller=order&step=1');
         }
 
-        $paymentWindowJsUrl = "https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js";
+        $paymentWindowJsUrl = 'https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js';
 
         $paymentData = array('epayPaymentWindowJsUrl' => $paymentWindowJsUrl,
                              'epayPaymentWindowRequest' => json_encode($epayPaymentWindowRequest),
-                             'epayCancelUrl' => $epayPaymentWindowRequest["epay_cancelurl"],
-                             'epayWindowState' => $epayPaymentWindowRequest["epay_windowstate"]
+                             'epayCancelUrl' => $epayPaymentWindowRequest['epay_cancelurl'],
+                             'epayWindowState' => $epayPaymentWindowRequest['epay_windowstate'],
                             );
 
         $this->context->smarty->assign($paymentData);

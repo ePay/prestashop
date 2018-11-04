@@ -10,10 +10,8 @@
  * @author    ePay A/S (a Bambora Company)
  * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
- *
  */
-
-include('baseaction.php');
+include 'baseaction.php';
 
 class EPayAcceptModuleFrontController extends BaseAction
 {
@@ -22,36 +20,36 @@ class EPayAcceptModuleFrontController extends BaseAction
      */
     public function postProcess()
     {
-        $message = "";
+        $message = '';
         $responseCode = '400';
         $cart = null;
         if ($this->validateAction(false, $message, $cart)) {
             $message = $this->processAction($cart, false, $responseCode);
-            if ($responseCode != 200) {
+            if (200 != $responseCode) {
                 $this->handleError($message, $cart);
             }
             $this->redirectToAccept($cart);
         } else {
-            $message = empty($message) ? $this->l("Unknown error") : $message;
+            $message = empty($message) ? $this->l('Unknown error') : $message;
             $this->handleError($message, $cart);
         }
     }
 
     /**
-     * Redirect To Accept
+     * Redirect To Accept.
      *
      * @param mixed $cart
      */
     private function redirectToAccept($cart)
     {
-        Tools::redirectLink(__PS_BASE_URI__. 'order-confirmation.php?key='. $cart->secure_key. '&id_cart='. (int)$cart->id. '&id_module='. (int)$this->module->id. '&id_order='. (int)Order::getOrderByCartId($cart->id));
+        Tools::redirectLink(__PS_BASE_URI__.'order-confirmation.php?key='.$cart->secure_key.'&id_cart='.(int) $cart->id.'&id_module='.(int) $this->module->id.'&id_order='.(int) Order::getOrderByCartId($cart->id));
     }
 
     private function handleError($message, $cart)
     {
         $this->createLogMessage($message, 3, $cart);
         Context::getContext()->smarty->assign('paymenterror', $message);
-        if ($this->module->getPsVersion() === EPay::V17) {
+        if (EPay::V17 === $this->module->getPsVersion()) {
             $this->setTemplate('module:epay/views/templates/front/paymenterror17.tpl');
         } else {
             $this->setTemplate('paymenterror.tpl');

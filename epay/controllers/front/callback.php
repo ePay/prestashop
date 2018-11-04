@@ -10,10 +10,8 @@
  * @author    ePay A/S (a Bambora Company)
  * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
- *
  */
-
-include('baseaction.php');
+include 'baseaction.php';
 
 class EPayCallbackModuleFrontController extends BaseAction
 {
@@ -22,17 +20,17 @@ class EPayCallbackModuleFrontController extends BaseAction
      */
     public function postProcess()
     {
-        $message = "";
+        $message = '';
         $responseCode = 400;
         $cart = null;
         if ($this->validateAction(false, $message, $cart)) {
             $message = $this->processAction($cart, false, $responseCode);
         } else {
-            $message = empty($message) ? "Unknown error" : $message;
+            $message = empty($message) ? 'Unknown error' : $message;
             $this->createLogMessage($message, 3, $cart);
         }
 
-        $header = "X-EPay-System: ". EpayTools::getModuleHeaderInfo();
+        $header = 'X-EPay-System: '.EpayTools::getModuleHeaderInfo();
         header($header, true, $responseCode);
         die($message);
     }
