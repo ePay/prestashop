@@ -1,5 +1,5 @@
 {*
-* Copyright (c) 2017. All rights reserved ePay A/S (a Bambora Company).
+* Copyright (c) 2018. All rights reserved ePay A/S (a Bambora Company).
 *
 * This program is free software. You are allowed to use the software but NOT allowed to modify the software.
 * It is also not legal to do any changes to the software and distribute it in your own name / brand.
@@ -13,9 +13,9 @@
 *}
 
 <div>
-  <p class="alert alert-warning warning">
-    {l s='Your payment failed because of' mod='epay'} <strong>"{$paymenterror|escape:'htmlall':'UTF-8'}"</strong>
-    <br/>
-    {l s='Please contact the shop to correct the error and complete your payment.' mod='epay'}
-  </p>
+    <p class="alert alert-warning warning">
+        {l s='Your payment failed because of' mod='epay'} <strong>"{$paymenterror|escape:'htmlall':'UTF-8'}"</strong>
+        <br/>
+        {l s='Please contact the shop to correct the error and complete your payment.' mod='epay'}
+    </p>
 </div>

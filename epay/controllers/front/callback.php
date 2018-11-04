@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2017. All rights reserved ePay A/S (a Bambora Company).
+ * Copyright (c) 2018. All rights reserved ePay A/S (a Bambora Company).
  *
  * This program is free software. You are allowed to use the software but NOT allowed to modify the software.
  * It is also not legal to do any changes to the software and distribute it in your own name / brand.

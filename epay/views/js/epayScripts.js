@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017. All rights reserved ePay A/S (a Bambora Company).
+ * Copyright (c) 2018. All rights reserved ePay A/S (a Bambora Company).
  *
  * This program is free software. You are allowed to use the software but NOT allowed to modify the software.
  * It is also not legal to do any changes to the software and distribute it in your own name / brand.
@@ -11,7 +11,7 @@
  * @license   ePay A/S (a Bambora Company)
  */
 
-$(document).ready(function () {
+$(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
 
     if ($("#epay_overlay").length > 0) {
@@ -25,14 +25,16 @@ $(document).ready(function () {
             "hideOnContentClick": false,
             "hideOnOverlayClick": false,
             "helpers": {
-                "overlay": { "closeClick": true }
+                "overlay": {
+                    "closeClick": true
+                }
             }
         });
 
         $("a#epay_inline").trigger("click");
     }
 
-    (function () {
+    (function() {
         var captureCreditinputField = $("#epay_amount");
         var paymentRequestInputField = $("#epay_paymentrequest_amount");
         var epayCapture = $("#epay_capture");
@@ -41,23 +43,23 @@ $(document).ready(function () {
         var epayFormatError = $("#epay_format_error");
         var epayPaymentRequestFormatError = $("#epay_paymentrequest_format_error");
 
-        captureCreditinputField.keydown(function (e) {
+        captureCreditinputField.keydown(function(e) {
             return keydownFilter(e);
         });
 
-        paymentRequestInputField.keydown(function (e) {
+        paymentRequestInputField.keydown(function(e) {
             return keydownFilter(e);
         });
 
-        epayPaymentRequestSubmit.click(function (e) {
+        epayPaymentRequestSubmit.click(function(e) {
             var isValid = validateInputField(paymentRequestInputField, epayPaymentRequestFormatError);
-            if (! isValid) {
+            if (!isValid) {
                 e.preventDefault();
             }
             return isValid;
-        }); 
+        });
 
-        captureCreditinputField.focus(function () {
+        captureCreditinputField.focus(function() {
             if (epayFormatError.css("display") !== "none") {
                 epayFormatError.toggle();
             }
@@ -75,11 +77,11 @@ $(document).ready(function () {
             }
         });
 
-        epayCapture.click(function () {
+        epayCapture.click(function() {
             return validateInputField(captureCreditinputField, epayFormatError);
         });
 
-        epayCredit.click(function () {
+        epayCredit.click(function() {
             return validateInputField(captureCreditinputField, epayFormatError);
         });
 
@@ -88,13 +90,15 @@ $(document).ready(function () {
             if (e.which !== 8 &&
                 e.which !== 46 &&
                 !(e.which >= 37 &&
-                e.which <= 40) &&
+                    e.which <= 40) &&
                 e.which !== 110 &&
                 e.which !== 188 &&
                 e.which !== 190 &&
                 e.which !== 35 &&
                 e.which !== 36 &&
-                !(e.which >= 96 && e.which <= 106)) {
+                !(e.which >= 96 &
+                    e.which <= 106)
+            ) {
                 var reg = new RegExp(/^(?:\d+(?:,\d{0,3})*(?:\.\d{0,2})?|\d+(?:\.\d{0,3})*(?:,\d{0,2})?)$/);
                 if (!reg.test(digit)) {
                     return false;

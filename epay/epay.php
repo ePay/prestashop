@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2017. All rights reserved ePay A/S (a Bambora Company).
+ * Copyright (c) 2018. All rights reserved ePay A/S (a Bambora Company).
  *
  * This program is free software. You are allowed to use the software but NOT allowed to modify the software.
  * It is also not legal to do any changes to the software and distribute it in your own name / brand.
@@ -499,31 +499,31 @@ class Epay extends PaymentModule
                         <div>
                             <H4>Merchant number</H4>
                             <p>The number identifying your ePay merchant account.</p>
-                            <p><b>Note: </b>This field is mandatory to enable payments</p>
+                            <p><strong>Note: </strong>This field is mandatory to enable payments</p>
                         </div>
                         <br />
                         <div>
                             <h4>Window state</h4>
                             <p>Please select if you want the Payment window shown as an overlay or as full screen</p>
-                            <p><b>Note: </b>This field is mandatory</p>
+                            <p><strong>Note: </strong>This field is mandatory</p>
                         </div>
                         <br />
                         <div>
                             <h4>Payment Window ID</h4>
                             <p>Choose which version of the payment window to use</p>
-                            <p><b>Note: </b>This field is mandatory to enable payments. The default payment window is 1</p>
+                            <p><strong>Note: </strong>This field is mandatory to enable payments. The default payment window is 1</p>
                         </div>
                         <br />
                         <div>
                             <h4>MD5 Key</h4>
                             <p>The MD5 key is used to stamp data sent between Prestashop and ePay to prevent it from being tampered with.</p>
-                            <p><b>Note: </b>The MD5 key is optional but if used here, must be the same as in the ePay administration.</p>
+                            <p><strong>Note: </strong>The MD5 key is optional but if used here, must be the same as in the ePay administration.</p>
                         </div>
                         <br />
                         <div>
                             <h4>Remote API password</h4>
                             <p>A password that can be configured in the ePay administration for restricting access to the Remote API</p>
-                            <p><b>Note: </b>If this is set in the ePay administration, it must also be set here</p>
+                            <p><strong>Note: </strong>If this is set in the ePay administration, it must also be set here</p>
                         </div>
                         <br />
                         <div>
@@ -584,7 +584,7 @@ class Epay extends PaymentModule
                         <div>
                             <h4>Capture on status changed to</h4>
                             <p>Select the status you want to execute the capture operation when changed to</p>
-                            <p><b>Note: </b>You must enable <b>Remote API</b> and <b>Capture payment on status changed</b></p>
+                            <p><strong>Note: </strong>You must enable <strong>Remote API</strong> and <strong>Capture payment on status changed</strong></p>
                         </div>
                         <br />
                         <div>
@@ -1598,7 +1598,7 @@ class Epay extends PaymentModule
      */
     private function transactionInfoTableRow($name, $value)
     {
-        $html = '<tr><td>'.$name.'</td><td><b>'.$value.'</b></td></tr>';
+        $html = '<tr><td>'.$name.'</td><td><strong>'.$value.'</strong></td></tr>';
 
         return $html;
     }
