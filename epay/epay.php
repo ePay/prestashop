@@ -11,6 +11,7 @@
  * @copyright Bambora (https://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
  */
+
 include 'lib/epayTools.php';
 include 'lib/epayApi.php';
 include 'lib/epayModels.php';
@@ -1102,7 +1103,7 @@ class EPay extends PaymentModule
                 $message = 'Autocapture failed with message: '.$e->getMessage();
                 $this->createStatusChangesMessage($params['id_order'], $message);
                 $id_lang = (int) $this->context->language->id;
-                $dir_mail = __DIR__.'/mails/';
+                $dir_mail = _PS_MAIL_DIR_;
                 $mailTo = Configuration::get('EPAY_AUTOCAPTURE_FAILUREEMAIL');
                 Mail::Send($id_lang, 'autocapturefailed', 'Auto capture of '.$params['id_order'].' failed', array('{message}' => $e->getMessage()), $mailTo, null, null, null, null, null, $dir_mail);
             }

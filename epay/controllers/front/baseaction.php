@@ -11,6 +11,7 @@
  * @copyright Bambora (https://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
  */
+
 abstract class BaseAction extends ModuleFrontController
 {
     /**
