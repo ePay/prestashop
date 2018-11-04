@@ -12,7 +12,7 @@
 *
 *}
 
-<script type="text/javascript" src="{$epayPaymentWindowJsUrl|escape:'htmlall':'UTF-8'}" charset="UTF-8"></script>
+<script type="text/javascript" src="{$epayPaymentWindowJsUrl|nofilter}" charset="UTF-8"></script>
 	<script type="text/javascript">
 		{literal}
 		function openEPayPaymentWindow() {
@@ -26,16 +26,16 @@
 	</script>	
 
 <p class="payment_module">
-  <a title="{$epayPaymentTitle|escape:'htmlall':'UTF-8'}" href="javascript: paymentwindow.open();">
+  <a title="{$epayPaymentTitle|nofilter}" href="javascript: paymentwindow.open();">
     <span style="height:49px; width:86px; float:left; margin-right: 1em;" id="epay_logos">
-      <img src="{$thisPathEpay|escape:'htmlall':'UTF-8'}epay.png" alt="{$epayPaymentTitle|escape:'htmlall':'UTF-8'}" style="float:left;" />
+      <img src="{$thisPathEpay|nofilter}epay.png" alt="{$epayPaymentTitle|nofilter}" style="float:left;" />
     </span>
     <span style="float:left;">
-    {$epayPaymentTitle|escape:'htmlall':'UTF-8'}
+    {$epayPaymentTitle|nofilter}
       <br />	
       <span style="width:100%; float: left;" id="epay_card_logos"></span>
     </span>
   </a>
 </p>
 
-<script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/paymentlogos/PaymentLogos.aspx?merchantnumber={$epayMerchant|escape:'htmlall':'UTF-8'}&direction=2&padding=2&rows=2&logo=0&showdivs=0&divid=epay_card_logos"></script>
+<script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/paymentlogos/PaymentLogos.aspx?merchantnumber={$epayMerchant|nofilter}&direction=2&padding=2&rows=2&logo=0&showdivs=0&divid=epay_card_logos"></script>

@@ -18,7 +18,7 @@
 		<p class="epay_section_text">{l s='You have chosen to pay for the order online. Once you have completed your order, you will be transferred to the Bambora Online ePay. Here you need to process your payment. Once payment is completed, you will automatically be returned to our shop.' mod='epay'}</p>
 		{/if}
 		<div id="epay_paymentlogos">
-			<script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/paymentlogos/PaymentLogos.aspx?merchantnumber={$merchantNumber|escape:'htmlall':'UTF-8'}&direction=2&padding=2&rows=1&logo=0&showdivs=0&divid=epay_paymentlogos"></script>
+			<script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/paymentlogos/PaymentLogos.aspx?merchantnumber={$merchantNumber|nofilter}&direction=2&padding=2&rows=1&logo=0&showdivs=0&divid=epay_paymentlogos"></script>
 		</div>
 	</div>
 </section>

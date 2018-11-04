@@ -14,6 +14,6 @@
 
 <!-- Block ePay-ment logo module -->
 <div id="epay_payment_logo_block" class="epay_payment_logo_block">
-    <script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/PaymentLogos/PaymentLogos.aspx?merchantnumber={$merchantnumber|escape:'htmlall':'UTF-8'}&direction=2&padding=5&rows=1&divid=epay_payment_logo_block"></script>
+    <script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/PaymentLogos/PaymentLogos.aspx?merchantnumber={$merchantnumber|nofilter}&direction=2&padding=5&rows=1&divid=epay_payment_logo_block"></script>
 </div>
 <!-- /Block ePay-ment logo module -->
