@@ -16,13 +16,13 @@
   
   <div class="icon-check"></div>
   <p id="epay_completed_payment">
-    <b>{$epay_completed_paymentText|nofilter}</b>
+    <b>{$epay_completed_paymentText nofilter}</b>
   </p>
   <p>
-    {$epay_completed_transactionText|nofilter} <b> {$epay_completed_transactionValue|nofilter}</b>
+    {$epay_completed_transactionText nofilter} <b> {$epay_completed_transactionValue nofilter}</b>
     <br/>
-	{$epay_completed_cardNoPostFixText|nofilter} <b> {$epay_completed_cardNoPostFixValue|nofilter}</b>
+	{$epay_completed_cardNoPostFixText nofilter} <b> {$epay_completed_cardNoPostFixValue nofilter}</b>
 	<br/>
-    {$epay_completed_emailText|nofilter} <b> {$epay_completed_emailValue|nofilter}</b>
+    {$epay_completed_emailText nofilter} <b> {$epay_completed_emailValue nofilter}</b>
   </p>
 </div>

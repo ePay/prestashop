@@ -15,7 +15,7 @@
 <div class="epay_paymentwindow_container">
   
 
-	<script type="text/javascript" src="{$epayPaymentWindowJsUrl|nofilter}" charset="UTF-8"></script>
+	<script type="text/javascript" src="{$epayPaymentWindowJsUrl nofilter}" charset="UTF-8"></script>
 	<script type="text/javascript">
 		{literal}
 		function openEPayPaymentWindow() {
@@ -29,11 +29,11 @@
 	</script>	
 	
   <p class="payment_module">
-    <a class="epay_payment_content" title="{$epayPaymentTitle|nofilter}" href="javascript: openEPayPaymentWindow();">
+    <a class="epay_payment_content" title="{$epayPaymentTitle nofilter}" href="javascript: openEPayPaymentWindow();">
       <span id="epay_card_logos"></span>
     </a>
   </p>
 
-  <script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/paymentlogos/PaymentLogos.aspx?merchantnumber={$epayMerchant|nofilter}&direction=2&padding=2&rows=1&logo=0&showdivs=0&divid=epay_card_logos">
+  <script type="text/javascript" src="https://relay.ditonlinebetalingssystem.dk/integration/paymentlogos/PaymentLogos.aspx?merchantnumber={$epayMerchant nofilter}&direction=2&padding=2&rows=1&logo=0&showdivs=0&divid=epay_card_logos">
   </script>
 </div>
