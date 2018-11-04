@@ -937,7 +937,7 @@ class EPay extends PaymentModule
             }
 
             $html .= $this->buildTransactionForm($order);
-            $html .= '<br>';
+            $html .= '<br />';
 
             if (1 == Configuration::get('EPAY_ENABLE_PAYMENTREQUEST') && 1 == Configuration::get('EPAY_ENABLE_REMOTE_API')) {
                 $containPaymentWithTransactionId = false;
@@ -954,7 +954,7 @@ class EPay extends PaymentModule
                         $html .= $this->createPaymentRequest($order);
                     }
 
-                    $html .= $this->displayPaymentRequestForm($params).'<br>';
+                    $html .= $this->displayPaymentRequestForm($params).'<br />';
                 }
             }
             $html .= '</div>';
@@ -1822,7 +1822,7 @@ class EPay extends PaymentModule
     private function createStatusChangesMessage($orderId, $message)
     {
         $msg = new Message();
-        $message = strip_tags($message, '<br>');
+        $message = strip_tags($message, '<br />');
         if (Validate::isCleanHtml($message)) {
             $msg->name = 'Bambora Online ePay';
             $msg->message = $message;
@@ -2036,7 +2036,7 @@ class EPay extends PaymentModule
                     $message = 'Payment request ('.$createPaymentRequest->createpaymentrequestResult->paymentrequest->paymentrequestid.') created and sent to: '.$recipient_email;
 
                     $msg = new Message();
-                    $message = strip_tags($message, '<br>');
+                    $message = strip_tags($message, '<br />');
                     if (Validate::isCleanHtml($message)) {
                         $msg->message = $message;
                         $msg->id_order = (int) $orderid;
