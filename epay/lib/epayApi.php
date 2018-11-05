@@ -12,7 +12,7 @@
  * @license   ePay A/S (a Bambora Company)
  */
 
-class EpayApi
+class EPayApi
 {
     private $pwd = '';
     private $client = null;
