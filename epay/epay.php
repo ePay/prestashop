@@ -499,113 +499,113 @@ class EPay extends PaymentModule
         $html = '<div class="panel helpContainer">
                         <H3>Help for settings</H3>
                         <p>Detailed description of these settings are to be found <a href="http://www.prestashopguiden.dk/en/configuration#407" target="_blank">here</a>.</p>
-                        <br />
+                        <br>
                         <div>
                             <H4>Merchant number</H4>
                             <p>The number identifying your ePay merchant account.</p>
                             <p><strong>Note: </strong>This field is mandatory to enable payments</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Window state</h4>
                             <p>Please select if you want the Payment window shown as an overlay or as full screen</p>
                             <p><strong>Note: </strong>This field is mandatory</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Payment Window ID</h4>
                             <p>Choose which version of the payment window to use</p>
                             <p><strong>Note: </strong>This field is mandatory to enable payments. The default payment window is 1</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>MD5 Key</h4>
                             <p>The MD5 key is used to stamp data sent between Prestashop and ePay to prevent it from being tampered with.</p>
                             <p><strong>Note: </strong>The MD5 key is optional but if used here, must be the same as in the ePay administration.</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Remote API password</h4>
                             <p>A password that can be configured in the ePay administration for restricting access to the Remote API</p>
                             <p><strong>Note: </strong>If this is set in the ePay administration, it must also be set here</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Group ID</h4>
                             <p>You can divide payments into different groups and limit your ePay users access to specific groups. A group is a name/string. If you do nott want to use groups, simply leave the field empty (default).</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Payment method title</h4>
                             <p>The title of the payment method visible to the customers</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Enable Remote API</h4>
                             <p>By activating Remote API, you can capture, credit and delete payments from PrestaShop.</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Use own reciept</h4>
                             <p>Return directly to the shop when the payment is completed</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Use instant capture</h4>
                             <p>By enabling this, the payment is captured immediately. You can only use this setting if the customers receive their goods immediately as well, e.g. downloads or services.</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Add transaction fee to shipping</h4>
                             <p>If you put this setting at yes, the transaction fee will be added to the shipping costs.</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Enable invoice data</h4>
                             <p>Put this at Yes if you want to offer invoice payments, e.g. through Klarna.</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Enable payment request</h4>
                             <p>Enable this if you want to be able to send payment requests to your customers</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Only show payment logos at checkout</h4>
                             <p>Disable this to only display payment logos at checkout</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Disable the Mobile Payment Window</h4>
                             <p>Disabling the Mobile Payment Window allows the customer to use Klarna when using a mobile device</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Capture payment on status changed</h4>
                             <p>Enable this if you want to be able to capture the payment when the order status is changed</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Capture on status changed to</h4>
                             <p>Select the status you want to execute the capture operation when changed to</p>
                             <p><strong>Note: </strong>You must enable <strong>Remote API</strong> and <strong>Capture payment on status changed</strong></p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Capture on status changed failure e-mail</h4>
                             <p>If the Capture fails on status changed an e-mail will be send to this address</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Display payment logo block</h4>
                             <p>Control if and where the ePay payment logo block, with the available payment options, is shown</p>
                         </div>
-                        <br />
+                        <br>
                         <div>
                             <h4>Rounding mode</h4>
                             <p>Please select how you want the rounding of the amount sendt to the payment system</p>
                         </div>
-                        <br />
+                        <br>
                    </div>';
 
         return $html;
@@ -937,7 +937,7 @@ class EPay extends PaymentModule
             }
 
             $html .= $this->buildTransactionForm($order);
-            $html .= '<br />';
+            $html .= '<br>';
 
             if (1 == Configuration::get('EPAY_ENABLE_PAYMENTREQUEST') && 1 == Configuration::get('EPAY_ENABLE_REMOTE_API')) {
                 $containPaymentWithTransactionId = false;
@@ -954,7 +954,7 @@ class EPay extends PaymentModule
                         $html .= $this->createPaymentRequest($order);
                     }
 
-                    $html .= $this->displayPaymentRequestForm($params).'<br />';
+                    $html .= $this->displayPaymentRequestForm($params).'<br>';
                 }
             }
             $html .= '</div>';
@@ -1306,7 +1306,7 @@ class EPay extends PaymentModule
         $html = '';
         if ($this->getPsVersion() === $this::V15) {
             $html .= '<style type="text/css">.table td{white-space:nowrap;overflow-x:auto;}</style>';
-            $html .= '<br /><fieldset><legend><img src="../img/admin/money.gif">Bambora Online ePay</legend>';
+            $html .= '<br><fieldset><legend><img src="../img/admin/money.gif">Bambora Online ePay</legend>';
         } else {
             $html .= '<div class="row" >';
             $html .= '<div class="col-lg-12">';
@@ -1420,9 +1420,9 @@ class EPay extends PaymentModule
 
             if ($cardno > 1) {
                 if (4 === Tools::strlen($cardno)) {
-                    $paymentTypeColumn .= '<br /> '.str_replace('X', '&bull;', 'XXXX XXXX XXXX ').$cardno;
+                    $paymentTypeColumn .= '<br> '.str_replace('X', '&bull;', 'XXXX XXXX XXXX ').$cardno;
                 } else {
-                    $paymentTypeColumn .= '<br /> '.str_replace('X', '&bull;', $cardno);
+                    $paymentTypeColumn .= '<br> '.str_replace('X', '&bull;', $cardno);
                 }
             }
             $paymentTypeColumn .= '</div></div>';
@@ -1466,7 +1466,7 @@ class EPay extends PaymentModule
             $html .= '<div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">';
 
             $html .= '<div class="epay_table_title">';
-            $html .= '<i class="icon-time"></i> '.$this->l('Transaction Log').'</div><br />';
+            $html .= '<i class="icon-time"></i> '.$this->l('Transaction Log').'</div><br>';
             $html .= '<table class="table epay_table" cellspacing="0" cellpadding="0">';
             $html .= '<thead><tr><th><span class="title_box">'.$this->l('Date').'</span></th>';
             $html .= '<th><span class="title_box">'.$this->l('Event').'</span></th>';
@@ -1516,7 +1516,7 @@ class EPay extends PaymentModule
                 $epay_amount = EpayTools::convertPriceFromMinorUnits(($transaction->authamount - $transaction->capturedamount), $minorunits);
             }
 
-            $form .= '<br />';
+            $form .= '<br>';
             $form .= '<form name="epay_remote" action="'.$_SERVER['REQUEST_URI'].'" method="post" class="epay_displayInline" id="epay_action" >';
             $form .= '<input type="hidden" name="epay_transaction_id" value="'.$transaction->transactionid.'" />';
             $form .= '<input type="hidden" name="epay_order_id" value="'.$transaction->orderid.'" />';
@@ -1766,7 +1766,7 @@ class EPay extends PaymentModule
         }
         if (isset($epayApiResponse->pbsResponse) && -1 != $epayApiResponse->pbsResponse) {
             if (Tools::strlen($message) > 0) {
-                $message .= '<br />';
+                $message .= '<br>';
             }
             $message .= "PBS Error: ({$epayApiResponse->epayResponse}) ";
             $message .= $api->getPbsError($merchantNumber, $epayApiResponse->pbsResponse, $language);
@@ -1822,7 +1822,7 @@ class EPay extends PaymentModule
     private function createStatusChangesMessage($orderId, $message)
     {
         $msg = new Message();
-        $message = strip_tags($message, '<br />');
+        $message = strip_tags($message, '<br>');
         if (Validate::isCleanHtml($message)) {
             $msg->name = 'Bambora Online ePay';
             $msg->message = $message;
@@ -2036,7 +2036,7 @@ class EPay extends PaymentModule
                     $message = 'Payment request ('.$createPaymentRequest->createpaymentrequestResult->paymentrequest->paymentrequestid.') created and sent to: '.$recipient_email;
 
                     $msg = new Message();
-                    $message = strip_tags($message, '<br />');
+                    $message = strip_tags($message, '<br>');
                     if (Validate::isCleanHtml($message)) {
                         $msg->message = $message;
                         $msg->id_order = (int) $orderid;

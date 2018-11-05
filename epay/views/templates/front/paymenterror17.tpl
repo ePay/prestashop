@@ -16,7 +16,7 @@
 {block name="content"}
 <div>
     <p class="alert alert-warning warning">{l s='Your payment failed because of' mod='epay'} <strong>"{$paymenterror|escape:'htmlall':'UTF-8'}"</strong>
-        <br/>
+        <br>
         {l s='Please contact the shop to correct the error and complete your payment.' mod='epay'}
     </p>
 </div>

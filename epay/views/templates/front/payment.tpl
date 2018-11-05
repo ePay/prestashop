@@ -31,7 +31,7 @@
     </span>
     <span style="float:left;">
     {$epayPaymentTitle|escape:'htmlall':'UTF-8'}
-    <br />	
+    <br>	
     <span style="width:100%; float: left;" id="epay_card_logos"></span>
     </span>
     </a>
