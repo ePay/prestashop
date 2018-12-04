@@ -117,7 +117,7 @@
 .epay_widthAllSpace {
     width: 100%;
     clear: both;
-    overflow: auto
+    overflow: auto;
 }
 
 .epay_fraud {
