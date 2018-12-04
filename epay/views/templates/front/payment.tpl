@@ -17,13 +17,12 @@
     {literal}
     function openEPayPaymentWindow() {
         var requestString = {/literal}{$epayPaymentWindowRequest|replace:'epay_':''|@json_encode nofilter}{literal};
-    
         var requestStringJson = JSON.parse(requestString);
         paymentwindow = new PaymentWindow(requestStringJson);
         paymentwindow.open();
     }
     {/literal}
-</script>	
+</script>
 <p class="payment_module">
     <a title="{$epayPaymentTitle|escape:'htmlall':'UTF-8'}" href="javascript: paymentwindow.open();">
     <span style="height:49px; width:86px; float:left; margin-right: 1em;" id="epay_logos">
@@ -31,7 +30,7 @@
     </span>
     <span style="float:left;">
     {$epayPaymentTitle|escape:'htmlall':'UTF-8'}
-    <br>	
+    <br>
     <span style="width:100%; float: left;" id="epay_card_logos"></span>
     </span>
     </a>

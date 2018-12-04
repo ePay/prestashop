@@ -18,10 +18,10 @@
         <strong>{$epay_completed_paymentText|escape:'htmlall':'UTF-8'}</strong>
     </p>
     <p>
-        {$epay_completed_transactionText|escape:'htmlall':'UTF-8'} <strong> {$epay_completed_transactionValue|escape:'htmlall':'UTF-8'}</strong>
+        {$epay_completed_transactionText|escape:'htmlall':'UTF-8'} <strong>{$epay_completed_transactionValue|escape:'htmlall':'UTF-8'}</strong>
         <br>
-        {$epay_completed_cardNoPostFixText|escape:'htmlall':'UTF-8'} <strong> {$epay_completed_cardNoPostFixValue|escape:'htmlall':'UTF-8'}</strong>
+        {$epay_completed_cardNoPostFixText|escape:'htmlall':'UTF-8'} <strong>{$epay_completed_cardNoPostFixValue|escape:'htmlall':'UTF-8'}</strong>
         <br>
-        {$epay_completed_emailText|escape:'htmlall':'UTF-8'} <strong> {$epay_completed_emailValue|escape:'htmlall':'UTF-8'}</strong>
+        {$epay_completed_emailText|escape:'htmlall':'UTF-8'} <strong>{$epay_completed_emailValue|escape:'htmlall':'UTF-8'}</strong>
     </p>
 </div>

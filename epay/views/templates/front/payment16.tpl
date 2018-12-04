@@ -17,14 +17,13 @@
     <script type="text/javascript">
         {literal}
         function openEPayPaymentWindow() {
-        	var requestString = {/literal}{$epayPaymentWindowRequest|replace:'epay_':''|@json_encode nofilter}{literal};
-        
-        	var requestStringJson = JSON.parse(requestString);
-        	paymentwindow = new PaymentWindow(requestStringJson);
-        	paymentwindow.open();
+            var requestString = {/literal}{$epayPaymentWindowRequest|replace:'epay_':''|@json_encode nofilter}{literal};
+            var requestStringJson = JSON.parse(requestString);
+            paymentwindow = new PaymentWindow(requestStringJson);
+            paymentwindow.open();
         }
-        {/literal}		
-    </script>	
+        {/literal}
+    </script>
     <p class="payment_module">
         <a class="epay_payment_content" title="{$epayPaymentTitle|escape:'htmlall':'UTF-8'}" href="javascript: openEPayPaymentWindow();">
         <span id="epay_card_logos"></span>

@@ -21,42 +21,40 @@
         {literal}
         var isPaymentWindowReady = false;
         function PaymentWindowReady() {
-        	var requestString = {/literal}{$epayPaymentWindowRequest|replace:'epay_':''|@json_encode nofilter}{literal};
-        	var windowState = {/literal}'{$epayWindowState|escape:'htmlall':'UTF-8'}'{literal};	
-        	var cancelUrl = {/literal}'{$epayCancelUrl|escape:'htmlall':'UTF-8'}'{literal};
-        	
-        	var requestStringJson = JSON.parse(requestString);
-        	paymentwindow = new PaymentWindow(requestStringJson);
-        	if(windowState == 1) {
-        		paymentwindow.on("close", function(){
-        			window.location.href = cancelUrl;
-        		});
-        	}
-        	isPaymentWindowReady = true;
+            var requestString = {/literal}{$epayPaymentWindowRequest|replace:'epay_':''|@json_encode nofilter}{literal};
+            var windowState = {/literal}'{$epayWindowState|escape:'htmlall':'UTF-8'}'{literal}; 
+            var cancelUrl = {/literal}'{$epayCancelUrl|escape:'htmlall':'UTF-8'}'{literal};
+            var requestStringJson = JSON.parse(requestString);
+            paymentwindow = new PaymentWindow(requestStringJson);
+            if(windowState == 1) {
+                paymentwindow.on("close", function(){
+                    window.location.href = cancelUrl;
+                });
+            }
+            isPaymentWindowReady = true;
         }
-        {/literal}		
-    </script>	
+        {/literal}
+    </script>   
     <script type="text/javascript" src="{$epayPaymentWindowJsUrl|escape:'htmlall':'UTF-8'}" charset="UTF-8"></script>
     <script type="text/javascript">
-        {literal}	
+        {literal}   
         var timerOpenWindow;
         function openPaymentWindow()
         {
-        	if(isPaymentWindowReady)
-        	{
-        		clearInterval(timerOpenWindow);
-        		paymentwindow.open();
-        	}
+            if(isPaymentWindowReady)
+            {
+                clearInterval(timerOpenWindow);
+                paymentwindow.open();
+            }
         }
         document.onreadystatechange = function ()
         {
-        	if(document.readyState === "complete")
-        	{
-        		timerOpenWindow = setInterval("openPaymentWindow()", 500);
-        	}
+            if(document.readyState === "complete")
+            {
+                timerOpenWindow = setInterval("openPaymentWindow()", 500);
+            }
         }
         {/literal}
-          
     </script>
 </section>
 {/block}
