@@ -230,7 +230,10 @@ class EPay extends PaymentModule
         $statuses = OrderState::getOrderStates($this->context->language->id);
         $selectCaptureStatus = array();
         foreach ($statuses as $status) {
-            $selectCaptureStatus[] = array('key' => $status['id_order_state'], 'name' => $status['name']);
+            $selectCaptureStatus[] = array(
+                'key' => $status['id_order_state'],
+                'name' => $status['name'],
+            );
         }
 
         $rounding_modes = array(
@@ -849,9 +852,10 @@ class EPay extends PaymentModule
             return;
         }
 
-        $paymentInfoData = array('merchantNumber' => Configuration::get('EPAY_MERCHANTNUMBER'),
-                                 'onlyShowLogoes' => Configuration::get('EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT'),
-                                );
+        $paymentInfoData = array(
+            'merchantNumber' => Configuration::get('EPAY_MERCHANTNUMBER'),
+            'onlyShowLogoes' => Configuration::get('EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT'),
+        );
         $this->context->smarty->assign($paymentInfoData);
 
         $callToActionText = Tools::strlen(Configuration::get('EPAY_TITLE')) > 0 ? Configuration::get('EPAY_TITLE') : 'Bambora Online ePay';

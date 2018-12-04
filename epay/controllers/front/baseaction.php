@@ -122,9 +122,11 @@ abstract class BaseAction extends ModuleFrontController
                     $paymentMethod = "{$this->module->displayName} ({$cardName})";
                     $truncatedCard = "XXXX XXXX XXXX {$cardnopostfix}";
 
-                    $mailVars = array('TransactionId' => $transaction_Id,
-                                      'PaymentType' => $paymentMethod,
-                                      'CardNumber' => $truncatedCard, );
+                    $mailVars = array(
+                        'TransactionId' => $transaction_Id,
+                        'PaymentType' => $paymentMethod,
+                        'CardNumber' => $truncatedCard,
+                    );
 
                     if (!$isPaymentRequest) {
                         try {
