@@ -31,7 +31,7 @@ class EPayPaymentRequestModuleFrontController extends BaseAction
             $this->createLogMessage($message, 3, $cart);
         }
 
-        $header = 'X-EPay-System: '.EpayTools::getModuleHeaderInfo();
+        $header = 'X-EPay-System: ' . EpayTools::getModuleHeaderInfo();
         header($header, true, $responseCode);
         die($message);
     }

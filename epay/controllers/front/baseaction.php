@@ -68,7 +68,7 @@ abstract class BaseAction extends ModuleFrontController
                 $var .= $value;
             }
 
-            $storeHash = md5($var.$storeMd5);
+            $storeHash = md5($var . $storeMd5);
             if ($storeHash != Tools::getValue('hash')) {
                 $message = 'Hash validation failed - Please check your MD5 key';
 
@@ -142,7 +142,7 @@ abstract class BaseAction extends ModuleFrontController
                                 $cart->secure_key
                             );
                         } catch (Exception $ex) {
-                            $message = 'Prestashop threw an exception on validateOrder: '.$ex->getMessage();
+                            $message = 'Prestashop threw an exception on validateOrder: ' . $ex->getMessage();
                             $responseCode = 500;
                             $this->module->deleteDbRecordedTransaction($transaction_Id);
 
@@ -155,7 +155,7 @@ abstract class BaseAction extends ModuleFrontController
                     $order = new Order($id_order);
 
                     if ($isPaymentRequest) {
-                        $message = 'Payment request succeded with ePay Transaction ID: '.$transaction_Id;
+                        $message = 'Payment request succeded with ePay Transaction ID: ' . $transaction_Id;
                         $msg = new Message();
                         $message = strip_tags($message, '<br>');
                         if (Validate::isCleanHtml($message)) {
@@ -212,7 +212,7 @@ abstract class BaseAction extends ModuleFrontController
             }
         } catch (Exception $e) {
             $responseCode = 500;
-            $message = 'Process order failed with an exception: '.$e->getMessage();
+            $message = 'Process order failed with an exception: ' . $e->getMessage();
         }
 
         return $message;
@@ -236,7 +236,7 @@ abstract class BaseAction extends ModuleFrontController
             $personString = "Name: {$invoiceAddress->firstname}{$invoiceAddress->lastname} Phone: {$phoneNumber} Mail: {$customer->email} - ";
             $result = $personString;
         }
-        $result .= 'An payment error occured: '.$message;
+        $result .= 'An payment error occured: ' . $message;
         if (Epay::V15 === $this->module->getPsVersion()) {
             Logger::addLog($result, $severity);
         } else {
