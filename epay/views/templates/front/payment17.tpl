@@ -22,8 +22,8 @@
         var isPaymentWindowReady = false;
         function PaymentWindowReady() {
             var requestString = {/literal}{$epayPaymentWindowRequest|replace:'epay_':''|@json_encode nofilter}{literal};
-            var windowState = {/literal}'{$epayWindowState|escape:'htmlall':'UTF-8'}'{literal}; 
-            var cancelUrl = {/literal}'{$epayCancelUrl|escape:'htmlall':'UTF-8'}'{literal};
+            var windowState = {/literal}'{$epayWindowState nofilter}'{literal}; 
+            var cancelUrl = {/literal}'{$epayCancelUrl nofilter}'{literal};
             var requestStringJson = JSON.parse(requestString);
             paymentwindow = new PaymentWindow(requestStringJson);
             if(windowState == 1) {
@@ -35,7 +35,7 @@
         }
         {/literal}
     </script>   
-    <script type="text/javascript" src="{$epayPaymentWindowJsUrl|escape:'htmlall':'UTF-8'}" charset="UTF-8"></script>
+    <script type="text/javascript" src="{$epayPaymentWindowJsUrl nofilter}" charset="UTF-8"></script>
     <script type="text/javascript">
         {literal}   
         var timerOpenWindow;
