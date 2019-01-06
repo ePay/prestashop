@@ -91,7 +91,7 @@ abstract class BaseAction extends ModuleFrontController
                 $transaction_Id = Tools::getValue("txnid");
                 $epayOrderId = Tools::getValue('orderid');
                 $cardId = Tools::getValue('paymenttype');
-                $cardnopostfix = Tools::getIsset('cardno') ? Tools::substr(Tools::getValue('cardno'), - 4) : 0;
+                $cardnopostfix = Tools::getIsset('cardno') ? Tools::substr(Tools::getValue('cardno'), -4) : 0;
                 $epayCurrency = Tools::getValue('currency', null);
                 $currency = new Currency($cart->id_currency);
                 $amountInMinorunits = Tools::getValue('amount');
