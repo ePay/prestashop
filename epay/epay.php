@@ -209,20 +209,20 @@ class EPay extends PaymentModule
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
 
         $switch_options = array(
-            array( 'id' => 'active_on', 'value' => 1, 'label' => 'Yes'),
-            array( 'id' => 'active_off', 'value' => 0, 'label' => 'No'),
+            array('id' => 'active_on', 'value' => 1, 'label' => 'Yes'),
+            array('id' => 'active_off', 'value' => 0, 'label' => 'No'),
         );
 
         $windowstate_options =  array(
-            array( 'type' => 1, 'name' => 'Overlay' ),
-            array( 'type' => 3, 'name' => 'Fullscreen' )
+            array('type' => 1, 'name' => 'Overlay'),
+            array('type' => 3, 'name' => 'Fullscreen')
         );
 
         $displayPaymentLogoLocation = array(
-            array( 'id_option' => 'left_column', 'name' => 'Left Column' ),
-            array( 'id_option' => 'right_column','name' => 'Right Column' ),
-            array( 'id_option' => 'footer', 'name' => 'Footer' ),
-            array( 'id_option' => 'hide', 'name' => 'Hide' )
+            array('id_option' => 'left_column', 'name' => 'Left Column'),
+            array('id_option' => 'right_column','name' => 'Right Column'),
+            array('id_option' => 'footer', 'name' => 'Footer'),
+            array('id_option' => 'hide', 'name' => 'Hide')
         );
 
         $statuses = OrderState::getOrderStates($this->context->language->id);
@@ -232,9 +232,9 @@ class EPay extends PaymentModule
         }
 
         $rounding_modes = array(
-            array( 'type' => EpayTools::ROUND_DEFAULT, 'name' => 'Default'),
-            array( 'type' => EpayTools::ROUND_UP, 'name' => 'Always up'),
-            array( 'type' => EpayTools::ROUND_DOWN, 'name' => 'Always down')
+            array('type' => EpayTools::ROUND_DEFAULT, 'name' => 'Default'),
+            array('type' => EpayTools::ROUND_UP, 'name' => 'Always up'),
+            array('type' => EpayTools::ROUND_DOWN, 'name' => 'Always down')
         );
 
         // Init Fields form array
