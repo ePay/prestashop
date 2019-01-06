@@ -34,7 +34,7 @@ class EPayApi
      */
     public function capture($merchantnumber, $transactionid, $amount)
     {
-        $epay_params = array();
+        $epay_params = [];
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
         $epay_params['amount'] = (string)$amount;
@@ -55,7 +55,7 @@ class EPayApi
      */
     public function moveascaptured($merchantnumber, $transactionid)
     {
-        $epay_params = array();
+        $epay_params = [];
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
         $epay_params['epayresponse'] = "-1";
@@ -75,7 +75,7 @@ class EPayApi
      */
     public function credit($merchantnumber, $transactionid, $amount)
     {
-        $epay_params = array();
+        $epay_params = [];
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
         $epay_params['amount'] = (string)$amount;
@@ -96,7 +96,7 @@ class EPayApi
      */
     public function delete($merchantnumber, $transactionid)
     {
-        $epay_params = array();
+        $epay_params = [];
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
         $epay_params['pwd'] = (string)$this->pwd;
@@ -116,7 +116,7 @@ class EPayApi
      */
     public function getEpayError($merchantnumber, $epay_response_code, $language)
     {
-        $epay_params = array();
+        $epay_params = [];
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['language'] = $language;
         $epay_params['pwd'] = (string)$this->pwd;
@@ -141,7 +141,7 @@ class EPayApi
      */
     public function getPbsError($merchantnumber, $pbs_response_code, $language)
     {
-        $epay_params = array();
+        $epay_params = [];
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['language'] = $language;
         $epay_params['pbsresponsecode'] = $pbs_response_code;
@@ -166,7 +166,7 @@ class EPayApi
      */
     public function gettransaction($merchantnumber, $transactionid)
     {
-        $epay_params = array();
+        $epay_params = [];
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
         $epay_params['pwd'] = (string)$this->pwd;
@@ -185,7 +185,7 @@ class EPayApi
      */
     public function gettransactionInformation($merchantnumber, $transactionid)
     {
-        $epay_params = array();
+        $epay_params = [];
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
         $epay_params['pwd'] = (string)$this->pwd;
@@ -212,7 +212,7 @@ class EPayApi
      */
     public function getcardinfo($merchantnumber, $cardno_prefix, $amount, $currency, $acquirer)
     {
-        $epay_params = array();
+        $epay_params = [];
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['cardno_prefix'] = $cardno_prefix;
         $epay_params['amount'] = $amount;

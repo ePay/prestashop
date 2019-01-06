@@ -1,7 +1,7 @@
 <?php
 
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{epay}prestashop>epay_d26ff06a21662e7c2df72a0b30085cc7'] = 'Modtag online betalinger hurtigt og sikkert med Bambora Online ePay';
 $_MODULE['<{epay}prestashop>epay_8eb586bacbf2071c2839adfec6352521'] = 'Du skal have en SOAP klient indstalleret for at bruge Remote API. Kontakt din hosting udbyder for mere information.';
 $_MODULE['<{epay}prestashop>epay_dac9b1014496385a9b24edb85cea7e24'] = 'Hvis du i ePay Administrationen (API/Webservices -> Adgang) har sat et kodeord til webservice, skal du indtaste dette her.';

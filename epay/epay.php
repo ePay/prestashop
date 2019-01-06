@@ -35,8 +35,8 @@ class EPay extends PaymentModule
         $this->author = 'Bambora Online';
         $this->tab = 'payments_gateways';
 
-        $this->ps_versions_compliancy = array('min' => '1.5', 'max' => _PS_VERSION_);
-        $this->controllers = array('accept', 'callback', 'payment', 'paymentrequest');
+        $this->ps_versions_compliancy = ['min' => '1.5', 'max' => _PS_VERSION_];
+        $this->controllers = ['accept', 'callback', 'payment', 'paymentrequest'];
         $this->is_eu_compatible = 1;
         $this->bootstrap = true;
 
@@ -100,7 +100,7 @@ class EPay extends PaymentModule
     {
         $table_name = _DB_PREFIX_ . 'epay_transactions';
 
-        $columns = array(
+        $columns = [
             'id_order' => 'int(10) unsigned NOT NULL',
             'id_cart' => 'int(10) unsigned NOT NULL',
             'epay_transaction_id' => 'int(10) unsigned NOT NULL',
@@ -117,7 +117,7 @@ class EPay extends PaymentModule
             'credited' => 'tinyint(1) NOT NULL DEFAULT 0',
             'deleted' => 'tinyint(1) NOT NULL DEFAULT 0',
             'date_add' => 'datetime NOT NULL'
-        );
+        ];
 
         $query = 'CREATE TABLE IF NOT EXISTS `' . $table_name . '` (';
 
@@ -208,128 +208,128 @@ class EPay extends PaymentModule
         // Get default Language
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
 
-        $switch_options = array(
-            array( 'id' => 'active_on', 'value' => 1, 'label' => 'Yes'),
-            array( 'id' => 'active_off', 'value' => 0, 'label' => 'No'),
-        );
+        $switch_options = [
+            [ 'id' => 'active_on', 'value' => 1, 'label' => 'Yes'],
+            [ 'id' => 'active_off', 'value' => 0, 'label' => 'No'],
+        ];
 
-        $windowstate_options =  array(
-            array( 'type' => 1, 'name' => 'Overlay' ),
-            array( 'type' => 3, 'name' => 'Fullscreen' )
-        );
+        $windowstate_options =  [
+            [ 'type' => 1, 'name' => 'Overlay' ],
+            [ 'type' => 3, 'name' => 'Fullscreen' ]
+        ];
 
-        $displayPaymentLogoLocation = array(
-            array( 'id_option' => 'left_column', 'name' => 'Left Column' ),
-            array( 'id_option' => 'right_column','name' => 'Right Column' ),
-            array( 'id_option' => 'footer', 'name' => 'Footer' ),
-            array( 'id_option' => 'hide', 'name' => 'Hide' )
-        );
+        $displayPaymentLogoLocation = [
+            [ 'id_option' => 'left_column', 'name' => 'Left Column' ],
+            [ 'id_option' => 'right_column','name' => 'Right Column' ],
+            [ 'id_option' => 'footer', 'name' => 'Footer' ],
+            [ 'id_option' => 'hide', 'name' => 'Hide' ]
+        ];
 
         $statuses = OrderState::getOrderStates($this->context->language->id);
-        $selectCaptureStatus = array();
+        $selectCaptureStatus = [];
         foreach ($statuses as $status) {
-            $selectCaptureStatus[] = array('key' => $status["id_order_state"], 'name' => $status["name"]);
+            $selectCaptureStatus[] = ['key' => $status["id_order_state"], 'name' => $status["name"]];
         }
 
-        $rounding_modes = array(
-            array( 'type' => EpayTools::ROUND_DEFAULT, 'name' => 'Default'),
-            array( 'type' => EpayTools::ROUND_UP, 'name' => 'Always up'),
-            array( 'type' => EpayTools::ROUND_DOWN, 'name' => 'Always down')
-        );
+        $rounding_modes = [
+            [ 'type' => EpayTools::ROUND_DEFAULT, 'name' => 'Default'],
+            [ 'type' => EpayTools::ROUND_UP, 'name' => 'Always up'],
+            [ 'type' => EpayTools::ROUND_DOWN, 'name' => 'Always down']
+        ];
 
         // Init Fields form array
-        $fields_form = array();
-        $fields_form[0]['form'] = array(
-            'legend' => array(
+        $fields_form = [];
+        $fields_form[0]['form'] = [
+            'legend' => [
                 'title' => 'Settings'
-            ),
-            'input' => array(
-                array(
+            ],
+            'input' => [
+                [
                     'type' => 'text',
                     'label' => 'Merchant number',
                     'name' => 'EPAY_MERCHANTNUMBER',
                     'size' => 40,
                     'required' => true
-                ),
-                array(
+                ],
+                [
                     'type' => 'select',
                     'label' => 'Window state',
                     'name' => 'EPAY_WINDOWSTATE',
                     'required' => true,
-                    'options' => array(
+                    'options' => [
                        'query' => $windowstate_options,
                        'id' => 'type',
                        'name' => 'name'
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     'type' => 'text',
                     'label' => 'Payment Window ID',
                     'name' => 'EPAY_WINDOWID',
                     'size' => 40,
                     'required' => true
-                ),
-                array(
+                ],
+                [
                     'type' => 'text',
                     'label' => 'MD5 Key',
                     'name' => 'EPAY_MD5KEY',
                     'size' => 40,
                     'required' => false
-                ),
-                array(
+                ],
+                [
                     'type' => 'text',
                     'label' => 'Remote API password',
                     'name' => 'EPAY_REMOTE_API_PASSWORD',
                     'size' => 40,
                     'required' => false,
-                ),
-                array(
+                ],
+                [
                     'type' => 'text',
                     'label' => 'Group ID',
                     'name' => 'EPAY_GROUP',
                     'size' => 40,
                     'required' => false
-                ),
-                array(
+                ],
+                [
                     'type' => 'text',
                     'label' => 'Payment method title',
                     'name' => 'EPAY_TITLE',
                     'size' => 40,
                     'required' => false
-                ),
-                array(
+                ],
+                [
                     'type' => 'switch',
                     'label' => 'Enable Remote API',
                     'name' => 'EPAY_ENABLE_REMOTE_API',
                     'is_bool' => true,
                     'required' => false,
                     'values' => $switch_options
-                ),
-                array(
+                ],
+                [
                     'type' => 'switch',
                     'label' => 'Use own receipt',
                     'name' => 'EPAY_OWNRECEIPT',
                     'is_bool' => true,
                     'required' => false,
                     'values' => $switch_options
-                ),
-                array(
+                ],
+                [
                     'type' => 'switch',
                     'label' => 'Use instant capture',
                     'name' => 'EPAY_INSTANTCAPTURE',
                     'is_bool' => true,
                     'required' => false,
                     'values' => $switch_options
-                ),
-                array(
+                ],
+                [
                     'type' => 'switch',
                     'label' => 'Add transaction fee to shipping',
                     'name' => 'EPAY_ADDFEETOSHIPPING',
                     'is_bool' => true,
                     'required' => false,
                     'values' => $switch_options
-                ),
-                array(
+                ],
+                [
                     'type' => 'switch',
                     'label' => 'Enable invoice data',
                     'name' => 'EPAY_ENABLE_INVOICE',
@@ -337,87 +337,87 @@ class EPay extends PaymentModule
                     'is_bool' => true,
                     'required' => false,
                     'values' => $switch_options
-                ),
-                array(
+                ],
+                [
                     'type' => 'switch',
                     'label' => 'Enable payment request',
                     'name' => 'EPAY_ENABLE_PAYMENTREQUEST',
                     'is_bool' => true,
                     'required' => false,
                     'values' => $switch_options
-                ),
-                array(
+                ],
+                [
                   'type' => 'switch',
                     'label' => 'Only show payment logos at checkout',
                     'name' => 'EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT',
                     'is_bool' => true,
                     'required' => false,
                     'values' => $switch_options
-                ),
-                array(
+                ],
+                [
                   'type' => 'switch',
                     'label' => 'Disable Mobile Payment Window',
                     'name' => 'EPAY_DISABLE_MOBILE_PAYMENTWINDOW',
                     'is_bool' => true,
                     'required' => false,
                     'values' => $switch_options
-                ),
-                array(
+                ],
+                [
                   'type' => 'switch',
                     'label' => 'Capture payment on status changed',
                     'name' => 'EPAY_CAPTUREONSTATUSCHANGED',
                     'is_bool' => true,
                     'required' => false,
                     'values' => $switch_options
-                ),
-                array(
+                ],
+                [
                     'type' => 'select',
                     'label' => 'Capture on status changed to',
                     'name' => 'EPAY_CAPTURE_ON_STATUS[]',
                     'class' => 'chosen',
                     'multiple' => true,
                     'required' => false,
-                    'options' => array(
+                    'options' => [
                        'query' => $selectCaptureStatus,
                        'id' => 'key',
                        'name' => 'name'
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     'type' => 'text',
                     'label' => 'Capture on status changed failure e-mail',
                     'name' => 'EPAY_AUTOCAPTURE_FAILUREEMAIL',
                     'size' => 40,
                     'required' => false
-                ),
-                array(
+                ],
+                [
                     'type' => 'select',
                     'label' => 'Display payment logo block',
                     'name' => 'EPAY_ENABLE_PAYMENTLOGOBLOCK',
                     'required' => false,
-                    'options' => array(
+                    'options' => [
                         'query' => $displayPaymentLogoLocation,
                         'id' => 'id_option',
                         'name' => 'name'
-                    ),
-                ),
-                array(
+                    ],
+                ],
+                [
                     'type' => 'select',
                     'label' => 'Rounding mode',
                     'name' => 'EPAY_ROUNDING_MODE',
                     'required' => false,
-                    'options' => array(
+                    'options' => [
                        'query' => $rounding_modes,
                        'id' => 'type',
                        'name' => 'name'
-                    )
-                )
-            ),
-            'submit' => array(
+                    ]
+                ]
+            ],
+            'submit' => [
                 'title' => 'Save',
                 'class' => 'button'
-            )
-        );
+            ]
+        ];
 
         $helper = new HelperForm();
 
@@ -436,18 +436,18 @@ class EPay extends PaymentModule
         $helper->show_toolbar = true;        // false -> remove toolbar
         $helper->toolbar_scroll = true;      // yes - > Toolbar is always visible on the top of the screen.
         $helper->submit_action = 'submit'.$this->name;
-        $helper->toolbar_btn = array(
+        $helper->toolbar_btn = [
             'save' =>
-            array(
+            [
                 'desc' => $this->l('Save'),
                 'href' => AdminController::$currentIndex.'&configure='.$this->name.'&save'.$this->name.
                 '&token='.Tools::getAdminTokenLite('AdminModules'),
-            ),
-            'back' => array(
+            ],
+            'back' => [
                 'href' => AdminController::$currentIndex.'&token='.Tools::getAdminTokenLite('AdminModules'),
                 'desc' => $this->l('Back to list')
-            )
-        );
+            ]
+        ];
 
         // Load current value
         $helper->fields_value['EPAY_MERCHANTNUMBER'] = Configuration::get('EPAY_MERCHANTNUMBER');
@@ -797,12 +797,12 @@ class EPay extends PaymentModule
         $paymentWindowJsUrl = "https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js";
         $callToActionText = Tools::strlen(Configuration::get("EPAY_TITLE")) > 0 ? Configuration::get("EPAY_TITLE") : "Bambora Online ePay";
 
-        $paymentData = array('epayPaymentWindowJsUrl' => $paymentWindowJsUrl,
+        $paymentData = ['epayPaymentWindowJsUrl' => $paymentWindowJsUrl,
                              'epayPaymentWindowRequest' => json_encode($epayPaymentWindowRequest),
                              'epayMerchant' => $epayPaymentWindowRequest["epay_merchantnumber"],
                              'epayPaymentTitle' => $callToActionText,
                              'thisPathEpay' => $this->_path
-                            );
+                            ];
 
         $this->context->smarty->assign($paymentData);
 
@@ -829,19 +829,19 @@ class EPay extends PaymentModule
             return;
         }
 
-        $paymentInfoData = array('merchantNumber' => Configuration::get('EPAY_MERCHANTNUMBER'),
+        $paymentInfoData = ['merchantNumber' => Configuration::get('EPAY_MERCHANTNUMBER'),
                                  'onlyShowLogoes' => Configuration::get('EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT')
-                                );
+                                ];
         $this->context->smarty->assign($paymentInfoData);
 
         $callToActionText = Tools::strlen(Configuration::get("EPAY_TITLE")) > 0 ? Configuration::get("EPAY_TITLE") : "Bambora Online ePay";
 
         $epayPaymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
         $epayPaymentOption->setCallToActionText($callToActionText)
-                       ->setAction($this->context->link->getModuleLink($this->name, 'payment', array(), true))
+                       ->setAction($this->context->link->getModuleLink($this->name, 'payment', [], true))
                        ->setAdditionalInformation($this->context->smarty->fetch('module:epay/views/templates/front/paymentinfo.tpl'));
 
-        $paymentOptions = array();
+        $paymentOptions = [];
         $paymentOptions[] = $epayPaymentOption;
 
         return $paymentOptions;
@@ -986,7 +986,7 @@ class EPay extends PaymentModule
         if (Configuration::get('EPAY_ENABLE_PAYMENTLOGOBLOCK') === 'footer') {
             $merchantnumber = Configuration::get('EPAY_MERCHANTNUMBER');
 
-            $this->context->smarty->assign(array('merchantnumber' => $merchantnumber));
+            $this->context->smarty->assign(['merchantnumber' => $merchantnumber]);
 
             $output .= $this->display(__FILE__, 'blockepaymentlogo.tpl');
         }
@@ -1005,7 +1005,7 @@ class EPay extends PaymentModule
         if (Configuration::get('EPAY_ENABLE_PAYMENTLOGOBLOCK') === 'left_column') {
             $merchantnumber = Configuration::get('EPAY_MERCHANTNUMBER');
 
-            $this->context->smarty->assign(array('merchantnumber' => $merchantnumber));
+            $this->context->smarty->assign(['merchantnumber' => $merchantnumber]);
 
             return $this->display(__FILE__, 'blockepaymentlogo.tpl');
         }
@@ -1022,7 +1022,7 @@ class EPay extends PaymentModule
         if (Configuration::get('EPAY_ENABLE_PAYMENTLOGOBLOCK') === 'right_column') {
             $merchantnumber = Configuration::get('EPAY_MERCHANTNUMBER');
 
-            $this->context->smarty->assign(array('merchantnumber' => $merchantnumber));
+            $this->context->smarty->assign(['merchantnumber' => $merchantnumber]);
 
             return $this->display(__FILE__, 'blockepaymentlogo.tpl');
         }
@@ -1078,7 +1078,7 @@ class EPay extends PaymentModule
                 $id_lang = (int)$this->context->language->id;
                 $dir_mail = dirname(__FILE__).'/mails/';
                 $mailTo = Configuration::get('EPAY_AUTOCAPTURE_FAILUREEMAIL');
-                Mail::Send($id_lang, 'autocapturefailed', 'Auto capture of ' . $params['id_order'] . ' failed', array('{message}' => $e->getMessage()), $mailTo, null, null, null, null, null, $dir_mail);
+                Mail::Send($id_lang, 'autocapturefailed', 'Auto capture of ' . $params['id_order'] . ' failed', ['{message}' => $e->getMessage()], $mailTo, null, null, null, null, null, $dir_mail);
             }
         }
 
@@ -1096,7 +1096,7 @@ class EPay extends PaymentModule
      */
     public function createPaymentWindowRequest()
     {
-        $parameters = array();
+        $parameters = [];
         $parameters["epay_encoding"] = "UTF-8";
         $parameters["epay_merchantnumber"] = Configuration::get('EPAY_MERCHANTNUMBER');
         $parameters["epay_cms"] = EpayTools::getModuleHeaderInfo();
@@ -1123,9 +1123,9 @@ class EPay extends PaymentModule
 
         $parameters["epay_amount"]  = $amountInMinorunits;
         $parameters["epay_orderid"]  = $this->context->cart->id;
-        $parameters["epay_accepturl"] = $this->context->link->getModuleLink($this->name, 'accept', array(), true);
+        $parameters["epay_accepturl"] = $this->context->link->getModuleLink($this->name, 'accept', [], true);
         $parameters["epay_cancelurl"] = $this->context->link->getPageLink('order', true, null, "step=3");
-        $parameters["epay_callbackurl"] = $this->context->link->getModuleLink($this->name, 'callback', array(), true);
+        $parameters["epay_callbackurl"] = $this->context->link->getModuleLink($this->name, 'callback', [], true);
         $parameters["instantcallback"] = 0;
 
         if (Configuration::get('EPAY_ENABLE_INVOICE')) {
@@ -1152,7 +1152,7 @@ class EPay extends PaymentModule
      */
     private function createInvoiceData($customer, $summary, $currency)
     {
-        $invoice = array();
+        $invoice = [];
         $invoice["customer"]["email"] = $customer->email;
         $invoice["customer"]["name"] = $this->removeSpecialCharacters($summary["invoice"]->firstname . ' ' . $summary["invoice"]->lastname);
         $invoice["customer"]["address"] = $this->removeSpecialCharacters($summary["invoice"]->address1);
@@ -1168,44 +1168,44 @@ class EPay extends PaymentModule
 
         $minorunits = EpayTools::getCurrencyMinorunits($currency);
         $roundingMode = Configuration::get('EPAY_ROUNDING_MODE');
-        $invoice["lines"] = array();
+        $invoice["lines"] = [];
 
         foreach ($summary["products"] as $product) {
-            $invoice["lines"][] = array(
+            $invoice["lines"][] = [
                 "id" => ($product["reference"] == "" ? $product["id_product"] : $product["reference"]),
                 "description" => $this->removeSpecialCharacters($product["name"]),
                 "quantity" => (int)$product["cart_quantity"],
                 "price" => EpayTools::convertPriceToMinorUnits($product["price"], $minorunits, $roundingMode),
                 "vat" => $product["rate"]
-            );
+            ];
         }
 
         if ($summary["total_wrapping"] > 0) {
-            $invoice["lines"][] = array(
+            $invoice["lines"][] = [
                 "id" => $this->l('wrapping'),
                 "description" => $this->l('Gift wrapping'),
                 "quantity" => 1,
                 "price" => EpayTools::convertPriceToMinorUnits($summary["total_wrapping_tax_exc"], $minorunits, $roundingMode),
                 "vat" => $summary["total_wrapping_tax_exc"] > 0 ? round((((float)$summary["total_wrapping"] - (float)$summary["total_wrapping_tax_exc"]) / (float)$summary["total_wrapping_tax_exc"]) *100)  : 0
-            );
+            ];
         }
 
-        $invoice["lines"][] = array(
+        $invoice["lines"][] = [
                 "id" => $this->l('shipping'),
                 "description" => $this->l('Shipping'),
                 "quantity" => 1,
                 "price" => EpayTools::convertPriceToMinorUnits($summary["total_shipping_tax_exc"], $minorunits, $roundingMode),
                 "vat" => $summary["total_shipping_tax_exc"] > 0 ? round((((float)$summary["total_shipping"] - (float)$summary["total_shipping_tax_exc"]) / (float)$summary["total_shipping_tax_exc"]) *100) : 0
-            );
+            ];
 
         foreach ($summary["discounts"] as $discount) {
-            $invoice["lines"][] = array(
+            $invoice["lines"][] = [
                 "id" => $discount["id_discount"],
                 "description" => $this->removeSpecialCharacters($discount["description"]),
                 "quantity" => 1,
                 "price" => EpayTools::convertPriceToMinorUnits($discount["value_tax_exc"], $minorunits, $roundingMode) * -1,
                 "vat" => $discount["value_tax_exc"] > 0 ? round((((float)$discount["value_real"] - (float)$discount["value_tax_exc"]) / (float)$discount["value_tax_exc"]) *100) : 0
-            );
+            ];
         }
 
         $json_invoice = json_encode($invoice, JSON_UNESCAPED_UNICODE);
@@ -1441,7 +1441,7 @@ class EPay extends PaymentModule
             $historyArray = $epayTransaction->history->TransactionHistoryInfo;
 
             if (!array_key_exists(0, $epayTransaction->history->TransactionHistoryInfo)) {
-                $historyArray = array($epayTransaction->history->TransactionHistoryInfo);
+                $historyArray = [$epayTransaction->history->TransactionHistoryInfo];
                 // convert to array
             }
 
@@ -1809,57 +1809,57 @@ class EPay extends PaymentModule
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
 
         // Init Fields form array
-        $fields_form = array();
-        $fields_form[0]['form'] = array(
-            'legend' => array(
+        $fields_form = [];
+        $fields_form[0]['form'] = [
+            'legend' => [
                 'title' => $this->l('Create payment request'),
                 'image' => $this->_path.'/views/img/logo_small.png'
-            ),
-            'input' => array(
-                array(
+            ],
+            'input' => [
+                [
                     'type' => 'text',
                     'label' => $this->l('Requester name'),
                     'name' => 'epay_paymentrequest_requester_name',
                     'size' => 20,
                     'required' => true
-                ),
-                array(
+                ],
+                [
                     'type' => 'textarea',
                     'label' => $this->l('Requester comment'),
                     'name' => 'epay_paymentrequest_requester_comment',
                     'rows' => 3,
                     'cols' => 50,
                     'required' => false
-                ),
-                array(
+                ],
+                [
                     'type' => 'text',
                     'label' => $this->l('Recipient name'),
                     'name' => 'epay_paymentrequest_recipient_name',
                     'size' => 20,
                     'required' => true
-                ),
-                array(
+                ],
+                [
                     'type' => 'text',
                     'label' => $this->l('Recipient e-mail'),
                     'name' => 'epay_paymentrequest_recipient_email',
                     'size' => 20,
                     'required' => true
-                ),
-                array(
+                ],
+                [
                     'type' => 'text',
                     'label' => $this->l('Reply to name'),
                     'name' => 'epay_paymentrequest_replyto_name',
                     'size' => 20,
                     'required' => true
-                ),
-                array(
+                ],
+                [
                     'type' => 'text',
                     'label' => $this->l('Reply to e-mail'),
                     'name' => 'epay_paymentrequest_replyto_email',
                     'size' => 20,
                     'required' => true
-                ),
-                array(
+                ],
+                [
                     'type' => 'text',
                     'label' => $this->l('Amount'),
                     'name' => 'epay_paymentrequest_amount',
@@ -1867,14 +1867,14 @@ class EPay extends PaymentModule
                     'suffix' => $currencyIsoCode,
                     'required' => true,
                     'readonly' => false
-                ),
-            ),
-            'submit' => array(
+                ],
+            ],
+            'submit' => [
                 'title' => $this->l('Send payment request'),
                 'id' => 'epay_paymentrequest_submit',
                 'class' => 'button'
-            )
-        );
+            ]
+        ];
 
         $helper = new HelperForm();
 
@@ -1938,22 +1938,22 @@ class EPay extends PaymentModule
             $sql = 'SELECT COUNT(*) FROM '._DB_PREFIX_.'epay_transactions WHERE `id_order` = ' . (int)$orderid;
             $orderPostfix = Db::getInstance()->getValue($sql) + 1;
 
-            $params = array();
+            $params = [];
 
-            $params["authentication"] = array();
+            $params["authentication"] = [];
             $params["authentication"]["merchantnumber"] = Configuration::get('EPAY_MERCHANTNUMBER');
             $params["authentication"]["password"] = Configuration::get('EPAY_REMOTE_API_PASSWORD');
 
             $params["language"] = ($languageIso == "da" ? "da" : "en");
 
-            $params["paymentrequest"] = array();
+            $params["paymentrequest"] = [];
             $params["paymentrequest"]["reference"] = $orderid;
             $params["paymentrequest"]["closeafterxpayments"] = 1;
 
-            $params["paymentrequest"]["parameters"] = array();
+            $params["paymentrequest"]["parameters"] = [];
             $amountSanitized = (float)str_replace(',', '.', $amount);
             $params["paymentrequest"]["parameters"]["amount"] = EpayTools::convertPriceToMinorUnits($amountSanitized, $minorunits, Configuration::get('EPAY_ROUNDING_MODE'));
-            $params["paymentrequest"]["parameters"]["callbackurl"] = $this->context->link->getModuleLink($this->name, 'paymentrequest', array('id_cart' => $order->id_cart), true);
+            $params["paymentrequest"]["parameters"]["callbackurl"] = $this->context->link->getModuleLink($this->name, 'paymentrequest', ['id_cart' => $order->id_cart], true);
             $params["paymentrequest"]["parameters"]["currency"] = $currencyIsoCode;
             $params["paymentrequest"]["parameters"]["group"] = Configuration::get('EPAY_GROUP');
             $params["paymentrequest"]["parameters"]["instantcapture"] = Configuration::get('EPAY_INSTANTCAPTURE') == "1" ? "automatic" : "manual";
@@ -1961,31 +1961,31 @@ class EPay extends PaymentModule
             $params["paymentrequest"]["parameters"]["windowid"] = Configuration::get('EPAY_WINDOWID');
 
             $soapClient = new SoapClient("https://paymentrequest.api.epay.eu/v1/PaymentRequestSOAP.svc?wsdl");
-            $createPaymentRequest = $soapClient->createpaymentrequest(array('createpaymentrequestrequest' => $params));
+            $createPaymentRequest = $soapClient->createpaymentrequest(['createpaymentrequestrequest' => $params]);
 
             if ($createPaymentRequest->createpaymentrequestResult->result) {
-                $sendParams = array();
+                $sendParams = [];
 
                 $sendParams["authentication"] = $params["authentication"];
 
                 $sendParams["language"] = ($languageIso == "da" ? "da" : "en");
 
-                $sendParams["email"] = array();
+                $sendParams["email"] = [];
                 $sendParams["email"]["comment"] = $comment;
                 $sendParams["email"]["requester"] = $requester;
 
-                $sendParams["email"]["recipient"] = array();
+                $sendParams["email"]["recipient"] = [];
                 $sendParams["email"]["recipient"]["emailaddress"] = $recipient_email;
                 $sendParams["email"]["recipient"]["name"] = $recipient_name;
 
-                $sendParams["email"]["replyto"] = array();
+                $sendParams["email"]["replyto"] = [];
                 $sendParams["email"]["replyto"]["emailaddress"] = $replyto_email;
                 $sendParams["email"]["replyto"]["name"] = $replyto_name;
 
-                $sendParams["paymentrequest"] = array();
+                $sendParams["paymentrequest"] = [];
                 $sendParams["paymentrequest"]["paymentrequestid"] = $createPaymentRequest->createpaymentrequestResult->paymentrequest->paymentrequestid;
 
-                $sendPaymentRequest = $soapClient->sendpaymentrequest(array('sendpaymentrequestrequest' => $sendParams));
+                $sendPaymentRequest = $soapClient->sendpaymentrequest(['sendpaymentrequestrequest' => $sendParams]);
 
                 if ($sendPaymentRequest->sendpaymentrequestResult->result) {
                     $message = "Payment request (" . $createPaymentRequest->createpaymentrequestResult->paymentrequest->paymentrequestid . ") created and sent to: " . $recipient_email;
