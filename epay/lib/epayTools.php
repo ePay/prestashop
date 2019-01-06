@@ -26,7 +26,7 @@ class EpayTools
     {
         $ePayVersion = EPay::MODULE_VERSION;
         $prestashopVersion = _PS_VERSION_;
-        $result = 'Prestashop/' . $prestashopVersion . ' Module/' . $ePayVersion . ' PHP/'. phpversion();
+        $result = 'Prestashop/' . $prestashopVersion . ' Module/' . $ePayVersion . ' PHP/'. PHP_VERSION;
 
         return $result;
     }
