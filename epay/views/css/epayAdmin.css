@@ -53,7 +53,7 @@
     width: 40px;
     height: 40px;
     border-radius: 21px;
-        display: inline-block;
+    display: inline-block;
     vertical-align: middle;
     margin-right: 10px;
     margin-top: 25px;
@@ -112,30 +112,30 @@
 .epay_widthAllSpace {
     width: 100%;
     clear: both;
-    overflow:auto
+    overflow: auto;
 }
 .epay_fraud {
-   color:red;
-   font-weight:bold;
+    color: red;
+    font-weight: bold;
 }
 .epay_paymenttype {
-   display: flex;
-   align-items: center;
+    display: flex;
+    align-items: center;
 }
 .epay_paymenttype img {
-    margin-right:3px;
+    margin-right: 3px;
 }
 .epay_button {
     margin: 3px 3px 3px 0;
 }
 .epay_deleted {
-    color:red;
-    font-weight:bold;
+    color: red;
+    font-weight: bold;
 }
 .epay_table_title {
-   float:left;
+    float: left;
 }
-.epay_table th, 
+.epay_table th,
 .epay_table td {
     padding: 5px;
     text-align: left;

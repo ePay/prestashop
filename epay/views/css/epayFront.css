@@ -1,5 +1,5 @@
 .epay_paymentwindow_container p.payment_module a.epay_payment_content {
-    background: url("../img/epay.png");
+    background: url('../img/epay.png');
     background-position: 15px center;
     background-repeat: no-repeat;
     background-color: #fbfbfb;
@@ -12,12 +12,12 @@
 
 .epay_paymentwindow_container p.payment_module a.epay_payment_content::after {
     display: block;
-    content: "\f054";
+    content: '\f054';
     position: absolute;
     right: 15px;
     margin-top: -11px;
     top: 50%;
-    font-family: "FontAwesome";
+    font-family: 'FontAwesome';
     font-size: 25px;
     height: 22px;
     width: 14px;
