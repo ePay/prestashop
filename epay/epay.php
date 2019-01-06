@@ -139,7 +139,7 @@ class EPay extends PaymentModule
         foreach ($columns as $column_name => $options) {
             if (!$this->mysqlColumnExists($table_name, $column_name)) {
                 $query .= ($i > 0 ? ', ' : '') . 'ADD `' . $column_name . '` ' . $options . ($previous_column != '' ? ' AFTER `' . $previous_column . '`' : ' FIRST');
-                $i++;
+                ++$i;
             }
             $previous_column = $column_name;
         }
@@ -1445,7 +1445,7 @@ class EPay extends PaymentModule
                 // convert to array
             }
 
-            for ($i = 0; $i < count($historyArray); $i++) {
+            for ($i = 0; $i < count($historyArray); ++$i) {
                 $html .= "<tr><td>" . str_replace("T", " ", $historyArray[$i]->created) . "</td>";
                 $html .= "<td>";
                 if (Tools::strlen($historyArray[$i]->username) > 0) {
