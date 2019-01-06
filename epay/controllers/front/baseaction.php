@@ -203,7 +203,7 @@ abstract class BaseAction extends ModuleFrontController
             }
         } catch (Exception $e) {
             $responseCode = 500;
-            $message = "Process order failed with an exception: " .$e->getMessage();
+            $message = "Process order failed with an exception: " . $e->getMessage();
         }
 
         return $message;
