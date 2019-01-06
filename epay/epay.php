@@ -220,7 +220,7 @@ class EPay extends PaymentModule
 
         $displayPaymentLogoLocation = array(
             array( 'id_option' => 'left_column', 'name' => 'Left Column' ),
-            array( 'id_option' => 'right_column','name' => 'Right Column' ),
+            array( 'id_option' => 'right_column', 'name' => 'Right Column' ),
             array( 'id_option' => 'footer', 'name' => 'Footer' ),
             array( 'id_option' => 'hide', 'name' => 'Hide' )
         );
