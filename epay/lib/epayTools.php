@@ -210,13 +210,13 @@ class EpayTools
 
         switch ($rounding) {
             case EpayTools::ROUND_UP:
-                $amount = ceil($amount * pow(10, $minorunits));
+                $amount = ceil($amount * 10** $minorunits);
                 break;
             case EpayTools::ROUND_DOWN:
-                $amount = floor($amount * pow(10, $minorunits));
+                $amount = floor($amount * 10** $minorunits);
                 break;
             default:
-                $amount = round($amount * pow(10, $minorunits));
+                $amount = round($amount * 10** $minorunits);
                 break;
         }
 
@@ -236,7 +236,7 @@ class EpayTools
             return 0;
         }
 
-        return ($amount / pow(10, $minorunits));
+        return ($amount / 10** $minorunits);
     }
 
     /**
