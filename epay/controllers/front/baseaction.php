@@ -16,7 +16,7 @@
 abstract class BaseAction extends ModuleFrontController
 {
     /**
-     * Validate the callback
+     * Validate the callback.
      *
      * @param bool $isPaymentRequest
      * @param string $message
@@ -75,7 +75,7 @@ abstract class BaseAction extends ModuleFrontController
     }
 
     /**
-     * Process Action
+     * Process Action.
      *
      * @param mixed $cart
      * @param bool $isPaymentRequest
@@ -210,7 +210,7 @@ abstract class BaseAction extends ModuleFrontController
     }
 
     /**
-     * Create error log Message
+     * Create error log Message.
      *
      * @param mixed $message
      * @param mixed $cart

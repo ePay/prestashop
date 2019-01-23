@@ -38,7 +38,7 @@ class EPayAcceptModuleFrontController extends BaseAction
     }
 
     /**
-     * Redirect To Accept
+     * Redirect To Accept.
      *
      * @param mixed $cart
      */

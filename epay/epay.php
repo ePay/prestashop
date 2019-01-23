@@ -487,7 +487,7 @@ class EPay extends PaymentModule
         return $html;
     }
     /**
-     * Build Help Text For Settings
+     * Build Help Text For Settings.
      *
      * @return mixed
      */
@@ -613,7 +613,7 @@ class EPay extends PaymentModule
     #region Database actions
 
     /**
-     * Add the transaction to the database
+     * Add the transaction to the database.
      *
      * @param mixed $id_order
      * @param mixed $id_cart
@@ -640,7 +640,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Add an orderid to a recorded transaction
+     * Add an orderid to a recorded transaction.
      *
      * @param mixed $transaction_id
      * @param mixed $id_order
@@ -657,7 +657,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Delete a recorded transaction
+     * Delete a recorded transaction.
      *
      * @param mixed $transaction_id
      * @return bool
@@ -697,7 +697,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Get db transaction for query
+     * Get db transaction for query.
      *
      * @param mixed $query
      * @return mixed
@@ -714,7 +714,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Update database transaction with captured amount
+     * Update database transaction with captured amount.
      *
      * @param mixed $transaction_id
      * @param mixed $amount
@@ -727,7 +727,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Update database transaction with credited amount
+     * Update database transaction with credited amount.
      *
      * @param mixed $transaction_id
      * @param mixed $amount
@@ -741,7 +741,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Delete a transaction
+     * Delete a transaction.
      *
      * @param mixed $transaction_id
      * @return bool
@@ -754,7 +754,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Execute database query
+     * Execute database query.
      *
      * @param mixed $query
      * @return bool
@@ -777,7 +777,7 @@ class EPay extends PaymentModule
     #region Hooks
 
     /**
-     * Hook payment options for Prestashop before 1.7
+     * Hook payment options for Prestashop before 1.7.
      *
      * @param mixed $params
      * @return mixed
@@ -814,7 +814,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Hook payment options for Prestashop 1.7
+     * Hook payment options for Prestashop 1.7.
      *
      * @param mixed $params
      * @return PrestaShop\PrestaShop\Core\Payment\PaymentOption[]
@@ -848,7 +848,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Add payment informations to the order confirmation page
+     * Add payment informations to the order confirmation page.
      *
      * @param mixed $params
      * @return mixed
@@ -894,7 +894,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Create ePay transaction overview and actions
+     * Create ePay transaction overview and actions.
      *
      * @param mixed $params
      * @return string
@@ -942,7 +942,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Adds epayFront.css to the Frontoffice header
+     * Adds epayFront.css to the Frontoffice header.
      */
     public function hookDisplayHeader()
     {
@@ -952,7 +952,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Adds epayAdmin.css to the Backoffice header
+     * Adds epayAdmin.css to the Backoffice header.
      *
      * @param mixed $params
      */
@@ -964,7 +964,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Adds epayAdmin.css to the Backoffice header
+     * Adds epayAdmin.css to the Backoffice header.
      *
      * @param mixed $params
      */
@@ -974,7 +974,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Show epay payment block in the footer
+     * Show epay payment block in the footer.
      *
      * @param mixed $params
      * @return mixed
@@ -995,7 +995,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Show epay payment block in the left column
+     * Show epay payment block in the left column.
      *
      * @param mixed $params
      * @return mixed
@@ -1012,7 +1012,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Show epay payment block in the left column
+     * Show epay payment block in the left column.
      *
      * @param mixed $params
      * @return mixed
@@ -1090,7 +1090,7 @@ class EPay extends PaymentModule
     #region Frontoffice Methodes
 
     /**
-     * Create ePay payment window request
+     * Create ePay payment window request.
      *
      * @return array
      */
@@ -1143,7 +1143,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Collect and create Invoice data
+     * Collect and create Invoice data.
      *
      * @param mixed $customer
      * @param mixed $summary
@@ -1213,7 +1213,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Remove special characters from a string
+     * Remove special characters from a string.
      *
      * @param string $value
      * @return mixed
@@ -1224,7 +1224,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Check if currency is allowed
+     * Check if currency is allowed.
      *
      * @param mixed $cart
      * @return bool
@@ -1249,7 +1249,7 @@ class EPay extends PaymentModule
     #region Backoffice Methodes
 
     /**
-     * Summary of buildTransactionForm
+     * Summary of buildTransactionForm.
      *
      * @param Order $order
      * @return string
@@ -1264,7 +1264,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build the start html for the TransactionForm
+     * Build the start html for the TransactionForm.
      *
      * @return string
      */
@@ -1288,7 +1288,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build the content html for the TransactionForm
+     * Build the content html for the TransactionForm.
      *
      * @param mixed $order
      * @return string
@@ -1344,7 +1344,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * If Remote Api is disabled or if the transaction could not be found in the epay system
+     * If Remote Api is disabled or if the transaction could not be found in the epay system.
      *
      * @return string
      */
@@ -1357,7 +1357,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build the start of the Transaction Form Body
+     * Build the start of the Transaction Form Body.
      *
      * @param mixed $order
      * @param mixed $transactionId
@@ -1407,7 +1407,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build transaction action controls
+     * Build transaction action controls.
      *
      * @param mixed $epayTransaction
      * @return string
@@ -1463,7 +1463,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build Buttons Form
+     * Build Buttons Form.
      *
      * @param mixed $transaction
      * @param mixed $currencyCode
@@ -1557,7 +1557,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build transactionInfoTableRow
+     * Build transactionInfoTableRow.
      *
      * @param mixed $name
      * @param mixed $value
@@ -1570,7 +1570,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build Logo Div
+     * Build Logo Div.
      *
      * @return string
      */
@@ -1586,7 +1586,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build Overlay Message
+     * Build Overlay Message.
      *
      * @param ePayUiMessage $epayUiMessage
      */
@@ -1622,7 +1622,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Process post actions
+     * Process post actions.
      *
      * @return ePayUiMessage|null
      */
@@ -1706,7 +1706,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Get ePay Api error messages (epay and pbs)
+     * Get ePay Api error messages (epay and pbs).
      *
      * @param EPayApi $api
      * @param string $merchant
@@ -1736,7 +1736,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Create ePay Ui Message
+     * Create ePay Ui Message.
      *
      * @param string $type
      * @param string $title
@@ -1754,7 +1754,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build the end html for the TransactionForm
+     * Build the end html for the TransactionForm.
      *
      * @return string
      */
@@ -1773,7 +1773,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Create and add a private order message
+     * Create and add a private order message.
      *
      * @param int $orderId
      * @param string $message
@@ -1794,7 +1794,7 @@ class EPay extends PaymentModule
     #region payment request
 
     /**
-     * Display the payment request form
+     * Display the payment request form.
      *
      * @param mixed $params
      * @return mixed
@@ -1910,7 +1910,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Create payment request
+     * Create payment request.
      *
      * @param Order $order
      * @throws Exception
@@ -2020,7 +2020,7 @@ class EPay extends PaymentModule
     #region Common Methodes
 
     /**
-     * Get Ps Version
+     * Get Ps Version.
      *
      * @return string
      */
