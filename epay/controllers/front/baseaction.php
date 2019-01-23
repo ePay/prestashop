@@ -10,18 +10,18 @@
  * @author    ePay A/S (a Bambora Company)
  * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
- *
  */
 
 abstract class BaseAction extends ModuleFrontController
 {
     /**
-     * Validate the callback
+     * Validate the callback.
      *
-     * @param boolean $isPaymentRequest
+     * @param bool $isPaymentRequest
      * @param string $message
      * @param mixed $cart
-     * @return boolean
+     *
+     * @return bool
      */
     protected function validateAction($isPaymentRequest, &$message, &$cart)
     {
@@ -75,11 +75,12 @@ abstract class BaseAction extends ModuleFrontController
     }
 
     /**
-     * Process Action
+     * Process Action.
      *
      * @param mixed $cart
-     * @param boolean $isPaymentRequest
+     * @param bool $isPaymentRequest
      * @param mixed $responseCode
+     *
      * @return mixed
      */
     protected function processAction($cart, $isPaymentRequest, &$responseCode)
@@ -210,10 +211,11 @@ abstract class BaseAction extends ModuleFrontController
     }
 
     /**
-     * Create error log Message
+     * Create error log Message.
      *
      * @param mixed $message
      * @param mixed $cart
+     *
      * @return string
      */
     protected function createLogMessage($message, $severity = 3, $cart = null)

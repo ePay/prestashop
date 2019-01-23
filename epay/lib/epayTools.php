@@ -18,7 +18,7 @@ class EpayTools
     const ROUND_DEFAULT = 'round_default';
 
     /**
-     * Get the module header information
+     * Get the module header information.
      *
      * @return string
      */
@@ -31,7 +31,7 @@ class EpayTools
     }
 
     /**
-     * Get Ps Version
+     * Get Ps Version.
      *
      * @return string
      */
@@ -47,10 +47,11 @@ class EpayTools
     }
 
     /**
-     * Get ePay language id by string country
+     * Get ePay language id by string country.
      *
      * @param string $strlan
-     * @return integer
+     *
+     * @return int
      */
     public static function getEPayLanguage($strlan)
     {
@@ -105,9 +106,10 @@ class EpayTools
     }
 
     /**
-     * Get card name by card id
+     * Get card name by card id.
      *
      * @param mixed $card_id
+     *
      * @return string
      */
     public static function getCardNameById($card_id)
@@ -179,9 +181,10 @@ class EpayTools
     }
 
     /**
-     * Get Phone Number
+     * Get Phone Number.
      *
      * @param mixed $invoiceAddress
+     *
      * @return mixed
      */
     public function getPhoneNumber($address)
@@ -194,12 +197,13 @@ class EpayTools
     }
 
     /**
-     * Convert Price To MinorUnits
+     * Convert Price To MinorUnits.
      *
      * @param mixed $amount
      * @param mixed $minorunits
      * @param mixed $defaultMinorUnits
-     * @return double|integer
+     *
+     * @return float|int
      */
     public static function convertPriceToMinorUnits($amount, $minorunits, $rounding)
     {
@@ -223,10 +227,11 @@ class EpayTools
     }
 
     /**
-     * Convert Price From MinorUnits
+     * Convert Price From MinorUnits.
      *
      * @param mixed $amount
      * @param mixed $minorunits
+     *
      * @return float
      */
     public static function convertPriceFromMinorUnits($amount, $minorunits)
@@ -239,10 +244,11 @@ class EpayTools
     }
 
     /**
-     * Get Currency MinorUnits
+     * Get Currency MinorUnits.
      *
      * @param mixed $currencyCode
-     * @return integer
+     *
+     * @return int
      */
     public static function getCurrencyMinorunits($currencyCode)
     {

@@ -10,7 +10,6 @@
  * @author    ePay A/S (a Bambora Company)
  * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
- *
  */
 
 include 'lib/epayTools.php';
@@ -57,7 +56,7 @@ class EPay extends PaymentModule
         }
     }
 
-    #region Install and Setup
+    //region Install and Setup
 
     public function install()
     {
@@ -487,7 +486,7 @@ class EPay extends PaymentModule
         return $html;
     }
     /**
-     * Build Help Text For Settings
+     * Build Help Text For Settings.
      *
      * @return mixed
      */
@@ -608,12 +607,12 @@ class EPay extends PaymentModule
         return $html;
     }
 
-    #endregion
+    //endregion
 
-    #region Database actions
+    //region Database actions
 
     /**
-     * Add the transaction to the database
+     * Add the transaction to the database.
      *
      * @param mixed $id_order
      * @param mixed $id_cart
@@ -625,7 +624,8 @@ class EPay extends PaymentModule
      * @param mixed $amount
      * @param mixed $transfee
      * @param mixed $fraud
-     * @return boolean
+     *
+     * @return bool
      */
     public function addDbTransaction($id_order, $id_cart, $transaction_id, $epay_order_id, $paymentcard_id, $cardnopostfix, $currency, $amount, $transfee, $fraud)
     {
@@ -640,11 +640,12 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Add an orderid to a recorded transaction
+     * Add an orderid to a recorded transaction.
      *
      * @param mixed $transaction_id
      * @param mixed $id_order
-     * @return boolean
+     *
+     * @return bool
      */
     public function addDbOrderIdToRecordedTransaction($transaction_id, $id_order)
     {
@@ -657,10 +658,11 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Delete a recorded transaction
+     * Delete a recorded transaction.
      *
      * @param mixed $transaction_id
-     * @return boolean
+     *
+     * @return bool
      */
     public function deleteDbRecordedTransaction($transaction_id)
     {
@@ -676,6 +678,7 @@ class EPay extends PaymentModule
      * Get transactions from the database with order id.
      *
      * @param mixed $id_order
+     *
      * @return mixed
      */
     private function getDbTransactionsByOrderId($id_order)
@@ -688,6 +691,7 @@ class EPay extends PaymentModule
      * Get transactions from the database with cart id.
      *
      * @param mixed $id_cart
+     *
      * @return mixed
      */
     private function getDbTransactionsByCartId($id_cart)
@@ -697,9 +701,10 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Get db transaction for query
+     * Get db transaction for query.
      *
      * @param mixed $query
+     *
      * @return mixed
      */
     private function getDbTransactions($query)
@@ -714,11 +719,12 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Update database transaction with captured amount
+     * Update database transaction with captured amount.
      *
      * @param mixed $transaction_id
      * @param mixed $amount
-     * @return boolean
+     *
+     * @return bool
      */
     private function setDbCaptured($transaction_id, $amount)
     {
@@ -727,11 +733,12 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Update database transaction with credited amount
+     * Update database transaction with credited amount.
      *
      * @param mixed $transaction_id
      * @param mixed $amount
-     * @return boolean
+     *
+     * @return bool
      */
     private function setDbCredited($transaction_id, $amount)
     {
@@ -741,10 +748,11 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Delete a transaction
+     * Delete a transaction.
      *
      * @param mixed $transaction_id
-     * @return boolean
+     *
+     * @return bool
      */
     private function deleteDbTransaction($transaction_id)
     {
@@ -754,10 +762,11 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Execute database query
+     * Execute database query.
      *
      * @param mixed $query
-     * @return boolean
+     *
+     * @return bool
      */
     private function executeDbQuery($query)
     {
@@ -772,14 +781,15 @@ class EPay extends PaymentModule
         return true;
     }
 
-    #endregion
+    //endregion
 
-    #region Hooks
+    //region Hooks
 
     /**
-     * Hook payment options for Prestashop before 1.7
+     * Hook payment options for Prestashop before 1.7.
      *
      * @param mixed $params
+     *
      * @return mixed
      */
     public function hookPayment($params)
@@ -814,9 +824,10 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Hook payment options for Prestashop 1.7
+     * Hook payment options for Prestashop 1.7.
      *
      * @param mixed $params
+     *
      * @return PrestaShop\PrestaShop\Core\Payment\PaymentOption[]
      */
     public function hookPaymentOptions($params)
@@ -848,9 +859,10 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Add payment informations to the order confirmation page
+     * Add payment informations to the order confirmation page.
      *
      * @param mixed $params
+     *
      * @return mixed
      */
     public function hookPaymentReturn($params)
@@ -894,9 +906,10 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Create ePay transaction overview and actions
+     * Create ePay transaction overview and actions.
      *
      * @param mixed $params
+     *
      * @return string
      */
     public function hookAdminOrder($params)
@@ -942,7 +955,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Adds epayFront.css to the Frontoffice header
+     * Adds epayFront.css to the Frontoffice header.
      */
     public function hookDisplayHeader()
     {
@@ -952,7 +965,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Adds epayAdmin.css to the Backoffice header
+     * Adds epayAdmin.css to the Backoffice header.
      *
      * @param mixed $params
      */
@@ -964,7 +977,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Adds epayAdmin.css to the Backoffice header
+     * Adds epayAdmin.css to the Backoffice header.
      *
      * @param mixed $params
      */
@@ -974,9 +987,10 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Show epay payment block in the footer
+     * Show epay payment block in the footer.
      *
      * @param mixed $params
+     *
      * @return mixed
      */
     public function hookFooter($params)
@@ -995,9 +1009,10 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Show epay payment block in the left column
+     * Show epay payment block in the left column.
      *
      * @param mixed $params
+     *
      * @return mixed
      */
     public function hookLeftColumn($params)
@@ -1012,9 +1027,10 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Show epay payment block in the left column
+     * Show epay payment block in the left column.
      *
      * @param mixed $params
+     *
      * @return mixed
      */
     public function hookRightColumn($params)
@@ -1032,7 +1048,9 @@ class EPay extends PaymentModule
      * Try to capture the payment when the status of the order is changed.
      *
      * @param mixed $params
+     *
      * @return void|null
+     *
      * @throws Exception
      */
     public function hookActionOrderStatusPostUpdate($params)
@@ -1085,12 +1103,12 @@ class EPay extends PaymentModule
         return '';
     }
 
-    #endregion
+    //endregion
 
-    #region Frontoffice Methodes
+    //region Frontoffice Methodes
 
     /**
-     * Create ePay payment window request
+     * Create ePay payment window request.
      *
      * @return array
      */
@@ -1143,11 +1161,12 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Collect and create Invoice data
+     * Collect and create Invoice data.
      *
      * @param mixed $customer
      * @param mixed $summary
      * @param mixed $currency
+     *
      * @return string
      */
     private function createInvoiceData($customer, $summary, $currency)
@@ -1213,9 +1232,10 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Remove special characters from a string
+     * Remove special characters from a string.
      *
      * @param string $value
+     *
      * @return mixed
      */
     private function removeSpecialCharacters($value)
@@ -1224,10 +1244,11 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Check if currency is allowed
+     * Check if currency is allowed.
      *
      * @param mixed $cart
-     * @return boolean
+     *
+     * @return bool
      */
     private function checkCurrency($cart)
     {
@@ -1244,14 +1265,15 @@ class EPay extends PaymentModule
         return false;
     }
 
-    #endregion
+    //endregion
 
-    #region Backoffice Methodes
+    //region Backoffice Methodes
 
     /**
-     * Summary of buildTransactionForm
+     * Summary of buildTransactionForm.
      *
      * @param Order $order
+     *
      * @return string
      */
     private function buildTransactionForm($order)
@@ -1264,7 +1286,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build the start html for the TransactionForm
+     * Build the start html for the TransactionForm.
      *
      * @return string
      */
@@ -1288,9 +1310,10 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build the content html for the TransactionForm
+     * Build the content html for the TransactionForm.
      *
      * @param mixed $order
+     *
      * @return string
      */
     private function buildTransactionFormBody($order)
@@ -1344,7 +1367,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * If Remote Api is disabled or if the transaction could not be found in the epay system
+     * If Remote Api is disabled or if the transaction could not be found in the epay system.
      *
      * @return string
      */
@@ -1357,7 +1380,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build the start of the Transaction Form Body
+     * Build the start of the Transaction Form Body.
      *
      * @param mixed $order
      * @param mixed $transactionId
@@ -1365,6 +1388,7 @@ class EPay extends PaymentModule
      * @param mixed $cardType
      * @param mixed $cardno
      * @param mixed $amountInMinorunits
+     *
      * @return string
      */
     private function buildTransactionFormBodyStart($order, $transactionId, $fraud, $cardType, $cardno, $amountInMinorunits)
@@ -1407,9 +1431,10 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build transaction action controls
+     * Build transaction action controls.
      *
      * @param mixed $epayTransaction
+     *
      * @return string
      */
     private function buildTransactionFormBodyActions($epayTransaction, $order)
@@ -1463,10 +1488,11 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build Buttons Form
+     * Build Buttons Form.
      *
      * @param mixed $transaction
      * @param mixed $currencyCode
+     *
      * @return string
      */
     private function buildButtonsForm($transaction, $currencyCode)
@@ -1557,10 +1583,11 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build transactionInfoTableRow
+     * Build transactionInfoTableRow.
      *
      * @param mixed $name
      * @param mixed $value
+     *
      * @return string
      */
     private function transactionInfoTableRow($name, $value)
@@ -1570,7 +1597,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build Logo Div
+     * Build Logo Div.
      *
      * @return string
      */
@@ -1586,7 +1613,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build Overlay Message
+     * Build Overlay Message.
      *
      * @param ePayUiMessage $epayUiMessage
      */
@@ -1622,7 +1649,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Process post actions
+     * Process post actions.
      *
      * @return ePayUiMessage|null
      */
@@ -1706,11 +1733,12 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Get ePay Api error messages (epay and pbs)
+     * Get ePay Api error messages (epay and pbs).
      *
      * @param EPayApi $api
      * @param string $merchant
      * @param mixed $epayApiResponse
+     *
      * @return string
      */
     private function getApiErrorMessage($api, $merchantNumber, $epayApiResponse)
@@ -1736,11 +1764,12 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Create ePay Ui Message
+     * Create ePay Ui Message.
      *
      * @param string $type
      * @param string $title
      * @param string $message
+     *
      * @return ePayUiMessage
      */
     private function createEpayUiMessage($type, $title, $message = '')
@@ -1754,7 +1783,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Build the end html for the TransactionForm
+     * Build the end html for the TransactionForm.
      *
      * @return string
      */
@@ -1773,7 +1802,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Create and add a private order message
+     * Create and add a private order message.
      *
      * @param int $orderId
      * @param string $message
@@ -1791,12 +1820,13 @@ class EPay extends PaymentModule
         }
     }
 
-    #region payment request
+    //region payment request
 
     /**
-     * Display the payment request form
+     * Display the payment request form.
      *
      * @param mixed $params
+     *
      * @return mixed
      */
     private function displayPaymentRequestForm($params)
@@ -1910,10 +1940,12 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Create payment request
+     * Create payment request.
      *
      * @param Order $order
+     *
      * @throws Exception
+     *
      * @return mixed
      */
     private function createPaymentRequest($order)
@@ -2013,14 +2045,14 @@ class EPay extends PaymentModule
         return $html;
     }
 
-    #endregion
+    //endregion
 
-    #endregion
+    //endregion
 
-    #region Common Methodes
+    //region Common Methodes
 
     /**
-     * Get Ps Version
+     * Get Ps Version.
      *
      * @return string
      */
@@ -2035,5 +2067,5 @@ class EPay extends PaymentModule
         }
     }
 
-    #endregion
+    //endregion
 }

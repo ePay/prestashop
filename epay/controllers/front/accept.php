@@ -10,7 +10,6 @@
  * @author    ePay A/S (a Bambora Company)
  * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
- *
  */
 
 include 'baseaction.php';
@@ -38,7 +37,7 @@ class EPayAcceptModuleFrontController extends BaseAction
     }
 
     /**
-     * Redirect To Accept
+     * Redirect To Accept.
      *
      * @param mixed $cart
      */
