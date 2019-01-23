@@ -1186,7 +1186,7 @@ class EPay extends PaymentModule
                 "description" => $this->l('Gift wrapping'),
                 "quantity" => 1,
                 "price" => EpayTools::convertPriceToMinorUnits($summary["total_wrapping_tax_exc"], $minorunits, $roundingMode),
-                "vat" => $summary["total_wrapping_tax_exc"] > 0 ? round((((float)$summary["total_wrapping"] - (float)$summary["total_wrapping_tax_exc"]) / (float)$summary["total_wrapping_tax_exc"]) *100)  : 0
+                "vat" => $summary["total_wrapping_tax_exc"] > 0 ? round((((float)$summary["total_wrapping"] - (float)$summary["total_wrapping_tax_exc"]) / (float)$summary["total_wrapping_tax_exc"]) *100) : 0
             );
         }
 
