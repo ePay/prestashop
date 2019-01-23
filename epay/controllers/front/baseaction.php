@@ -118,8 +118,8 @@ abstract class BaseAction extends ModuleFrontController
                     $truncatedCard = "XXXX XXXX XXXX {$cardnopostfix}";
 
                     $mailVars = array('TransactionId'=>$transaction_Id,
-                                      'PaymentType'=>$paymentMethod,
-                                      'CardNumber'=>$truncatedCard);
+                        'PaymentType'=>$paymentMethod,
+                        'CardNumber'=>$truncatedCard, );
 
                     if (!$isPaymentRequest) {
                         try {
