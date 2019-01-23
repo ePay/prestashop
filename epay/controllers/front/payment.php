@@ -49,10 +49,10 @@ class EpayPaymentModuleFrontController extends ModuleFrontController
         $paymentWindowJsUrl = 'https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js';
 
         $paymentData = array('epayPaymentWindowJsUrl' => $paymentWindowJsUrl,
-                             'epayPaymentWindowRequest' => json_encode($epayPaymentWindowRequest),
-                             'epayCancelUrl' => $epayPaymentWindowRequest['epay_cancelurl'],
-                             'epayWindowState' => $epayPaymentWindowRequest['epay_windowstate']
-                            );
+            'epayPaymentWindowRequest' => json_encode($epayPaymentWindowRequest),
+            'epayCancelUrl' => $epayPaymentWindowRequest['epay_cancelurl'],
+            'epayWindowState' => $epayPaymentWindowRequest['epay_windowstate']
+        );
 
         $this->context->smarty->assign($paymentData);
 

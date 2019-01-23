@@ -256,9 +256,9 @@ class EPay extends PaymentModule
                     'name' => 'EPAY_WINDOWSTATE',
                     'required' => true,
                     'options' => array(
-                       'query' => $windowstate_options,
-                       'id' => 'type',
-                       'name' => 'name'
+                        'query' => $windowstate_options,
+                        'id' => 'type',
+                        'name' => 'name'
                     )
                 ),
                 array(
@@ -346,7 +346,7 @@ class EPay extends PaymentModule
                     'values' => $switch_options
                 ),
                 array(
-                  'type' => 'switch',
+                    'type' => 'switch',
                     'label' => 'Only show payment logos at checkout',
                     'name' => 'EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT',
                     'is_bool' => true,
@@ -354,7 +354,7 @@ class EPay extends PaymentModule
                     'values' => $switch_options
                 ),
                 array(
-                  'type' => 'switch',
+                    'type' => 'switch',
                     'label' => 'Disable Mobile Payment Window',
                     'name' => 'EPAY_DISABLE_MOBILE_PAYMENTWINDOW',
                     'is_bool' => true,
@@ -362,7 +362,7 @@ class EPay extends PaymentModule
                     'values' => $switch_options
                 ),
                 array(
-                  'type' => 'switch',
+                    'type' => 'switch',
                     'label' => 'Capture payment on status changed',
                     'name' => 'EPAY_CAPTUREONSTATUSCHANGED',
                     'is_bool' => true,
@@ -377,9 +377,9 @@ class EPay extends PaymentModule
                     'multiple' => true,
                     'required' => false,
                     'options' => array(
-                       'query' => $selectCaptureStatus,
-                       'id' => 'key',
-                       'name' => 'name'
+                        'query' => $selectCaptureStatus,
+                        'id' => 'key',
+                        'name' => 'name'
                     )
                 ),
                 array(
@@ -406,9 +406,9 @@ class EPay extends PaymentModule
                     'name' => 'EPAY_ROUNDING_MODE',
                     'required' => false,
                     'options' => array(
-                       'query' => $rounding_modes,
-                       'id' => 'type',
-                       'name' => 'name'
+                        'query' => $rounding_modes,
+                        'id' => 'type',
+                        'name' => 'name'
                     )
                 )
             ),
@@ -808,11 +808,11 @@ class EPay extends PaymentModule
         $callToActionText = Tools::strlen(Configuration::get('EPAY_TITLE')) > 0 ? Configuration::get('EPAY_TITLE') : 'Bambora Online ePay';
 
         $paymentData = array('epayPaymentWindowJsUrl' => $paymentWindowJsUrl,
-                             'epayPaymentWindowRequest' => json_encode($epayPaymentWindowRequest),
-                             'epayMerchant' => $epayPaymentWindowRequest['epay_merchantnumber'],
-                             'epayPaymentTitle' => $callToActionText,
-                             'thisPathEpay' => $this->_path
-                            );
+            'epayPaymentWindowRequest' => json_encode($epayPaymentWindowRequest),
+            'epayMerchant' => $epayPaymentWindowRequest['epay_merchantnumber'],
+            'epayPaymentTitle' => $callToActionText,
+            'thisPathEpay' => $this->_path
+        );
 
         $this->context->smarty->assign($paymentData);
 
@@ -841,8 +841,8 @@ class EPay extends PaymentModule
         }
 
         $paymentInfoData = array('merchantNumber' => Configuration::get('EPAY_MERCHANTNUMBER'),
-                                 'onlyShowLogoes' => Configuration::get('EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT')
-                                );
+            'onlyShowLogoes' => Configuration::get('EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT')
+        );
         $this->context->smarty->assign($paymentInfoData);
 
         $callToActionText = Tools::strlen(Configuration::get('EPAY_TITLE')) > 0 ? Configuration::get('EPAY_TITLE') : 'Bambora Online ePay';
@@ -1210,12 +1210,12 @@ class EPay extends PaymentModule
         }
 
         $invoice['lines'][] = array(
-                'id' => $this->l('shipping'),
-                'description' => $this->l('Shipping'),
-                'quantity' => 1,
-                'price' => EpayTools::convertPriceToMinorUnits($summary['total_shipping_tax_exc'], $minorunits, $roundingMode),
-                'vat' => $summary['total_shipping_tax_exc'] > 0 ? round((((float) $summary['total_shipping'] - (float) $summary['total_shipping_tax_exc']) / (float) $summary['total_shipping_tax_exc']) *100) : 0
-            );
+            'id' => $this->l('shipping'),
+            'description' => $this->l('Shipping'),
+            'quantity' => 1,
+            'price' => EpayTools::convertPriceToMinorUnits($summary['total_shipping_tax_exc'], $minorunits, $roundingMode),
+            'vat' => $summary['total_shipping_tax_exc'] > 0 ? round((((float) $summary['total_shipping'] - (float) $summary['total_shipping_tax_exc']) / (float) $summary['total_shipping_tax_exc']) *100) : 0
+        );
 
         foreach ($summary['discounts'] as $discount) {
             $invoice['lines'][] = array(
