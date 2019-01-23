@@ -172,7 +172,7 @@ class EPay extends PaymentModule
 
         if (Tools::isSubmit('submit' . $this->name)) {
             $epay_merchantnumber = (string) Tools::getValue('EPAY_MERCHANTNUMBER');
-            if (!$epay_merchantnumber  || empty($epay_merchantnumber) || !Validate::isGenericName($epay_merchantnumber)) {
+            if (!$epay_merchantnumber || empty($epay_merchantnumber) || !Validate::isGenericName($epay_merchantnumber)) {
                 $output .= $this->displayError($this->l('Merchantnumber is required. If you don\'t have one please contact ePay on support@epay.dk in order to obtain one!'));
             } else {
                 Configuration::updateValue('EPAY_MERCHANTNUMBER', Tools::getValue('EPAY_MERCHANTNUMBER'));
@@ -213,7 +213,7 @@ class EPay extends PaymentModule
             array( 'id' => 'active_off', 'value' => 0, 'label' => 'No'),
         );
 
-        $windowstate_options =  array(
+        $windowstate_options = array(
             array( 'type' => 1, 'name' => 'Overlay' ),
             array( 'type' => 3, 'name' => 'Fullscreen' ),
         );
@@ -470,7 +470,7 @@ class EPay extends PaymentModule
         $helper->fields_value['EPAY_TITLE'] = Configuration::get('EPAY_TITLE');
         $helper->fields_value['EPAY_ROUNDING_MODE'] = Configuration::get('EPAY_ROUNDING_MODE');
 
-        $html =   '<div class="row">
+        $html = '<div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 ">'
                            . $helper->generateForm($fields_form)
                     . '</div>
@@ -1127,28 +1127,28 @@ class EPay extends PaymentModule
             $parameters['epay_windowid'] = 1;
         }
 
-        $parameters['epay_instantcapture']  = Configuration::get('EPAY_INSTANTCAPTURE');
+        $parameters['epay_instantcapture'] = Configuration::get('EPAY_INSTANTCAPTURE');
         if (Configuration::get('EPAY_GROUP')) {
-            $parameters['epay_group']  = Configuration::get('EPAY_GROUP');
+            $parameters['epay_group'] = Configuration::get('EPAY_GROUP');
         }
         $currency = $this->context->currency->iso_code;
-        $parameters['epay_ownreceipt']  = Configuration::get('EPAY_OWNRECEIPT');
-        $parameters['epay_currency']  = $currency;
-        $parameters['epay_language']  = EpayTools::getEPayLanguage(Language::getIsoById($this->context->language->id));
+        $parameters['epay_ownreceipt'] = Configuration::get('EPAY_OWNRECEIPT');
+        $parameters['epay_currency'] = $currency;
+        $parameters['epay_language'] = EpayTools::getEPayLanguage(Language::getIsoById($this->context->language->id));
         $parameters['mobile'] = Configuration::get('EPAY_DISABLE_MOBILE_PAYMENTWINDOW') === '1' ? 0 : 1;
         $minorunits = EpayTools::getCurrencyMinorunits($currency);
         $amount = $this->context->cart->getOrderTotal();
         $amountInMinorunits = EpayTools::convertPriceToMinorUnits($amount, $minorunits, Configuration::get('EPAY_ROUNDING_MODE'));
 
-        $parameters['epay_amount']  = $amountInMinorunits;
-        $parameters['epay_orderid']  = $this->context->cart->id;
+        $parameters['epay_amount'] = $amountInMinorunits;
+        $parameters['epay_orderid'] = $this->context->cart->id;
         $parameters['epay_accepturl'] = $this->context->link->getModuleLink($this->name, 'accept', array(), true);
         $parameters['epay_cancelurl'] = $this->context->link->getPageLink('order', true, null, 'step=3');
         $parameters['epay_callbackurl'] = $this->context->link->getModuleLink($this->name, 'callback', array(), true);
         $parameters['instantcallback'] = 0;
 
         if (Configuration::get('EPAY_ENABLE_INVOICE')) {
-            $parameters['epay_invoice']  = $this->createInvoiceData($this->context->customer, $this->context->cart->getSummaryDetails(), $currency);
+            $parameters['epay_invoice'] = $this->createInvoiceData($this->context->customer, $this->context->cart->getSummaryDetails(), $currency);
         }
 
         $hash = '';
@@ -1206,7 +1206,7 @@ class EPay extends PaymentModule
                 'description' => $this->l('Gift wrapping'),
                 'quantity' => 1,
                 'price' => EpayTools::convertPriceToMinorUnits($summary['total_wrapping_tax_exc'], $minorunits, $roundingMode),
-                'vat' => $summary['total_wrapping_tax_exc'] > 0 ? round((((float) $summary['total_wrapping'] - (float) $summary['total_wrapping_tax_exc']) / (float) $summary['total_wrapping_tax_exc']) *100) : 0,
+                'vat' => $summary['total_wrapping_tax_exc'] > 0 ? round((((float) $summary['total_wrapping'] - (float) $summary['total_wrapping_tax_exc']) / (float) $summary['total_wrapping_tax_exc']) * 100) : 0,
             );
         }
 
@@ -1215,7 +1215,7 @@ class EPay extends PaymentModule
             'description' => $this->l('Shipping'),
             'quantity' => 1,
             'price' => EpayTools::convertPriceToMinorUnits($summary['total_shipping_tax_exc'], $minorunits, $roundingMode),
-            'vat' => $summary['total_shipping_tax_exc'] > 0 ? round((((float) $summary['total_shipping'] - (float) $summary['total_shipping_tax_exc']) / (float) $summary['total_shipping_tax_exc']) *100) : 0,
+            'vat' => $summary['total_shipping_tax_exc'] > 0 ? round((((float) $summary['total_shipping'] - (float) $summary['total_shipping_tax_exc']) / (float) $summary['total_shipping_tax_exc']) * 100) : 0,
         );
 
         foreach ($summary['discounts'] as $discount) {
@@ -1224,7 +1224,7 @@ class EPay extends PaymentModule
                 'description' => $this->removeSpecialCharacters($discount['description']),
                 'quantity' => 1,
                 'price' => EpayTools::convertPriceToMinorUnits($discount['value_tax_exc'], $minorunits, $roundingMode) * -1,
-                'vat' => $discount['value_tax_exc'] > 0 ? round((((float) $discount['value_real'] - (float) $discount['value_tax_exc']) / (float) $discount['value_tax_exc']) *100) : 0,
+                'vat' => $discount['value_tax_exc'] > 0 ? round((((float) $discount['value_real'] - (float) $discount['value_tax_exc']) / (float) $discount['value_tax_exc']) * 100) : 0,
             );
         }
 
@@ -1503,7 +1503,7 @@ class EPay extends PaymentModule
         if ($transaction->status != 'PAYMENT_DELETED') {
             $minorunits = EpayTools::getCurrencyMinorunits($currencyCode);
             if ($transaction->status == 'PAYMENT_CAPTURED') {
-                $epay_amount =  EpayTools::convertPriceFromMinorUnits(($transaction->capturedamount - $transaction->creditedamount), $minorunits);
+                $epay_amount = EpayTools::convertPriceFromMinorUnits(($transaction->capturedamount - $transaction->creditedamount), $minorunits);
             } else {
                 $epay_amount = EpayTools::convertPriceFromMinorUnits(($transaction->authamount - $transaction->capturedamount), $minorunits);
             }
@@ -1635,13 +1635,13 @@ class EPay extends PaymentModule
             $html .= '<div class="epay_checkmark_stem"></div>';
             $html .= '</div>';
         }
-        $html .='<div id="epay_overlay_message_container">';
+        $html .= '<div id="epay_overlay_message_container">';
 
         if (Tools::strlen($epayUiMessage->message) > 0) {
-            $html .='<p id="epay_overlay_message_title_with_message">' . $epayUiMessage->title . '</p>';
+            $html .= '<p id="epay_overlay_message_title_with_message">' . $epayUiMessage->title . '</p>';
             $html .= '<hr><p id="epay_overlay_message_message">' . $epayUiMessage->message . '</p>';
         } else {
-            $html .='<p id="epay_overlay_message_title">' . $epayUiMessage->title . '</p>';
+            $html .= '<p id="epay_overlay_message_title">' . $epayUiMessage->title . '</p>';
         }
 
         $html .= '</div></div></div></div>';
@@ -1671,7 +1671,7 @@ class EPay extends PaymentModule
                 $transactionId = Tools::getValue('epay_transaction_id');
                 $errorTitle = $this->l('An issue occured, and the operation was not performed.');
                 $amount = 0;
-                $currencyCode =  Tools::getValue('epay_currency_code');
+                $currencyCode = Tools::getValue('epay_currency_code');
                 $minorunits = EpayTools::getCurrencyMinorunits($currencyCode);
 
                 if ((Tools::isSubmit('epay_capture') || Tools::isSubmit('epay_credit')) && Tools::getIsset('epay_amount')) {

@@ -48,7 +48,7 @@ abstract class BaseAction extends ModuleFrontController
         $cart = new Cart($id_cart);
 
         if (!isset($cart->id)) {
-            $message =  'Please provide a valid orderid or cartid';
+            $message = 'Please provide a valid orderid or cartid';
             return false;
         }
 
@@ -116,9 +116,9 @@ abstract class BaseAction extends ModuleFrontController
                     $paymentMethod = "{$this->module->displayName} ({$cardName})";
                     $truncatedCard = "XXXX XXXX XXXX {$cardnopostfix}";
 
-                    $mailVars = array('TransactionId'=>$transaction_Id,
-                        'PaymentType'=>$paymentMethod,
-                        'CardNumber'=>$truncatedCard, );
+                    $mailVars = array('TransactionId' => $transaction_Id,
+                        'PaymentType' => $paymentMethod,
+                        'CardNumber' => $truncatedCard, );
 
                     if (!$isPaymentRequest) {
                         try {
