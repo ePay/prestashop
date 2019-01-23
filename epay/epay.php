@@ -56,7 +56,7 @@ class EPay extends PaymentModule
         }
     }
 
-    #region Install and Setup
+    //region Install and Setup
 
     public function install()
     {
@@ -607,9 +607,9 @@ class EPay extends PaymentModule
         return $html;
     }
 
-    #endregion
+    //endregion
 
-    #region Database actions
+    //region Database actions
 
     /**
      * Add the transaction to the database.
@@ -781,9 +781,9 @@ class EPay extends PaymentModule
         return true;
     }
 
-    #endregion
+    //endregion
 
-    #region Hooks
+    //region Hooks
 
     /**
      * Hook payment options for Prestashop before 1.7.
@@ -1103,9 +1103,9 @@ class EPay extends PaymentModule
         return "";
     }
 
-    #endregion
+    //endregion
 
-    #region Frontoffice Methodes
+    //region Frontoffice Methodes
 
     /**
      * Create ePay payment window request.
@@ -1265,9 +1265,9 @@ class EPay extends PaymentModule
         return false;
     }
 
-    #endregion
+    //endregion
 
-    #region Backoffice Methodes
+    //region Backoffice Methodes
 
     /**
      * Summary of buildTransactionForm.
@@ -1820,7 +1820,7 @@ class EPay extends PaymentModule
         }
     }
 
-    #region payment request
+    //region payment request
 
     /**
      * Display the payment request form.
@@ -2045,11 +2045,11 @@ class EPay extends PaymentModule
         return $html;
     }
 
-    #endregion
+    //endregion
 
-    #endregion
+    //endregion
 
-    #region Common Methodes
+    //region Common Methodes
 
     /**
      * Get Ps Version.
@@ -2067,5 +2067,5 @@ class EPay extends PaymentModule
         }
     }
 
-    #endregion
+    //endregion
 }
