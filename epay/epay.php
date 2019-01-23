@@ -75,7 +75,6 @@ class EPay extends PaymentModule
             || !$this->registerHook('displayHeader')
             || !$this->registerHook('actionOrderStatusPostUpdate')
             || !$this->registerHook('displayBackOfficeHeader')
-
         ) {
             return false;
         }
