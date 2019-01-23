@@ -14,6 +14,8 @@
 class ePayUiMessage
 {
     public $type;
+
     public $title;
+
     public $message;
 }

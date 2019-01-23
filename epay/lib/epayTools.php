@@ -14,7 +14,9 @@
 class EpayTools
 {
     const ROUND_UP = 'round_up';
+
     const ROUND_DOWN = 'round_down';
+
     const ROUND_DEFAULT = 'round_default';
 
     /**
