@@ -625,7 +625,7 @@ class EPay extends PaymentModule
      * @param mixed $amount
      * @param mixed $transfee
      * @param mixed $fraud
-     * @return boolean
+     * @return bool
      */
     public function addDbTransaction($id_order, $id_cart, $transaction_id, $epay_order_id, $paymentcard_id, $cardnopostfix, $currency, $amount, $transfee, $fraud)
     {
@@ -644,7 +644,7 @@ class EPay extends PaymentModule
      *
      * @param mixed $transaction_id
      * @param mixed $id_order
-     * @return boolean
+     * @return bool
      */
     public function addDbOrderIdToRecordedTransaction($transaction_id, $id_order)
     {
@@ -660,7 +660,7 @@ class EPay extends PaymentModule
      * Delete a recorded transaction
      *
      * @param mixed $transaction_id
-     * @return boolean
+     * @return bool
      */
     public function deleteDbRecordedTransaction($transaction_id)
     {
@@ -718,7 +718,7 @@ class EPay extends PaymentModule
      *
      * @param mixed $transaction_id
      * @param mixed $amount
-     * @return boolean
+     * @return bool
      */
     private function setDbCaptured($transaction_id, $amount)
     {
@@ -731,7 +731,7 @@ class EPay extends PaymentModule
      *
      * @param mixed $transaction_id
      * @param mixed $amount
-     * @return boolean
+     * @return bool
      */
     private function setDbCredited($transaction_id, $amount)
     {
@@ -744,7 +744,7 @@ class EPay extends PaymentModule
      * Delete a transaction
      *
      * @param mixed $transaction_id
-     * @return boolean
+     * @return bool
      */
     private function deleteDbTransaction($transaction_id)
     {
@@ -757,7 +757,7 @@ class EPay extends PaymentModule
      * Execute database query
      *
      * @param mixed $query
-     * @return boolean
+     * @return bool
      */
     private function executeDbQuery($query)
     {
@@ -1227,7 +1227,7 @@ class EPay extends PaymentModule
      * Check if currency is allowed
      *
      * @param mixed $cart
-     * @return boolean
+     * @return bool
      */
     private function checkCurrency($cart)
     {

@@ -50,7 +50,7 @@ class EpayTools
      * Get ePay language id by string country
      *
      * @param string $strlan
-     * @return integer
+     * @return int
      */
     public static function getEPayLanguage($strlan)
     {
@@ -199,7 +199,7 @@ class EpayTools
      * @param mixed $amount
      * @param mixed $minorunits
      * @param mixed $defaultMinorUnits
-     * @return double|integer
+     * @return float|int
      */
     public static function convertPriceToMinorUnits($amount, $minorunits, $rounding)
     {
@@ -242,7 +242,7 @@ class EpayTools
      * Get Currency MinorUnits
      *
      * @param mixed $currencyCode
-     * @return integer
+     * @return int
      */
     public static function getCurrencyMinorunits($currencyCode)
     {

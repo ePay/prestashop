@@ -18,10 +18,10 @@ abstract class BaseAction extends ModuleFrontController
     /**
      * Validate the callback
      *
-     * @param boolean $isPaymentRequest
+     * @param bool $isPaymentRequest
      * @param string $message
      * @param mixed $cart
-     * @return boolean
+     * @return bool
      */
     protected function validateAction($isPaymentRequest, &$message, &$cart)
     {
@@ -78,7 +78,7 @@ abstract class BaseAction extends ModuleFrontController
      * Process Action
      *
      * @param mixed $cart
-     * @param boolean $isPaymentRequest
+     * @param bool $isPaymentRequest
      * @param mixed $responseCode
      * @return mixed
      */
