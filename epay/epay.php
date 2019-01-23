@@ -115,7 +115,7 @@ class EPay extends PaymentModule
             'captured' => 'tinyint(1) NOT NULL DEFAULT 0',
             'credited' => 'tinyint(1) NOT NULL DEFAULT 0',
             'deleted' => 'tinyint(1) NOT NULL DEFAULT 0',
-            'date_add' => 'datetime NOT NULL'
+            'date_add' => 'datetime NOT NULL',
         );
 
         $query = 'CREATE TABLE IF NOT EXISTS `' . $table_name . '` (';
@@ -214,14 +214,14 @@ class EPay extends PaymentModule
 
         $windowstate_options =  array(
             array( 'type' => 1, 'name' => 'Overlay' ),
-            array( 'type' => 3, 'name' => 'Fullscreen' )
+            array( 'type' => 3, 'name' => 'Fullscreen' ),
         );
 
         $displayPaymentLogoLocation = array(
             array( 'id_option' => 'left_column', 'name' => 'Left Column' ),
             array( 'id_option' => 'right_column', 'name' => 'Right Column' ),
             array( 'id_option' => 'footer', 'name' => 'Footer' ),
-            array( 'id_option' => 'hide', 'name' => 'Hide' )
+            array( 'id_option' => 'hide', 'name' => 'Hide' ),
         );
 
         $statuses = OrderState::getOrderStates($this->context->language->id);
@@ -233,14 +233,14 @@ class EPay extends PaymentModule
         $rounding_modes = array(
             array( 'type' => EpayTools::ROUND_DEFAULT, 'name' => 'Default'),
             array( 'type' => EpayTools::ROUND_UP, 'name' => 'Always up'),
-            array( 'type' => EpayTools::ROUND_DOWN, 'name' => 'Always down')
+            array( 'type' => EpayTools::ROUND_DOWN, 'name' => 'Always down'),
         );
 
         // Init Fields form array
         $fields_form = array();
         $fields_form[0]['form'] = array(
             'legend' => array(
-                'title' => 'Settings'
+                'title' => 'Settings',
             ),
             'input' => array(
                 array(
@@ -248,7 +248,7 @@ class EPay extends PaymentModule
                     'label' => 'Merchant number',
                     'name' => 'EPAY_MERCHANTNUMBER',
                     'size' => 40,
-                    'required' => true
+                    'required' => true,
                 ),
                 array(
                     'type' => 'select',
@@ -258,22 +258,22 @@ class EPay extends PaymentModule
                     'options' => array(
                         'query' => $windowstate_options,
                         'id' => 'type',
-                        'name' => 'name'
-                    )
+                        'name' => 'name',
+                    ),
                 ),
                 array(
                     'type' => 'text',
                     'label' => 'Payment Window ID',
                     'name' => 'EPAY_WINDOWID',
                     'size' => 40,
-                    'required' => true
+                    'required' => true,
                 ),
                 array(
                     'type' => 'text',
                     'label' => 'MD5 Key',
                     'name' => 'EPAY_MD5KEY',
                     'size' => 40,
-                    'required' => false
+                    'required' => false,
                 ),
                 array(
                     'type' => 'text',
@@ -287,14 +287,14 @@ class EPay extends PaymentModule
                     'label' => 'Group ID',
                     'name' => 'EPAY_GROUP',
                     'size' => 40,
-                    'required' => false
+                    'required' => false,
                 ),
                 array(
                     'type' => 'text',
                     'label' => 'Payment method title',
                     'name' => 'EPAY_TITLE',
                     'size' => 40,
-                    'required' => false
+                    'required' => false,
                 ),
                 array(
                     'type' => 'switch',
@@ -302,7 +302,7 @@ class EPay extends PaymentModule
                     'name' => 'EPAY_ENABLE_REMOTE_API',
                     'is_bool' => true,
                     'required' => false,
-                    'values' => $switch_options
+                    'values' => $switch_options,
                 ),
                 array(
                     'type' => 'switch',
@@ -310,7 +310,7 @@ class EPay extends PaymentModule
                     'name' => 'EPAY_OWNRECEIPT',
                     'is_bool' => true,
                     'required' => false,
-                    'values' => $switch_options
+                    'values' => $switch_options,
                 ),
                 array(
                     'type' => 'switch',
@@ -318,7 +318,7 @@ class EPay extends PaymentModule
                     'name' => 'EPAY_INSTANTCAPTURE',
                     'is_bool' => true,
                     'required' => false,
-                    'values' => $switch_options
+                    'values' => $switch_options,
                 ),
                 array(
                     'type' => 'switch',
@@ -326,7 +326,7 @@ class EPay extends PaymentModule
                     'name' => 'EPAY_ADDFEETOSHIPPING',
                     'is_bool' => true,
                     'required' => false,
-                    'values' => $switch_options
+                    'values' => $switch_options,
                 ),
                 array(
                     'type' => 'switch',
@@ -335,7 +335,7 @@ class EPay extends PaymentModule
                     'class' => 't',
                     'is_bool' => true,
                     'required' => false,
-                    'values' => $switch_options
+                    'values' => $switch_options,
                 ),
                 array(
                     'type' => 'switch',
@@ -343,7 +343,7 @@ class EPay extends PaymentModule
                     'name' => 'EPAY_ENABLE_PAYMENTREQUEST',
                     'is_bool' => true,
                     'required' => false,
-                    'values' => $switch_options
+                    'values' => $switch_options,
                 ),
                 array(
                     'type' => 'switch',
@@ -351,7 +351,7 @@ class EPay extends PaymentModule
                     'name' => 'EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT',
                     'is_bool' => true,
                     'required' => false,
-                    'values' => $switch_options
+                    'values' => $switch_options,
                 ),
                 array(
                     'type' => 'switch',
@@ -359,7 +359,7 @@ class EPay extends PaymentModule
                     'name' => 'EPAY_DISABLE_MOBILE_PAYMENTWINDOW',
                     'is_bool' => true,
                     'required' => false,
-                    'values' => $switch_options
+                    'values' => $switch_options,
                 ),
                 array(
                     'type' => 'switch',
@@ -367,7 +367,7 @@ class EPay extends PaymentModule
                     'name' => 'EPAY_CAPTUREONSTATUSCHANGED',
                     'is_bool' => true,
                     'required' => false,
-                    'values' => $switch_options
+                    'values' => $switch_options,
                 ),
                 array(
                     'type' => 'select',
@@ -379,15 +379,15 @@ class EPay extends PaymentModule
                     'options' => array(
                         'query' => $selectCaptureStatus,
                         'id' => 'key',
-                        'name' => 'name'
-                    )
+                        'name' => 'name',
+                    ),
                 ),
                 array(
                     'type' => 'text',
                     'label' => 'Capture on status changed failure e-mail',
                     'name' => 'EPAY_AUTOCAPTURE_FAILUREEMAIL',
                     'size' => 40,
-                    'required' => false
+                    'required' => false,
                 ),
                 array(
                     'type' => 'select',
@@ -397,7 +397,7 @@ class EPay extends PaymentModule
                     'options' => array(
                         'query' => $displayPaymentLogoLocation,
                         'id' => 'id_option',
-                        'name' => 'name'
+                        'name' => 'name',
                     ),
                 ),
                 array(
@@ -408,14 +408,14 @@ class EPay extends PaymentModule
                     'options' => array(
                         'query' => $rounding_modes,
                         'id' => 'type',
-                        'name' => 'name'
-                    )
-                )
+                        'name' => 'name',
+                    ),
+                ),
             ),
             'submit' => array(
                 'title' => 'Save',
-                'class' => 'button'
-            )
+                'class' => 'button',
+            ),
         );
 
         $helper = new HelperForm();
@@ -443,8 +443,8 @@ class EPay extends PaymentModule
             ),
             'back' => array(
                 'href' => AdminController::$currentIndex . '&token=' . Tools::getAdminTokenLite('AdminModules'),
-                'desc' => $this->l('Back to list')
-            )
+                'desc' => $this->l('Back to list'),
+            ),
         );
 
         // Load current value
@@ -810,7 +810,7 @@ class EPay extends PaymentModule
             'epayPaymentWindowRequest' => json_encode($epayPaymentWindowRequest),
             'epayMerchant' => $epayPaymentWindowRequest['epay_merchantnumber'],
             'epayPaymentTitle' => $callToActionText,
-            'thisPathEpay' => $this->_path
+            'thisPathEpay' => $this->_path,
         );
 
         $this->context->smarty->assign($paymentData);
@@ -840,7 +840,7 @@ class EPay extends PaymentModule
         }
 
         $paymentInfoData = array('merchantNumber' => Configuration::get('EPAY_MERCHANTNUMBER'),
-            'onlyShowLogoes' => Configuration::get('EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT')
+            'onlyShowLogoes' => Configuration::get('EPAY_ONLYSHOWPAYMENTLOGOESATCHECKOUT'),
         );
         $this->context->smarty->assign($paymentInfoData);
 
@@ -1194,7 +1194,7 @@ class EPay extends PaymentModule
                 'description' => $this->removeSpecialCharacters($product['name']),
                 'quantity' => (int) $product['cart_quantity'],
                 'price' => EpayTools::convertPriceToMinorUnits($product['price'], $minorunits, $roundingMode),
-                'vat' => $product['rate']
+                'vat' => $product['rate'],
             );
         }
 
@@ -1204,7 +1204,7 @@ class EPay extends PaymentModule
                 'description' => $this->l('Gift wrapping'),
                 'quantity' => 1,
                 'price' => EpayTools::convertPriceToMinorUnits($summary['total_wrapping_tax_exc'], $minorunits, $roundingMode),
-                'vat' => $summary['total_wrapping_tax_exc'] > 0 ? round((((float) $summary['total_wrapping'] - (float) $summary['total_wrapping_tax_exc']) / (float) $summary['total_wrapping_tax_exc']) *100) : 0
+                'vat' => $summary['total_wrapping_tax_exc'] > 0 ? round((((float) $summary['total_wrapping'] - (float) $summary['total_wrapping_tax_exc']) / (float) $summary['total_wrapping_tax_exc']) *100) : 0,
             );
         }
 
@@ -1213,7 +1213,7 @@ class EPay extends PaymentModule
             'description' => $this->l('Shipping'),
             'quantity' => 1,
             'price' => EpayTools::convertPriceToMinorUnits($summary['total_shipping_tax_exc'], $minorunits, $roundingMode),
-            'vat' => $summary['total_shipping_tax_exc'] > 0 ? round((((float) $summary['total_shipping'] - (float) $summary['total_shipping_tax_exc']) / (float) $summary['total_shipping_tax_exc']) *100) : 0
+            'vat' => $summary['total_shipping_tax_exc'] > 0 ? round((((float) $summary['total_shipping'] - (float) $summary['total_shipping_tax_exc']) / (float) $summary['total_shipping_tax_exc']) *100) : 0,
         );
 
         foreach ($summary['discounts'] as $discount) {
@@ -1222,7 +1222,7 @@ class EPay extends PaymentModule
                 'description' => $this->removeSpecialCharacters($discount['description']),
                 'quantity' => 1,
                 'price' => EpayTools::convertPriceToMinorUnits($discount['value_tax_exc'], $minorunits, $roundingMode) * -1,
-                'vat' => $discount['value_tax_exc'] > 0 ? round((((float) $discount['value_real'] - (float) $discount['value_tax_exc']) / (float) $discount['value_tax_exc']) *100) : 0
+                'vat' => $discount['value_tax_exc'] > 0 ? round((((float) $discount['value_real'] - (float) $discount['value_tax_exc']) / (float) $discount['value_tax_exc']) *100) : 0,
             );
         }
 
@@ -1842,7 +1842,7 @@ class EPay extends PaymentModule
         $fields_form[0]['form'] = array(
             'legend' => array(
                 'title' => $this->l('Create payment request'),
-                'image' => $this->_path . '/views/img/logo_small.png'
+                'image' => $this->_path . '/views/img/logo_small.png',
             ),
             'input' => array(
                 array(
@@ -1850,7 +1850,7 @@ class EPay extends PaymentModule
                     'label' => $this->l('Requester name'),
                     'name' => 'epay_paymentrequest_requester_name',
                     'size' => 20,
-                    'required' => true
+                    'required' => true,
                 ),
                 array(
                     'type' => 'textarea',
@@ -1858,35 +1858,35 @@ class EPay extends PaymentModule
                     'name' => 'epay_paymentrequest_requester_comment',
                     'rows' => 3,
                     'cols' => 50,
-                    'required' => false
+                    'required' => false,
                 ),
                 array(
                     'type' => 'text',
                     'label' => $this->l('Recipient name'),
                     'name' => 'epay_paymentrequest_recipient_name',
                     'size' => 20,
-                    'required' => true
+                    'required' => true,
                 ),
                 array(
                     'type' => 'text',
                     'label' => $this->l('Recipient e-mail'),
                     'name' => 'epay_paymentrequest_recipient_email',
                     'size' => 20,
-                    'required' => true
+                    'required' => true,
                 ),
                 array(
                     'type' => 'text',
                     'label' => $this->l('Reply to name'),
                     'name' => 'epay_paymentrequest_replyto_name',
                     'size' => 20,
-                    'required' => true
+                    'required' => true,
                 ),
                 array(
                     'type' => 'text',
                     'label' => $this->l('Reply to e-mail'),
                     'name' => 'epay_paymentrequest_replyto_email',
                     'size' => 20,
-                    'required' => true
+                    'required' => true,
                 ),
                 array(
                     'type' => 'text',
@@ -1895,14 +1895,14 @@ class EPay extends PaymentModule
                     'size' => 20,
                     'suffix' => $currencyIsoCode,
                     'required' => true,
-                    'readonly' => false
+                    'readonly' => false,
                 ),
             ),
             'submit' => array(
                 'title' => $this->l('Send payment request'),
                 'id' => 'epay_paymentrequest_submit',
-                'class' => 'button'
-            )
+                'class' => 'button',
+            ),
         );
 
         $helper = new HelperForm();

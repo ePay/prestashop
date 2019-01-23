@@ -119,7 +119,7 @@ abstract class BaseAction extends ModuleFrontController
 
                     $mailVars = array('TransactionId'=>$transaction_Id,
                         'PaymentType'=>$paymentMethod,
-                        'CardNumber'=>$truncatedCard);
+                        'CardNumber'=>$truncatedCard, );
 
                     if (!$isPaymentRequest) {
                         try {

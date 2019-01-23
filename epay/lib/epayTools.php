@@ -258,7 +258,7 @@ class EpayTools
             'PYG' => 0, 'JPY' => 0, 'CLP' => 0, 'XAF' => 0, 'TRL' => 0,
             'VUV' => 0, 'CLF' => 0, 'KRW' => 0, 'XOF' => 0, 'RWF' => 0,
             'IQD' => 3, 'TND' => 3, 'BHD' => 3, 'JOD' => 3, 'OMR' => 3,
-            'KWD' => 3, 'LYD' => 3);
+            'KWD' => 3, 'LYD' => 3, );
 
         return array_key_exists($currencyCode, $currencyArray) ? $currencyArray[$currencyCode] : 2;
     }

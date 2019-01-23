@@ -51,7 +51,7 @@ class EpayPaymentModuleFrontController extends ModuleFrontController
         $paymentData = array('epayPaymentWindowJsUrl' => $paymentWindowJsUrl,
             'epayPaymentWindowRequest' => json_encode($epayPaymentWindowRequest),
             'epayCancelUrl' => $epayPaymentWindowRequest['epay_cancelurl'],
-            'epayWindowState' => $epayPaymentWindowRequest['epay_windowstate']
+            'epayWindowState' => $epayPaymentWindowRequest['epay_windowstate'],
         );
 
         $this->context->smarty->assign($paymentData);
