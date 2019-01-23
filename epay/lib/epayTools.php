@@ -255,6 +255,6 @@ class EpayTools
         'IQD' => 3, 'TND' => 3, 'BHD' => 3, 'JOD' => 3, 'OMR' => 3,
         'KWD' => 3, 'LYD' => 3);
 
-        return key_exists($currencyCode, $currencyArray) ? $currencyArray[$currencyCode] : 2;
+        return array_key_exists($currencyCode, $currencyArray) ? $currencyArray[$currencyCode] : 2;
     }
 }
