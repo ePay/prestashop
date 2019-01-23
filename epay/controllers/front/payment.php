@@ -11,7 +11,6 @@
  * @copyright Bambora (http://bambora.com) (http://www.epay.dk)
  * @license   ePay A/S (a Bambora Company)
  */
-
 class EpayPaymentModuleFrontController extends ModuleFrontController
 {
     /**
