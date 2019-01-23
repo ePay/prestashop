@@ -44,7 +44,7 @@ class EPayAcceptModuleFrontController extends BaseAction
      */
     private function redirectToAccept($cart)
     {
-        Tools::redirectLink(__PS_BASE_URI__ . 'order-confirmation.php?key=' . $cart->secure_key . '&id_cart=' . (int)$cart->id . '&id_module=' . (int)$this->module->id . '&id_order=' . (int)Order::getOrderByCartId($cart->id));
+        Tools::redirectLink(__PS_BASE_URI__ . 'order-confirmation.php?key=' . $cart->secure_key . '&id_cart=' . (int) $cart->id . '&id_module=' . (int) $this->module->id . '&id_order=' . (int) Order::getOrderByCartId($cart->id));
     }
 
     private function handleError($message, $cart)
