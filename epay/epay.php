@@ -1332,24 +1332,14 @@ class EPay extends PaymentModule
             return $html;
         }
 
-        $transactionId = $transaction['epay_transaction_id'];
-
-        $amountInclFeeInMinorunits = $transaction['amount'] + $transaction['transfee'];
         $html .= '<div class="row">';
         $html .= '<div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">';
-        $html .= $this->buildTransactionFormBodyStart(
-            $order->id,
-            $transactionId,
-            $transaction['fraud'],
-            $transaction['card_type'],
-            $transaction['cardnopostfix'],
-            $amountInclFeeInMinorunits
-        );
+        $html .= $this->buildTransactionFormBodyStart($order, $transaction);
 
         if (Configuration::get('EPAY_ENABLE_REMOTE_API') == 1) {
             $pwd = Configuration::get('EPAY_REMOTE_API_PASSWORD');
             $api = new EPayApi($pwd);
-            $transaction = $api->gettransactionInformation(Configuration::get('EPAY_MERCHANTNUMBER'), $transactionId);
+            $transaction = $api->gettransactionInformation(Configuration::get('EPAY_MERCHANTNUMBER'), $transaction['epay_transaction_id']);
 
             if (!$transaction) {
                 $html .= $this->buildTransactionFormBodyNoApiAccessEnd();
@@ -1384,48 +1374,53 @@ class EPay extends PaymentModule
      * Build the start of the Transaction Form Body.
      *
      * @param mixed $order
-     * @param mixed $transactionId
-     * @param mixed $fraud
-     * @param mixed $cardType
-     * @param mixed $cardno
-     * @param mixed $amountInMinorunits
+     * @param string $transactionId
      *
      * @return string
      */
-    private function buildTransactionFormBodyStart($order, $transactionId, $fraud, $cardType, $cardno, $amountInMinorunits)
+    private function buildTransactionFormBodyStart($order, $transaction)
     {
         $html = '';
-        if ($transactionId) {
+
+        if ($transaction) {
+            $transactionId = $transaction['epay_transaction_id'];
+            $ePayOrderId = $transaction['epay_orderid'];
+            $fraud = $transaction['fraud'];
+            $cardTypeId = $transaction['card_type'];
+            $cardNo = $transaction['cardnopostfix'];
+            $authorizedAmountInMinorunits = $transaction['amount'] + $transaction['transfee'];
+
             $html .= '<table class="table" cellspacing="0" cellpadding="0">';
             $html .= $this->transactionInfoTableRow($this->l('ePay Administration'), '<a href="https://admin.ditonlinebetalingssystem.dk/admin/login.asp" title="ePay login" target="_blank">' . $this->l('Open') . '</a>');
-            $html .= $this->transactionInfoTableRow($this->l('ePay "Order ID"'), $order->id);
-            $html .= $this->transactionInfoTableRow($this->l('ePay "Transaction ID"'), $transactionId);
+            $html .= $this->transactionInfoTableRow($this->l('ePay Order ID'), $ePayOrderId);
+            $html .= $this->transactionInfoTableRow($this->l('ePay Transaction ID'),$transactionId);
 
             if ($fraud) {
                 $html .= $this->transactionInfoTableRow($this->l('Fraud'), '<span class="epay_fraud"><img src="../img/admin/bullet_red.png" />' . $this->l('Suspicious Payment!') . '</span>');
             }
 
-            $paymentTypeColumn = '<div class="epay_paymenttype">';
-            $cardName = EpayTools::getCardNameById((int) $cardType);
-            $paymentTypeColumn .= '<img src="https://d25dqh6gpkyuw6.cloudfront.net/paymentlogos/external/' . $cardType . '.png" alt="' . $cardName . '" title="' . $cardName . '" />';
-            $paymentTypeColumn .= '<div>' . $cardName;
-
-            if ($cardno > 1) {
-                if (Tools::strlen($cardno) === 4) {
-                    $paymentTypeColumn .= '<br /> ' . str_replace('X', '&bull;', 'XXXX XXXX XXXX ') . $cardno;
+            $cardName = EpayTools::getCardNameById((int) $cardTypeId);
+            $paymentTypeNameHtml = '<div>' . $cardName;
+            if ($cardNo) {
+                if (Tools::strlen($cardNo) === 4) {
+                    $paymentTypeNameHtml .= '<br /> ' . str_replace('X', '&bull;', 'XXXX XXXX XXXX ') . $cardNo;
                 } else {
-                    $paymentTypeColumn .= '<br /> ' . str_replace('X', '&bull;', $cardno);
+                    $paymentTypeNameHtml .= '<br /> ' . str_replace('X', '&bull;', $cardNo);
                 }
             }
-            $paymentTypeColumn .= '</div></div>';
+            $paymentTypeNameHtml .= '</div>';
+            $paymentTypeIconHtml = '<img src="https://d25dqh6gpkyuw6.cloudfront.net/paymentlogos/external/' . $cardTypeId . '.png" alt="' . $cardName . '" title="' . $cardName . '" />';
+
+            $paymentTypeColumn = '<div class="epay_paymenttype">' . $paymentTypeNameHtml . $paymentTypeIconHtml . '</div>';
+
             $html .= $this->transactionInfoTableRow($this->l('Payment type'), $paymentTypeColumn);
 
             $currency = new Currency($order->id_currency);
             $currencyIsoCode = $currency->iso_code;
             $minorunits = EpayTools::getCurrencyMinorunits($currencyIsoCode);
-            $amount = EpayTools::convertPriceFromMinorUnits($amountInMinorunits, $minorunits);
+            $authorizedAmount = EpayTools::convertPriceFromMinorUnits($authorizedAmountInMinorunits, $minorunits);
 
-            $html .= $this->transactionInfoTableRow($this->l('Authorized amount'), Tools::displayPrice($amount));
+            $html .= $this->transactionInfoTableRow($this->l('Authorized amount'), Tools::displayPrice($authorizedAmount));
         }
 
         return $html;

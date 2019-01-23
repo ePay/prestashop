@@ -2,19 +2,22 @@
     width: 500px;
     height: 100% !important;
 }
+
 #epay_message,
 #epay_overlay_message_container {
     height: 50%;
     min-height: 40px;
 }
+
 #epay_overlay_message_container {
     width: 80%;
     display: inline-block;
     vertical-align: middle;
 }
-#epay_overlay_message_container p {
-    margin-top: 4px;
-}
+
+    #epay_overlay_message_container p {
+        margin-top: 4px;
+    }
 
 #epay_overlay_message_title {
     line-height: 4;
@@ -36,6 +39,7 @@
     display: inline-block;
     width: 45px;
 }
+
 .epay_checkmark,
 .epay_exclamation,
 #overlay_message_title {
@@ -49,11 +53,10 @@
 }
 
 .epay_circle {
-    /*position: relative;*/
     width: 40px;
     height: 40px;
     border-radius: 21px;
-        display: inline-block;
+    display: inline-block;
     vertical-align: middle;
     margin-right: 10px;
     margin-top: 25px;
@@ -71,14 +74,10 @@
     position: relative;
     left: 13px;
     top: 6px;
-
-    /*Make it a small rectangle so the border will create an L-shape*/
     width: 9px;
     height: 20px;
-    /*Add a white border on the bottom and left, creating that 'L' */
     border: solid #fff;
     border-width: 0 4px 4px 0;
-    /*Rotate the L 45 degrees to turn it into a checkmark*/
     -moz-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     -o-transform: rotate(45deg);
@@ -109,46 +108,57 @@
     -webkit-border-radius: 25px;
     border-radius: 25px;
 }
+
 .epay_widthAllSpace {
     width: 100%;
     clear: both;
-    overflow:auto
+    overflow: auto
 }
+
 .epay_fraud {
-   color:red;
-   font-weight:bold;
+    color: red;
+    font-weight: bold;
 }
+
 .epay_paymenttype {
-   display: flex;
-   align-items: center;
+    display: flex;
+    align-items: center;
 }
-.epay_paymenttype img {
-    margin-right:3px;
-}
+
+    .epay_paymenttype img {
+        margin-right: 3px;
+    }
+
 .epay_button {
     margin: 3px 3px 3px 0;
 }
+
 .epay_deleted {
-    color:red;
-    font-weight:bold;
+    color: red;
+    font-weight: bold;
 }
+
 .epay_table_title {
-   float:left;
+    float: left;
 }
-.epay_table th, 
+
+.epay_table th,
 .epay_table td {
     padding: 5px;
     text-align: left;
 }
+
 #epay_format_error,
 #epay_paymentrequest_format_error {
     display: none;
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
 .epay_admin_heading span {
     margin-left: 5px;
 }
+
 .bambora_logo {
     width: 100%;
     max-width: 300px;
