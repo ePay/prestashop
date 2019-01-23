@@ -123,7 +123,7 @@ abstract class BaseAction extends ModuleFrontController
                     if (!$isPaymentRequest) {
                         try {
                             $this->module->validateOrder(
-                                (int)$id_cart,
+                                (int) $id_cart,
                                 Configuration::get('PS_OS_PAYMENT'),
                                 $amount,
                                 $paymentMethod,
@@ -151,7 +151,7 @@ abstract class BaseAction extends ModuleFrontController
                         $message = strip_tags($message, '<br>');
                         if (Validate::isCleanHtml($message)) {
                             $msg->message = $message;
-                            $msg->id_order = (int)$order->id;
+                            $msg->id_order = (int) $order->id;
                             $msg->private = 1;
                             $msg->add();
                         }
@@ -220,8 +220,8 @@ abstract class BaseAction extends ModuleFrontController
     {
         $result = "";
         if (isset($cart)) {
-            $invoiceAddress = new Address((int)$cart->id_address_invoice);
-            $customer = new Customer((int)$cart->id_customer);
+            $invoiceAddress = new Address((int) $cart->id_address_invoice);
+            $customer = new Customer((int) $cart->id_customer);
             $phoneNumber = EpayTools::getPhoneNumber($invoiceAddress);
             $personString = "Name: {$invoiceAddress->firstname}{$invoiceAddress->lastname} Phone: {$phoneNumber} Mail: {$customer->email} - ";
             $result = $personString;

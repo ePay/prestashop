@@ -171,7 +171,7 @@ class EPay extends PaymentModule
         $output = null;
 
         if (Tools::isSubmit('submit' . $this->name)) {
-            $epay_merchantnumber = (string)Tools::getValue('EPAY_MERCHANTNUMBER');
+            $epay_merchantnumber = (string) Tools::getValue('EPAY_MERCHANTNUMBER');
             if (!$epay_merchantnumber  || empty($epay_merchantnumber) || !Validate::isGenericName($epay_merchantnumber)) {
                 $output .= $this->displayError($this->l('Merchantnumber is required. If you don\'t have one please contact ePay on support@epay.dk in order to obtain one!'));
             } else {
@@ -206,7 +206,7 @@ class EPay extends PaymentModule
     private function displayForm()
     {
         // Get default Language
-        $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
+        $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
 
         $switch_options = array(
             array( 'id' => 'active_on', 'value' => 1, 'label' => 'Yes'),
@@ -1050,7 +1050,7 @@ class EPay extends PaymentModule
 		                e.`date_add`
                         FROM ' . _DB_PREFIX_ . 'epay_transactions e
                         LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON e.`id_cart` = o.`id_cart`
-                        WHERE o.`id_order` = ' . (int)($params["id_order"]));
+                        WHERE o.`id_order` = ' . (int) ($params["id_order"]));
 
                     if (!isset($transactions) || count($transactions) === 0) {
                         return "";
@@ -1060,7 +1060,7 @@ class EPay extends PaymentModule
                     $api = new EPayApi($pwd);
                     $merchantNumber = Configuration::get('EPAY_MERCHANTNUMBER');
 
-                    $amount = ((string)($transaction["amount"] + $transaction["transfee"]));
+                    $amount = ((string) ($transaction["amount"] + $transaction["transfee"]));
                     $transactionId = $transaction["epay_transaction_id"];
                     $captureResponse = $api->capture($merchantNumber, $transactionId, $amount);
 
@@ -1075,7 +1075,7 @@ class EPay extends PaymentModule
             } catch (Exception $e) {
                 $message = "Autocapture failed with message: " . $e->getMessage();
                 $this->createStatusChangesMessage($params["id_order"], $message);
-                $id_lang = (int)$this->context->language->id;
+                $id_lang = (int) $this->context->language->id;
                 $dir_mail = dirname(__FILE__) . '/mails/';
                 $mailTo = Configuration::get('EPAY_AUTOCAPTURE_FAILUREEMAIL');
                 Mail::Send($id_lang, 'autocapturefailed', 'Auto capture of ' . $params['id_order'] . ' failed', array('{message}' => $e->getMessage()), $mailTo, null, null, null, null, null, $dir_mail);
@@ -1156,13 +1156,13 @@ class EPay extends PaymentModule
         $invoice["customer"]["email"] = $customer->email;
         $invoice["customer"]["name"] = $this->removeSpecialCharacters($summary["invoice"]->firstname . ' ' . $summary["invoice"]->lastname);
         $invoice["customer"]["address"] = $this->removeSpecialCharacters($summary["invoice"]->address1);
-        $invoice["customer"]["zip"] = (int)$summary["invoice"]->postcode;
+        $invoice["customer"]["zip"] = (int) $summary["invoice"]->postcode;
         $invoice["customer"]["city"] = $this->removeSpecialCharacters($summary["invoice"]->city);
         $invoice["customer"]["country"] = $this->removeSpecialCharacters($summary["invoice"]->country);
 
         $invoice["shippingaddress"]["name"] = $this->removeSpecialCharacters($summary["delivery"]->firstname . ' ' . $summary["delivery"]->lastname);
         $invoice["shippingaddress"]["address"] = $this->removeSpecialCharacters($summary["delivery"]->address1);
-        $invoice["shippingaddress"]["zip"] = (int)$summary["delivery"]->postcode;
+        $invoice["shippingaddress"]["zip"] = (int) $summary["delivery"]->postcode;
         $invoice["shippingaddress"]["city"] = $this->removeSpecialCharacters($summary["delivery"]->city);
         $invoice["shippingaddress"]["country"] = $this->removeSpecialCharacters($summary["delivery"]->country);
 
@@ -1174,7 +1174,7 @@ class EPay extends PaymentModule
             $invoice["lines"][] = array(
                 "id" => ($product["reference"] == "" ? $product["id_product"] : $product["reference"]),
                 "description" => $this->removeSpecialCharacters($product["name"]),
-                "quantity" => (int)$product["cart_quantity"],
+                "quantity" => (int) $product["cart_quantity"],
                 "price" => EpayTools::convertPriceToMinorUnits($product["price"], $minorunits, $roundingMode),
                 "vat" => $product["rate"]
             );
@@ -1186,7 +1186,7 @@ class EPay extends PaymentModule
                 "description" => $this->l('Gift wrapping'),
                 "quantity" => 1,
                 "price" => EpayTools::convertPriceToMinorUnits($summary["total_wrapping_tax_exc"], $minorunits, $roundingMode),
-                "vat" => $summary["total_wrapping_tax_exc"] > 0 ? round((((float)$summary["total_wrapping"] - (float)$summary["total_wrapping_tax_exc"]) / (float)$summary["total_wrapping_tax_exc"]) *100) : 0
+                "vat" => $summary["total_wrapping_tax_exc"] > 0 ? round((((float) $summary["total_wrapping"] - (float) $summary["total_wrapping_tax_exc"]) / (float) $summary["total_wrapping_tax_exc"]) *100) : 0
             );
         }
 
@@ -1195,7 +1195,7 @@ class EPay extends PaymentModule
                 "description" => $this->l('Shipping'),
                 "quantity" => 1,
                 "price" => EpayTools::convertPriceToMinorUnits($summary["total_shipping_tax_exc"], $minorunits, $roundingMode),
-                "vat" => $summary["total_shipping_tax_exc"] > 0 ? round((((float)$summary["total_shipping"] - (float)$summary["total_shipping_tax_exc"]) / (float)$summary["total_shipping_tax_exc"]) *100) : 0
+                "vat" => $summary["total_shipping_tax_exc"] > 0 ? round((((float) $summary["total_shipping"] - (float) $summary["total_shipping_tax_exc"]) / (float) $summary["total_shipping_tax_exc"]) *100) : 0
             );
 
         foreach ($summary["discounts"] as $discount) {
@@ -1204,7 +1204,7 @@ class EPay extends PaymentModule
                 "description" => $this->removeSpecialCharacters($discount["description"]),
                 "quantity" => 1,
                 "price" => EpayTools::convertPriceToMinorUnits($discount["value_tax_exc"], $minorunits, $roundingMode) * -1,
-                "vat" => $discount["value_tax_exc"] > 0 ? round((((float)$discount["value_real"] - (float)$discount["value_tax_exc"]) / (float)$discount["value_tax_exc"]) *100) : 0
+                "vat" => $discount["value_tax_exc"] > 0 ? round((((float) $discount["value_real"] - (float) $discount["value_tax_exc"]) / (float) $discount["value_tax_exc"]) *100) : 0
             );
         }
 
@@ -1231,8 +1231,8 @@ class EPay extends PaymentModule
      */
     private function checkCurrency($cart)
     {
-        $currency_order = new Currency((int)($cart->id_currency));
-        $currencies_module = $this->getCurrency((int)$cart->id_currency);
+        $currency_order = new Currency((int) ($cart->id_currency));
+        $currencies_module = $this->getCurrency((int) $cart->id_currency);
 
         if (is_array($currencies_module)) {
             foreach ($currencies_module as $currency_module) {
@@ -1381,7 +1381,7 @@ class EPay extends PaymentModule
             }
 
             $paymentTypeColumn = '<div class="epay_paymenttype">';
-            $cardName = EpayTools::getCardNameById((int)$cardType);
+            $cardName = EpayTools::getCardNameById((int) $cardType);
             $paymentTypeColumn .= '<img src="https://d25dqh6gpkyuw6.cloudfront.net/paymentlogos/external/' . $cardType . '.png" alt="' . $cardName . '" title="' . $cardName . '" />';
             $paymentTypeColumn .= '<div>' . $cardName;
 
@@ -1648,7 +1648,7 @@ class EPay extends PaymentModule
 
                 if ((Tools::isSubmit('epay_capture') || Tools::isSubmit('epay_credit')) && Tools::getIsset('epay_amount')) {
                     $epayAmount = Tools::getValue('epay_amount');
-                    $amountSanitized = (float)str_replace(',', '.', $epayAmount);
+                    $amountSanitized = (float) str_replace(',', '.', $epayAmount);
                     if (is_float($amountSanitized)) {
                         $amount = EpayTools::convertPriceToMinorUnits($amountSanitized, $minorunits, Configuration::get('EPAY_ROUNDING_MODE'));
                     } else {
@@ -1785,7 +1785,7 @@ class EPay extends PaymentModule
         if (Validate::isCleanHtml($message)) {
             $msg->name = "Bambora Online ePay";
             $msg->message = $message;
-            $msg->id_order = (int)$orderId;
+            $msg->id_order = (int) $orderId;
             $msg->private = 1;
             $msg->add();
         }
@@ -1806,7 +1806,7 @@ class EPay extends PaymentModule
         $currency = new Currency($order->id_currency);
         $currencyIsoCode = $currency->iso_code;
         // Get default Language
-        $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
+        $default_lang = (int) Configuration::get('PS_LANG_DEFAULT');
 
         // Init Fields form array
         $fields_form = array();
@@ -1935,7 +1935,7 @@ class EPay extends PaymentModule
             $languageIso = Language::getIsoById($this->context->language->id);
 
             //Get ordernumber
-            $sql = 'SELECT COUNT(*) FROM ' . _DB_PREFIX_ . 'epay_transactions WHERE `id_order` = ' . (int)$orderid;
+            $sql = 'SELECT COUNT(*) FROM ' . _DB_PREFIX_ . 'epay_transactions WHERE `id_order` = ' . (int) $orderid;
             $orderPostfix = Db::getInstance()->getValue($sql) + 1;
 
             $params = array();
@@ -1951,7 +1951,7 @@ class EPay extends PaymentModule
             $params["paymentrequest"]["closeafterxpayments"] = 1;
 
             $params["paymentrequest"]["parameters"] = array();
-            $amountSanitized = (float)str_replace(',', '.', $amount);
+            $amountSanitized = (float) str_replace(',', '.', $amount);
             $params["paymentrequest"]["parameters"]["amount"] = EpayTools::convertPriceToMinorUnits($amountSanitized, $minorunits, Configuration::get('EPAY_ROUNDING_MODE'));
             $params["paymentrequest"]["parameters"]["callbackurl"] = $this->context->link->getModuleLink($this->name, 'paymentrequest', array('id_cart' => $order->id_cart), true);
             $params["paymentrequest"]["parameters"]["currency"] = $currencyIsoCode;
@@ -1994,7 +1994,7 @@ class EPay extends PaymentModule
                     $message = strip_tags($message, '<br>');
                     if (Validate::isCleanHtml($message)) {
                         $msg->message = $message;
-                        $msg->id_order = (int)$orderid;
+                        $msg->id_order = (int) $orderid;
                         $msg->private = 1;
                         $msg->add();
                     }
