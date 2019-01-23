@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2017. All rights reserved ePay A/S (a Bambora Company).
+ * Copyright (c) 2019. All rights reserved ePay A/S (a Bambora Company).
  *
  * This program is free software. You are allowed to use the software but NOT allowed to modify the software.
  * It is also not legal to do any changes to the software and distribute it in your own name / brand.
@@ -13,9 +13,9 @@
  *
  */
 
-include('lib/epayTools.php');
-include('lib/epayApi.php');
-include('lib/epayModels.php');
+include 'lib/epayTools.php';
+include 'lib/epayApi.php';
+include 'lib/epayModels.php';
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -170,7 +170,7 @@ class EPay extends PaymentModule
     {
         $output = null;
 
-        if (Tools::isSubmit('submit'.$this->name)) {
+        if (Tools::isSubmit('submit' . $this->name)) {
             $epay_merchantnumber = (string)Tools::getValue('EPAY_MERCHANTNUMBER');
             if (!$epay_merchantnumber  || empty($epay_merchantnumber) || !Validate::isGenericName($epay_merchantnumber)) {
                 $output .= $this->displayError($this->l('Merchantnumber is required. If you don\'t have one please contact ePay on support@epay.dk in order to obtain one!'));
@@ -200,7 +200,7 @@ class EPay extends PaymentModule
             }
         }
 
-        return $output.$this->displayForm();
+        return $output . $this->displayForm();
     }
 
     private function displayForm()
@@ -220,7 +220,7 @@ class EPay extends PaymentModule
 
         $displayPaymentLogoLocation = array(
             array( 'id_option' => 'left_column', 'name' => 'Left Column' ),
-            array( 'id_option' => 'right_column','name' => 'Right Column' ),
+            array( 'id_option' => 'right_column', 'name' => 'Right Column' ),
             array( 'id_option' => 'footer', 'name' => 'Footer' ),
             array( 'id_option' => 'hide', 'name' => 'Hide' )
         );
@@ -425,7 +425,7 @@ class EPay extends PaymentModule
         $helper->module = $this;
         $helper->name_controller = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
 
         // Language
         $helper->default_form_language = $default_lang;
@@ -435,16 +435,16 @@ class EPay extends PaymentModule
         $helper->title = $this->displayName . " v" . $this->version;
         $helper->show_toolbar = true;        // false -> remove toolbar
         $helper->toolbar_scroll = true;      // yes - > Toolbar is always visible on the top of the screen.
-        $helper->submit_action = 'submit'.$this->name;
+        $helper->submit_action = 'submit' . $this->name;
         $helper->toolbar_btn = array(
             'save' =>
             array(
                 'desc' => $this->l('Save'),
-                'href' => AdminController::$currentIndex.'&configure='.$this->name.'&save'.$this->name.
-                '&token='.Tools::getAdminTokenLite('AdminModules'),
+                'href' => AdminController::$currentIndex . '&configure=' . $this->name . '&save' . $this->name .
+                '&token=' . Tools::getAdminTokenLite('AdminModules'),
             ),
             'back' => array(
-                'href' => AdminController::$currentIndex.'&token='.Tools::getAdminTokenLite('AdminModules'),
+                'href' => AdminController::$currentIndex . '&token=' . Tools::getAdminTokenLite('AdminModules'),
                 'desc' => $this->l('Back to list')
             )
         );
@@ -473,16 +473,16 @@ class EPay extends PaymentModule
 
         $html =   '<div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 ">'
-                           .$helper->generateForm($fields_form)
-                    .'</div>
+                           . $helper->generateForm($fields_form)
+                    . '</div>
                     <div class="hidden-xs hidden-sm col-md-5 col-lg-5">'
                     . $this->buildHelptextForSettings()
-                    .'</div>
+                    . '</div>
                  </div>'
-               .'<div class="row visible-xs visible-sm">
+               . '<div class="row visible-xs visible-sm">
                    <div class="col-xs-12 col-sm-12">'
                     . $this->buildHelptextForSettings()
-                    .'</div>
+                    . '</div>
                    </div>';
         return $html;
     }
@@ -652,7 +652,7 @@ class EPay extends PaymentModule
             return false;
         }
 
-        $query = 'UPDATE '  . _DB_PREFIX_ . 'epay_transactions SET id_order="' . pSQL($id_order) . '" WHERE epay_transaction_id="'.pSQL($transaction_id).'"';
+        $query = 'UPDATE ' . _DB_PREFIX_ . 'epay_transactions SET id_order="' . pSQL($id_order) . '" WHERE epay_transaction_id="' . pSQL($transaction_id) . '"';
         return $this->executeDbQuery($query);
     }
 
@@ -668,7 +668,7 @@ class EPay extends PaymentModule
             return false;
         }
 
-        $query = 'DELETE FROM '  . _DB_PREFIX_ . 'epay_transactions WHERE epay_transaction_id="'.pSQL($transaction_id).'"';
+        $query = 'DELETE FROM ' . _DB_PREFIX_ . 'epay_transactions WHERE epay_transaction_id="' . pSQL($transaction_id) . '"';
         return $this->executeDbQuery($query);
     }
 
@@ -735,7 +735,7 @@ class EPay extends PaymentModule
      */
     private function setDbCredited($transaction_id, $amount)
     {
-        $query = ' UPDATE ' . _DB_PREFIX_ . 'epay_transactions SET credited = 1, amount_credited = amount_credited + '. pSQL($amount) . ' WHERE epay_transaction_id = ' . pSQL($transaction_id);
+        $query = ' UPDATE ' . _DB_PREFIX_ . 'epay_transactions SET credited = 1, amount_credited = amount_credited + ' . pSQL($amount) . ' WHERE epay_transaction_id = ' . pSQL($transaction_id);
 
         return $this->executeDbQuery($query);
     }
@@ -905,7 +905,7 @@ class EPay extends PaymentModule
         $order = new Order($params['id_order']);
         if (isset($order) && $order->module == $this->name) {
             $html = '<div id="epay_admin_order">';
-            $html .= '<script type="text/javascript" src="'.$this->_path.'views/js/epayScripts.js" charset="UTF-8"></script>';
+            $html .= '<script type="text/javascript" src="' . $this->_path . 'views/js/epayScripts.js" charset="UTF-8"></script>';
 
             if (Configuration::get('EPAY_ENABLE_REMOTE_API') == 1) {
                 $epayUiMessage = $this->processRemote();
@@ -947,7 +947,7 @@ class EPay extends PaymentModule
     public function hookDisplayHeader()
     {
         if ($this->context->controller != null) {
-            $this->context->controller->addCSS($this->_path.'views/css/epayFront.css', 'all');
+            $this->context->controller->addCSS($this->_path . 'views/css/epayFront.css', 'all');
         }
     }
 
@@ -959,7 +959,7 @@ class EPay extends PaymentModule
     public function hookBackOfficeHeader($params)
     {
         if ($this->context->controller != null) {
-            $this->context->controller->addCSS($this->_path.'views/css/epayAdmin.css', 'all');
+            $this->context->controller->addCSS($this->_path . 'views/css/epayAdmin.css', 'all');
         }
     }
 
@@ -1076,7 +1076,7 @@ class EPay extends PaymentModule
                 $message = "Autocapture failed with message: " . $e->getMessage();
                 $this->createStatusChangesMessage($params["id_order"], $message);
                 $id_lang = (int)$this->context->language->id;
-                $dir_mail = dirname(__FILE__).'/mails/';
+                $dir_mail = dirname(__FILE__) . '/mails/';
                 $mailTo = Configuration::get('EPAY_AUTOCAPTURE_FAILUREEMAIL');
                 Mail::Send($id_lang, 'autocapturefailed', 'Auto capture of ' . $params['id_order'] . ' failed', array('{message}' => $e->getMessage()), $mailTo, null, null, null, null, null, $dir_mail);
             }
@@ -1186,7 +1186,7 @@ class EPay extends PaymentModule
                 "description" => $this->l('Gift wrapping'),
                 "quantity" => 1,
                 "price" => EpayTools::convertPriceToMinorUnits($summary["total_wrapping_tax_exc"], $minorunits, $roundingMode),
-                "vat" => $summary["total_wrapping_tax_exc"] > 0 ? round((((float)$summary["total_wrapping"] - (float)$summary["total_wrapping_tax_exc"]) / (float)$summary["total_wrapping_tax_exc"]) *100)  : 0
+                "vat" => $summary["total_wrapping_tax_exc"] > 0 ? round((((float)$summary["total_wrapping"] - (float)$summary["total_wrapping_tax_exc"]) / (float)$summary["total_wrapping_tax_exc"]) *100) : 0
             );
         }
 
@@ -1382,8 +1382,8 @@ class EPay extends PaymentModule
 
             $paymentTypeColumn = '<div class="epay_paymenttype">';
             $cardName = EpayTools::getCardNameById((int)$cardType);
-            $paymentTypeColumn .= '<img src="https://d25dqh6gpkyuw6.cloudfront.net/paymentlogos/external/'.$cardType.'.png" alt="' . $cardName . '" title="' . $cardName . '" />';
-            $paymentTypeColumn .= '<div>'.$cardName;
+            $paymentTypeColumn .= '<img src="https://d25dqh6gpkyuw6.cloudfront.net/paymentlogos/external/' . $cardType . '.png" alt="' . $cardName . '" title="' . $cardName . '" />';
+            $paymentTypeColumn .= '<div>' . $cardName;
 
             if ($cardno > 1) {
                 if (Tools::strlen($cardno) === 4) {
@@ -1432,7 +1432,7 @@ class EPay extends PaymentModule
             $html .= '<div class="col-xs-12 col-sm-12 col-md-6 col-lg-5">';
 
             $html .= '<div class="epay_table_title">';
-            $html .= '<i class="icon-time"></i> '.$this->l('Transaction Log').'</div><br />';
+            $html .= '<i class="icon-time"></i> ' . $this->l('Transaction Log') . '</div><br />';
             $html .= '<table class="table epay_table" cellspacing="0" cellpadding="0">';
             $html .= '<thead><tr><th><span class="title_box">' . $this->l('Date') . '</span></th>';
             $html .= '<th><span class="title_box">' . $this->l('Event') . '</span></th>';
@@ -1485,12 +1485,12 @@ class EPay extends PaymentModule
             $form .= '<form name="epay_remote" action="' . $_SERVER["REQUEST_URI"] . '" method="post" class="epay_displayInline" id="epay_action" >';
             $form .= '<input type="hidden" name="epay_transaction_id" value="' . $transaction->transactionid . '" />';
             $form .= '<input type="hidden" name="epay_order_id" value="' . $transaction->orderid . '" />';
-            $form .= '<input type="hidden" name="epay_currency_code" value="'.$currencyCode.'" />';
+            $form .= '<input type="hidden" name="epay_currency_code" value="' . $currencyCode . '" />';
             $form .= '<div class="input-group">';
-            $form .= '<div class="input-group-addon">'. $currencyCode . '</div>';
+            $form .= '<div class="input-group-addon">' . $currencyCode . '</div>';
             $tooltip = $this->l('Example: 1234.56');
-            $form .= '<input type="text" data-toggle="tooltip" title="'.$tooltip.'" id="epay_amount" name="epay_amount" value="' . $epay_amount . '" /></div>';
-            $form .= '<div id="epay_format_error" class="alert alert-danger"><strong>'.$this->l('Warning').' </strong>'.$this->l('The amount you entered was in the wrong format. Please try again!').'</div>';
+            $form .= '<input type="text" data-toggle="tooltip" title="' . $tooltip . '" id="epay_amount" name="epay_amount" value="' . $epay_amount . '" /></div>';
+            $form .= '<div id="epay_format_error" class="alert alert-danger"><strong>' . $this->l('Warning') . ' </strong>' . $this->l('The amount you entered was in the wrong format. Please try again!') . '</div>';
             $formBody = '';
             if ((!$transaction->capturedamount && $transaction->status != 'PAYMENT_CAPTURED')
                 || ($transaction->splitpayment && $transaction->status != 'PAYMENT_CAPTURED' && $transaction->capturedamount != $transaction->authamount)) {
@@ -1548,9 +1548,9 @@ class EPay extends PaymentModule
         }
         $confirmText = null;
         if (isset($confirmText)) {
-            $html = '<input id="'.$type.'" class="'.$class.'" name="'.$type.'" type="submit" value="' . $text . '"onclick="return confirm(\'' . $confirmText . '\''.$extra.');" />';
+            $html = '<input id="' . $type . '" class="' . $class . '" name="' . $type . '" type="submit" value="' . $text . '"onclick="return confirm(\'' . $confirmText . '\'' . $extra . ');" />';
         } else {
-            $html = '<input id="'.$type.'" class="'.$class.'" name="'.$type.'" type="submit" value="' . $text . '" />';
+            $html = '<input id="' . $type . '" class="' . $class . '" name="' . $type . '" type="submit" value="' . $text . '" />';
         }
 
         return $html;
@@ -1580,7 +1580,7 @@ class EPay extends PaymentModule
         $html = '<a href="https://admin.ditonlinebetalingssystem.dk/admin/login.asp" alt="" title="' . $text . '" target="_blank">';
         $html .= '<img class="bambora_logo" src="../modules/' . $this->name . '/views/img/bambora.svg" />';
         $html .= '</a>';
-        $html .= '<div><a href="https://admin.ditonlinebetalingssystem.dk/admin/login.asp"  alt="" title="' . $text . '" target="_blank">' . $text .'</a></div>';
+        $html .= '<div><a href="https://admin.ditonlinebetalingssystem.dk/admin/login.asp"  alt="" title="' . $text . '" target="_blank">' . $text . '</a></div>';
 
         return $html;
     }
@@ -1610,10 +1610,10 @@ class EPay extends PaymentModule
         $html .='<div id="epay_overlay_message_container">';
 
         if (Tools::strlen($epayUiMessage->message) > 0) {
-            $html .='<p id="epay_overlay_message_title_with_message">'.$epayUiMessage->title.'</p>';
-            $html .= '<hr><p id="epay_overlay_message_message">'. $epayUiMessage->message .'</p>';
+            $html .='<p id="epay_overlay_message_title_with_message">' . $epayUiMessage->title . '</p>';
+            $html .= '<hr><p id="epay_overlay_message_message">' . $epayUiMessage->message . '</p>';
         } else {
-            $html .='<p id="epay_overlay_message_title">'.$epayUiMessage->title.'</p>';
+            $html .='<p id="epay_overlay_message_title">' . $epayUiMessage->title . '</p>';
         }
 
         $html .= '</div></div></div></div>';
@@ -1813,7 +1813,7 @@ class EPay extends PaymentModule
         $fields_form[0]['form'] = array(
             'legend' => array(
                 'title' => $this->l('Create payment request'),
-                'image' => $this->_path.'/views/img/logo_small.png'
+                'image' => $this->_path . '/views/img/logo_small.png'
             ),
             'input' => array(
                 array(
@@ -1881,7 +1881,7 @@ class EPay extends PaymentModule
         $helper->module = $this;
         $helper->name_controller = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminOrders');
-        $helper->currentIndex = AdminController::$currentIndex.'&vieworder&id_order='.$params['id_order'];
+        $helper->currentIndex = AdminController::$currentIndex . '&vieworder&id_order=' . $params['id_order'];
         $helper->identifier = 'id_order';
         $helper->id = $params['id_order'];
         $helper->submit_action = 'sendpaymentrequest';
@@ -1899,12 +1899,12 @@ class EPay extends PaymentModule
         $helper->fields_value['epay_paymentrequest_recipient_name'] = $this->context->customer->firstname . ' ' . $this->context->customer->lastname;
         $helper->fields_value['epay_paymentrequest_recipient_email'] = $this->context->customer->email;
 
-        $helper->fields_value['epay_paymentrequest_replyto_name'] = $employee->firstname.' '.$employee->lastname;
+        $helper->fields_value['epay_paymentrequest_replyto_name'] = $employee->firstname . ' ' . $employee->lastname;
         $helper->fields_value['epay_paymentrequest_replyto_email'] = $employee->email;
 
         $helper->fields_value['epay_paymentrequest_amount'] = number_format($order->total_paid, 2, ".", "");
 
-        $html = '<div id="epay_paymentrequest_format_error" class="alert alert-danger"><strong>'.$this->l('Warning').' </strong>'.$this->l('The amount you entered was in the wrong format. Please try again!').'</div>';
+        $html = '<div id="epay_paymentrequest_format_error" class="alert alert-danger"><strong>' . $this->l('Warning') . ' </strong>' . $this->l('The amount you entered was in the wrong format. Please try again!') . '</div>';
         $html .= $helper->generateForm($fields_form);
         return $html;
     }
@@ -1935,7 +1935,7 @@ class EPay extends PaymentModule
             $languageIso = Language::getIsoById($this->context->language->id);
 
             //Get ordernumber
-            $sql = 'SELECT COUNT(*) FROM '._DB_PREFIX_.'epay_transactions WHERE `id_order` = ' . (int)$orderid;
+            $sql = 'SELECT COUNT(*) FROM ' . _DB_PREFIX_ . 'epay_transactions WHERE `id_order` = ' . (int)$orderid;
             $orderPostfix = Db::getInstance()->getValue($sql) + 1;
 
             $params = array();

@@ -1,5 +1,5 @@
 {*
-* Copyright (c) 2017. All rights reserved ePay A/S (a Bambora Company).
+* Copyright (c) 2019. All rights reserved ePay A/S (a Bambora Company).
 *
 * This program is free software. You are allowed to use the software but NOT allowed to modify the software.
 * It is also not legal to do any changes to the software and distribute it in your own name / brand.
@@ -23,8 +23,8 @@
 		var isPaymentWindowReady = false;
 		function PaymentWindowReady() {
 			var requestString = {/literal}{$epayPaymentWindowRequest|replace:'epay_':''|@json_encode nofilter}{literal};
-			var windowState = {/literal}'{$epayWindowState|escape:'htmlall':'UTF-8'}'{literal};	
-			var cancelUrl = {/literal}'{$epayCancelUrl|escape:'htmlall':'UTF-8'}'{literal};
+			var windowState = {/literal}'{$epayWindowState nofilter}'{literal};	
+			var cancelUrl = {/literal}'{$epayCancelUrl nofilter}'{literal};
 			
 			var requestStringJson = JSON.parse(requestString);
 			paymentwindow = new PaymentWindow(requestStringJson);
@@ -37,7 +37,7 @@
 		}
 		{/literal}		
 	</script>	
-	<script type="text/javascript" src="{$epayPaymentWindowJsUrl|escape:'htmlall':'UTF-8'}" charset="UTF-8"></script>
+	<script type="text/javascript" src="{$epayPaymentWindowJsUrl nofilter}" charset="UTF-8"></script>
     <script type="text/javascript">
 		{literal}	
 		var timerOpenWindow;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2017. All rights reserved ePay A/S (a Bambora Company).
+ * Copyright (c) 2019. All rights reserved ePay A/S (a Bambora Company).
  *
  * This program is free software. You are allowed to use the software but NOT allowed to modify the software.
  * It is also not legal to do any changes to the software and distribute it in your own name / brand.
@@ -13,7 +13,7 @@
  *
  */
 
-include('baseaction.php');
+include 'baseaction.php';
 
 class EPayPaymentRequestModuleFrontController extends BaseAction
 {
@@ -32,7 +32,7 @@ class EPayPaymentRequestModuleFrontController extends BaseAction
             $this->createLogMessage($message, 3, $cart);
         }
 
-        $header = "X-EPay-System: ". EpayTools::getModuleHeaderInfo();
+        $header = "X-EPay-System: " . EpayTools::getModuleHeaderInfo();
         header($header, true, $responseCode);
         die($message);
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2017. All rights reserved ePay A/S (a Bambora Company).
+ * Copyright (c) 2019. All rights reserved ePay A/S (a Bambora Company).
  *
  * This program is free software. You are allowed to use the software but NOT allowed to modify the software.
  * It is also not legal to do any changes to the software and distribute it in your own name / brand.
@@ -27,7 +27,6 @@ class EpayTools
         $ePayVersion = EPay::MODULE_VERSION;
         $prestashopVersion = _PS_VERSION_;
         $result = 'Prestashop/' . $prestashopVersion . ' Module/' . $ePayVersion . ' PHP/'. PHP_VERSION;
-
         return $result;
     }
 
@@ -255,6 +254,6 @@ class EpayTools
         'IQD' => 3, 'TND' => 3, 'BHD' => 3, 'JOD' => 3, 'OMR' => 3,
         'KWD' => 3, 'LYD' => 3);
 
-        return key_exists($currencyCode, $currencyArray) ? $currencyArray[$currencyCode] : 2;
+        return array_key_exists($currencyCode, $currencyArray) ? $currencyArray[$currencyCode] : 2;
     }
 }

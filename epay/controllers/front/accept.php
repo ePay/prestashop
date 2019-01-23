@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2017. All rights reserved ePay A/S (a Bambora Company).
+ * Copyright (c) 2019. All rights reserved ePay A/S (a Bambora Company).
  *
  * This program is free software. You are allowed to use the software but NOT allowed to modify the software.
  * It is also not legal to do any changes to the software and distribute it in your own name / brand.
@@ -13,7 +13,7 @@
  *
  */
 
-include('baseaction.php');
+include 'baseaction.php';
 
 class EPayAcceptModuleFrontController extends BaseAction
 {
@@ -44,7 +44,7 @@ class EPayAcceptModuleFrontController extends BaseAction
      */
     private function redirectToAccept($cart)
     {
-        Tools::redirectLink(__PS_BASE_URI__. 'order-confirmation.php?key='. $cart->secure_key. '&id_cart='. (int)$cart->id. '&id_module='. (int)$this->module->id. '&id_order='. (int)Order::getOrderByCartId($cart->id));
+        Tools::redirectLink(__PS_BASE_URI__ . 'order-confirmation.php?key=' . $cart->secure_key . '&id_cart=' . (int)$cart->id . '&id_module=' . (int)$this->module->id . '&id_order=' . (int)Order::getOrderByCartId($cart->id));
     }
 
     private function handleError($message, $cart)
