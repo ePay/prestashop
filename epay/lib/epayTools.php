@@ -13,9 +13,9 @@
  */
 class EpayTools
 {
-    const ROUND_UP = "round_up";
-    const ROUND_DOWN = "round_down";
-    const ROUND_DEFAULT = "round_default";
+    const ROUND_UP = 'round_up';
+    const ROUND_DOWN = 'round_down';
+    const ROUND_DEFAULT = 'round_default';
 
     /**
      * Get the module header information
@@ -37,9 +37,9 @@ class EpayTools
      */
     public static function getPsVersion()
     {
-        if (_PS_VERSION_ < "1.6.0.0") {
+        if (_PS_VERSION_ < '1.6.0.0') {
             return EPay::V15;
-        } elseif (_PS_VERSION_ >= "1.6.0.0" && _PS_VERSION_ < "1.7.0.0") {
+        } elseif (_PS_VERSION_ >= '1.6.0.0' && _PS_VERSION_ < '1.7.0.0') {
             return EPay::V16;
         } else {
             return EPay::V17;
@@ -55,49 +55,49 @@ class EpayTools
     public static function getEPayLanguage($strlan)
     {
         switch ($strlan) {
-            case "dan":
-            case "da":
+            case 'dan':
+            case 'da':
                 return 1;
-            case "eng":
-            case "en":
+            case 'eng':
+            case 'en':
                 return 2;
-            case "swe":
-            case "sv":
+            case 'swe':
+            case 'sv':
                 return 3;
-            case "nob":
-            case "nb":
-            case "nno":
-            case "nn":
-            case "nor":
-            case "no":
+            case 'nob':
+            case 'nb':
+            case 'nno':
+            case 'nn':
+            case 'nor':
+            case 'no':
                 return 4;
-            case "kal":
-            case "kl":
-            case "gl":
+            case 'kal':
+            case 'kl':
+            case 'gl':
                 return 5;
-            case "isl":
-            case "is":
+            case 'isl':
+            case 'is':
                 return 6;
-            case "deu":
-            case "de":
+            case 'deu':
+            case 'de':
                 return 7;
-            case "fin":
-            case "fi":
+            case 'fin':
+            case 'fi':
                 return 8;
-            case "spa":
-            case "es":
+            case 'spa':
+            case 'es':
                 return 9;
-            case "fra":
-            case "fr":
+            case 'fra':
+            case 'fr':
                 return 10;
-            case "pol":
-            case "pl":
+            case 'pol':
+            case 'pl':
                 return 11;
-            case "ita":
-            case "it":
+            case 'ita':
+            case 'it':
                 return 12;
-            case "nld":
-            case "nl":
+            case 'nld':
+            case 'nl':
                 return 13;
         }
 
@@ -186,10 +186,10 @@ class EpayTools
      */
     public function getPhoneNumber($address)
     {
-        if ($address->phone_mobile != "" || $address->phone != "") {
-            return $address->phone_mobile != "" ? $address->phone_mobile : $address->phone;
+        if ($address->phone_mobile != '' || $address->phone != '') {
+            return $address->phone_mobile != '' ? $address->phone_mobile : $address->phone;
         } else {
-            return "";
+            return '';
         }
     }
 
@@ -203,7 +203,7 @@ class EpayTools
      */
     public static function convertPriceToMinorUnits($amount, $minorunits, $rounding)
     {
-        if ($amount == "" || $amount == null) {
+        if ($amount == '' || $amount == null) {
             return 0;
         }
 

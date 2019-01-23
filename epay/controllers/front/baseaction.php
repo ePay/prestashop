@@ -25,48 +25,48 @@ abstract class BaseAction extends ModuleFrontController
      */
     protected function validateAction($isPaymentRequest, &$message, &$cart)
     {
-        if (!Tools::getIsset("txnid")) {
-            $message = "No GET(txnid) was supplied to the system!";
+        if (!Tools::getIsset('txnid')) {
+            $message = 'No GET(txnid) was supplied to the system!';
             return false;
         }
 
         $id_cart = null;
 
         if (!$isPaymentRequest) {
-            if (!Tools::getIsset("orderid")) {
-                $message = "No GET(orderid) was supplied to the system!";
+            if (!Tools::getIsset('orderid')) {
+                $message = 'No GET(orderid) was supplied to the system!';
                 return false;
             }
-            $id_cart = Tools::getValue("orderid");
+            $id_cart = Tools::getValue('orderid');
         } else {
-            if (!Tools::getIsset("id_cart")) {
-                $message = "No Cart id was supplied on the paymentrequest callback";
+            if (!Tools::getIsset('id_cart')) {
+                $message = 'No Cart id was supplied on the paymentrequest callback';
                 return false;
             }
-            $id_cart = Tools::getValue("id_cart");
+            $id_cart = Tools::getValue('id_cart');
         }
 
         $cart = new Cart($id_cart);
 
         if (!isset($cart->id)) {
-            $message =  "Please provide a valid orderid or cartid";
+            $message =  'Please provide a valid orderid or cartid';
             return false;
         }
 
         $storeMd5 = Configuration::get('EPAY_MD5KEY');
         if (!empty($storeMd5)) {
             $accept_params = Tools::getAllValues();
-            $var = "";
+            $var = '';
             foreach ($accept_params as $key => $value) {
-                if ($key == "hash") {
+                if ($key == 'hash') {
                     break;
                 }
                 $var .= $value;
             }
 
             $storeHash = md5($var . $storeMd5);
-            if ($storeHash != Tools::getValue("hash")) {
-                $message = "Hash validation failed - Please check your MD5 key";
+            if ($storeHash != Tools::getValue('hash')) {
+                $message = 'Hash validation failed - Please check your MD5 key';
                 return false;
             }
         }
@@ -84,11 +84,11 @@ abstract class BaseAction extends ModuleFrontController
      */
     protected function processAction($cart, $isPaymentRequest, &$responseCode)
     {
-        $message = "";
+        $message = '';
         try {
             if (!$cart->orderExists() || $isPaymentRequest) {
                 $id_cart = $cart->id;
-                $transaction_Id = Tools::getValue("txnid");
+                $transaction_Id = Tools::getValue('txnid');
                 $epayOrderId = Tools::getValue('orderid');
                 $cardId = Tools::getValue('paymenttype');
                 $cardnopostfix = Tools::getIsset('cardno') ? Tools::substr(Tools::getValue('cardno'), -4) : 0;
@@ -134,7 +134,7 @@ abstract class BaseAction extends ModuleFrontController
                                 $cart->secure_key
                             );
                         } catch (Exception $ex) {
-                            $message = "Prestashop threw an exception on validateOrder: " . $ex->getMessage();
+                            $message = 'Prestashop threw an exception on validateOrder: ' . $ex->getMessage();
                             $responseCode = 500;
                             $this->module->deleteDbRecordedTransaction($transaction_Id);
                             return $message;
@@ -146,7 +146,7 @@ abstract class BaseAction extends ModuleFrontController
                     $order = new Order($id_order);
 
                     if ($isPaymentRequest) {
-                        $message = "Payment request succeded with ePay Transaction ID: " . $transaction_Id;
+                        $message = 'Payment request succeded with ePay Transaction ID: ' . $transaction_Id;
                         $msg = new Message();
                         $message = strip_tags($message, '<br>');
                         if (Validate::isCleanHtml($message)) {
@@ -191,19 +191,19 @@ abstract class BaseAction extends ModuleFrontController
                         }
                     }
                     $payment[0]->save();
-                    $message = "Order created";
+                    $message = 'Order created';
                     $responseCode = 200;
                 } else {
-                    $message = "Order is beeing created or have been created by another process";
+                    $message = 'Order is beeing created or have been created by another process';
                     $responseCode = 200;
                 }
             } else {
-                $message = "Order was already Created";
+                $message = 'Order was already Created';
                 $responseCode = 200;
             }
         } catch (Exception $e) {
             $responseCode = 500;
-            $message = "Process order failed with an exception: " . $e->getMessage();
+            $message = 'Process order failed with an exception: ' . $e->getMessage();
         }
 
         return $message;
@@ -218,7 +218,7 @@ abstract class BaseAction extends ModuleFrontController
      */
     protected function createLogMessage($message, $severity = 3, $cart = null)
     {
-        $result = "";
+        $result = '';
         if (isset($cart)) {
             $invoiceAddress = new Address((int) $cart->id_address_invoice);
             $customer = new Customer((int) $cart->id_customer);
@@ -226,7 +226,7 @@ abstract class BaseAction extends ModuleFrontController
             $personString = "Name: {$invoiceAddress->firstname}{$invoiceAddress->lastname} Phone: {$phoneNumber} Mail: {$customer->email} - ";
             $result = $personString;
         }
-        $result .= "An payment error occured: " . $message;
+        $result .= 'An payment error occured: ' . $message;
         if ($this->module->getPsVersion() === Epay::V15) {
             Logger::addLog($result, $severity);
         } else {

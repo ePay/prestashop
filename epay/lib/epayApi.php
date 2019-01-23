@@ -13,7 +13,7 @@
  */
 class EPayApi
 {
-    private $pwd = "";
+    private $pwd = '';
     private $client;
 
     const PAYMENT_WSDL = 'https://ssl.ditonlinebetalingssystem.dk/remote/payment.asmx?WSDL';
@@ -39,8 +39,8 @@ class EPayApi
         $epay_params['transactionid'] = $transactionid;
         $epay_params['amount'] = (string) $amount;
         $epay_params['pwd'] = (string) $this->pwd;
-        $epay_params['pbsResponse'] = "-1";
-        $epay_params['epayresponse'] = "-1";
+        $epay_params['pbsResponse'] = '-1';
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->capture($epay_params);
         return $result;
@@ -58,7 +58,7 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['epayresponse'] = "-1";
+        $epay_params['epayresponse'] = '-1';
         $epay_params['pwd'] = (string) $this->pwd;
 
         $result = $this->client->move_as_captured($epay_params);
@@ -80,8 +80,8 @@ class EPayApi
         $epay_params['transactionid'] = $transactionid;
         $epay_params['amount'] = (string) $amount;
         $epay_params['pwd'] = (string) $this->pwd;
-        $epay_params['epayresponse'] = "-1";
-        $epay_params['pbsresponse'] = "-1";
+        $epay_params['epayresponse'] = '-1';
+        $epay_params['pbsresponse'] = '-1';
 
         $result = $this->client->credit($epay_params);
         return $result;
@@ -100,7 +100,7 @@ class EPayApi
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
         $epay_params['pwd'] = (string) $this->pwd;
-        $epay_params['epayresponse'] = "-1";
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->delete($epay_params);
         return $result;
@@ -121,13 +121,13 @@ class EPayApi
         $epay_params['language'] = $language;
         $epay_params['pwd'] = (string) $this->pwd;
         $epay_params['epayresponsecode'] = $epay_response_code;
-        $epay_params['epayresponse'] = "-1";
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->getEpayError($epay_params);
         if ($result->getEpayErrorResult) {
             return $result->epayresponsestring;
         } else {
-            return "";
+            return '';
         }
     }
 
@@ -146,14 +146,14 @@ class EPayApi
         $epay_params['language'] = $language;
         $epay_params['pbsresponsecode'] = $pbs_response_code;
         $epay_params['pwd'] = (string) $this->pwd;
-        $epay_params['epayresponse'] = "-1";
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->getPbsError($epay_params);
 
         if ($result->getPbsErrorResult) {
             return $result->pbsresponsestring;
         } else {
-            return "";
+            return '';
         }
     }
 
@@ -170,7 +170,7 @@ class EPayApi
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
         $epay_params['pwd'] = (string) $this->pwd;
-        $epay_params["epayresponse"] = "-1";
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->gettransaction($epay_params);
         return $result;
@@ -189,7 +189,7 @@ class EPayApi
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
         $epay_params['pwd'] = (string) $this->pwd;
-        $epay_params["epayresponse"] = "-1";
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->gettransaction($epay_params);
 
@@ -219,7 +219,7 @@ class EPayApi
         $epay_params['currency'] = $currency;
         $epay_params['acquirer'] = $acquirer;
         $epay_params['pwd'] = (string) $this->pwd;
-        $epay_params["epayresponse"] = "-1";
+        $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->getcardinfo($epay_params);
 
