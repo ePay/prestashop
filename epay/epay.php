@@ -23,8 +23,11 @@ if (!defined('_PS_VERSION_')) {
 class EPay extends PaymentModule
 {
     const MODULE_VERSION = '5.0.6';
+
     const V15 = '15';
+
     const V16 = '16';
+
     const V17 = '17';
 
     public function __construct()
@@ -485,6 +488,7 @@ class EPay extends PaymentModule
                    </div>';
         return $html;
     }
+
     /**
      * Build Help Text For Settings.
      *

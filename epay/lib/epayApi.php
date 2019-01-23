@@ -14,6 +14,7 @@
 class EPayApi
 {
     private $pwd = '';
+
     private $client;
 
     const PAYMENT_WSDL = 'https://ssl.ditonlinebetalingssystem.dk/remote/payment.asmx?WSDL';
