@@ -22,7 +22,7 @@ class EPayAcceptModuleFrontController extends BaseAction
      */
     public function postProcess()
     {
-        $message = "";
+        $message = '';
         $responseCode = '400';
         $cart = null;
         if ($this->validateAction(false, $message, $cart)) {
@@ -32,7 +32,7 @@ class EPayAcceptModuleFrontController extends BaseAction
             }
             $this->redirectToAccept($cart);
         } else {
-            $message = empty($message) ? $this->l("Unknown error") : $message;
+            $message = empty($message) ? $this->l('Unknown error') : $message;
             $this->handleError($message, $cart);
         }
     }

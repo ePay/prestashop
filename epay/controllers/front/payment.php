@@ -47,12 +47,12 @@ class EpayPaymentModuleFrontController extends ModuleFrontController
             Tools::redirect('index.php?controller=order&step=1');
         }
 
-        $paymentWindowJsUrl = "https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js";
+        $paymentWindowJsUrl = 'https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js';
 
         $paymentData = array('epayPaymentWindowJsUrl' => $paymentWindowJsUrl,
                              'epayPaymentWindowRequest' => json_encode($epayPaymentWindowRequest),
-                             'epayCancelUrl' => $epayPaymentWindowRequest["epay_cancelurl"],
-                             'epayWindowState' => $epayPaymentWindowRequest["epay_windowstate"]
+                             'epayCancelUrl' => $epayPaymentWindowRequest['epay_cancelurl'],
+                             'epayWindowState' => $epayPaymentWindowRequest['epay_windowstate']
                             );
 
         $this->context->smarty->assign($paymentData);

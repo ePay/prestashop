@@ -22,17 +22,17 @@ class EPayPaymentRequestModuleFrontController extends BaseAction
      */
     public function postProcess()
     {
-        $message = "";
+        $message = '';
         $responseCode = 400;
         $cart = null;
         if ($this->validateAction(true, $message, $cart)) {
             $message = $this->processAction($cart, true, $responseCode);
         } else {
-            $message = empty($message) ? "Unknown error" : $message;
+            $message = empty($message) ? 'Unknown error' : $message;
             $this->createLogMessage($message, 3, $cart);
         }
 
-        $header = "X-EPay-System: " . EpayTools::getModuleHeaderInfo();
+        $header = 'X-EPay-System: ' . EpayTools::getModuleHeaderInfo();
         header($header, true, $responseCode);
         die($message);
     }
