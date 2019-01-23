@@ -849,8 +849,8 @@ class EPay extends PaymentModule
 
         $epayPaymentOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
         $epayPaymentOption->setCallToActionText($callToActionText)
-                       ->setAction($this->context->link->getModuleLink($this->name, 'payment', array(), true))
-                       ->setAdditionalInformation($this->context->smarty->fetch('module:epay/views/templates/front/paymentinfo.tpl'));
+            ->setAction($this->context->link->getModuleLink($this->name, 'payment', array(), true))
+            ->setAdditionalInformation($this->context->smarty->fetch('module:epay/views/templates/front/paymentinfo.tpl'));
 
         $paymentOptions = array();
         $paymentOptions[] = $epayPaymentOption;
