@@ -30,6 +30,7 @@ class EPayApi
      * @param mixed $merchantnumber
      * @param mixed $transactionid
      * @param mixed $amount
+     *
      * @return mixed
      */
     public function capture($merchantnumber, $transactionid, $amount)
@@ -51,6 +52,7 @@ class EPayApi
      *
      * @param mixed $merchantnumber
      * @param mixed $transactionid
+     *
      * @return mixed
      */
     public function moveascaptured($merchantnumber, $transactionid)
@@ -71,6 +73,7 @@ class EPayApi
      * @param mixed $merchantnumber
      * @param mixed $transactionid
      * @param mixed $amount
+     *
      * @return mixed
      */
     public function credit($merchantnumber, $transactionid, $amount)
@@ -92,6 +95,7 @@ class EPayApi
      *
      * @param mixed $merchantnumber
      * @param mixed $transactionid
+     *
      * @return mixed
      */
     public function delete($merchantnumber, $transactionid)
@@ -112,6 +116,7 @@ class EPayApi
      * @param mixed $merchantnumber
      * @param mixed $epay_response_code
      * @param mixed $language
+     *
      * @return mixed
      */
     public function getEpayError($merchantnumber, $epay_response_code, $language)
@@ -137,6 +142,7 @@ class EPayApi
      * @param mixed $merchantnumber
      * @param mixed $pbs_response_code
      * @param mixed $language
+     *
      * @return mixed
      */
     public function getPbsError($merchantnumber, $pbs_response_code, $language)
@@ -162,6 +168,7 @@ class EPayApi
      *
      * @param mixed $merchantnumber
      * @param mixed $transactionid
+     *
      * @return mixed
      */
     public function gettransaction($merchantnumber, $transactionid)
@@ -181,6 +188,7 @@ class EPayApi
      *
      * @param mixed $merchantnumber
      * @param mixed $transactionid
+     *
      * @return mixed
      */
     public function gettransactionInformation($merchantnumber, $transactionid)
@@ -208,6 +216,7 @@ class EPayApi
      * @param mixed $amount
      * @param mixed $currency
      * @param mixed $acquirer
+     *
      * @return mixed
      */
     public function getcardinfo($merchantnumber, $cardno_prefix, $amount, $currency, $acquirer)

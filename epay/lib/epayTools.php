@@ -50,6 +50,7 @@ class EpayTools
      * Get ePay language id by string country.
      *
      * @param string $strlan
+     *
      * @return int
      */
     public static function getEPayLanguage($strlan)
@@ -108,6 +109,7 @@ class EpayTools
      * Get card name by card id.
      *
      * @param mixed $card_id
+     *
      * @return string
      */
     public static function getCardNameById($card_id)
@@ -182,6 +184,7 @@ class EpayTools
      * Get Phone Number.
      *
      * @param mixed $invoiceAddress
+     *
      * @return mixed
      */
     public function getPhoneNumber($address)
@@ -199,6 +202,7 @@ class EpayTools
      * @param mixed $amount
      * @param mixed $minorunits
      * @param mixed $defaultMinorUnits
+     *
      * @return float|int
      */
     public static function convertPriceToMinorUnits($amount, $minorunits, $rounding)
@@ -227,6 +231,7 @@ class EpayTools
      *
      * @param mixed $amount
      * @param mixed $minorunits
+     *
      * @return float
      */
     public static function convertPriceFromMinorUnits($amount, $minorunits)
@@ -242,6 +247,7 @@ class EpayTools
      * Get Currency MinorUnits.
      *
      * @param mixed $currencyCode
+     *
      * @return int
      */
     public static function getCurrencyMinorunits($currencyCode)

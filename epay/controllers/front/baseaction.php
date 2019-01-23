@@ -21,6 +21,7 @@ abstract class BaseAction extends ModuleFrontController
      * @param bool $isPaymentRequest
      * @param string $message
      * @param mixed $cart
+     *
      * @return bool
      */
     protected function validateAction($isPaymentRequest, &$message, &$cart)
@@ -80,6 +81,7 @@ abstract class BaseAction extends ModuleFrontController
      * @param mixed $cart
      * @param bool $isPaymentRequest
      * @param mixed $responseCode
+     *
      * @return mixed
      */
     protected function processAction($cart, $isPaymentRequest, &$responseCode)
@@ -214,6 +216,7 @@ abstract class BaseAction extends ModuleFrontController
      *
      * @param mixed $message
      * @param mixed $cart
+     *
      * @return string
      */
     protected function createLogMessage($message, $severity = 3, $cart = null)
