@@ -13,9 +13,9 @@
  *
  */
 
-include('lib/epayTools.php');
-include('lib/epayApi.php');
-include('lib/epayModels.php');
+include 'lib/epayTools.php';
+include 'lib/epayApi.php';
+include 'lib/epayModels.php';
 
 if (!defined('_PS_VERSION_')) {
     exit;

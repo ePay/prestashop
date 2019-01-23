@@ -13,7 +13,7 @@
  *
  */
 
-include('baseaction.php');
+include 'baseaction.php';
 
 class EPayAcceptModuleFrontController extends BaseAction
 {
