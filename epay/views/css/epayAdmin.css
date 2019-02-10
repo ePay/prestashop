@@ -15,9 +15,9 @@
     vertical-align: middle;
 }
 
-    #epay_overlay_message_container p {
-        margin-top: 4px;
-    }
+#epay_overlay_message_container p {
+    margin-top: 4px;
+}
 
 #epay_overlay_message_title {
     line-height: 4;
