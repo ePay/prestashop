@@ -1393,7 +1393,7 @@ class EPay extends PaymentModule
             $html .= '<table class="table" cellspacing="0" cellpadding="0">';
             $html .= $this->transactionInfoTableRow($this->l('ePay Administration'), '<a href="https://admin.ditonlinebetalingssystem.dk/admin/login.asp" title="ePay login" target="_blank">' . $this->l('Open') . '</a>');
             $html .= $this->transactionInfoTableRow($this->l('ePay Order ID'), $ePayOrderId);
-            $html .= $this->transactionInfoTableRow($this->l('ePay Transaction ID'),$transactionId);
+            $html .= $this->transactionInfoTableRow($this->l('ePay Transaction ID'), $transactionId);
 
             if ($fraud) {
                 $html .= $this->transactionInfoTableRow($this->l('Fraud'), '<span class="epay_fraud"><img src="../img/admin/bullet_red.png" />' . $this->l('Suspicious Payment!') . '</span>');
