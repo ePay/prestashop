@@ -26,6 +26,7 @@ abstract class BaseAction extends ModuleFrontController
     {
         if (!Tools::getIsset('txnid')) {
             $message = 'No GET(txnid) was supplied to the system!';
+
             return false;
         }
 
@@ -34,12 +35,14 @@ abstract class BaseAction extends ModuleFrontController
         if (!$isPaymentRequest) {
             if (!Tools::getIsset('orderid')) {
                 $message = 'No GET(orderid) was supplied to the system!';
+
                 return false;
             }
             $id_cart = Tools::getValue('orderid');
         } else {
             if (!Tools::getIsset('id_cart')) {
                 $message = 'No Cart id was supplied on the paymentrequest callback';
+
                 return false;
             }
             $id_cart = Tools::getValue('id_cart');
@@ -49,6 +52,7 @@ abstract class BaseAction extends ModuleFrontController
 
         if (!isset($cart->id)) {
             $message = 'Please provide a valid orderid or cartid';
+
             return false;
         }
 
@@ -66,6 +70,7 @@ abstract class BaseAction extends ModuleFrontController
             $storeHash = md5($var . $storeMd5);
             if ($storeHash != Tools::getValue('hash')) {
                 $message = 'Hash validation failed - Please check your MD5 key';
+
                 return false;
             }
         }
@@ -137,6 +142,7 @@ abstract class BaseAction extends ModuleFrontController
                             $message = 'Prestashop threw an exception on validateOrder: ' . $ex->getMessage();
                             $responseCode = 500;
                             $this->module->deleteDbRecordedTransaction($transaction_Id);
+
                             return $message;
                         }
                     }

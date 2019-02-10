@@ -163,6 +163,7 @@ class EPay extends PaymentModule
         } catch (Exception $e) {
             //Nothing to do here
         }
+
         return false;
     }
 
@@ -483,6 +484,7 @@ class EPay extends PaymentModule
                     . $this->buildHelptextForSettings()
                     . '</div>
                    </div>';
+
         return $html;
     }
 
@@ -655,6 +657,7 @@ class EPay extends PaymentModule
         }
 
         $query = 'UPDATE ' . _DB_PREFIX_ . 'epay_transactions SET id_order="' . pSQL($id_order) . '" WHERE epay_transaction_id="' . pSQL($transaction_id) . '"';
+
         return $this->executeDbQuery($query);
     }
 
@@ -672,6 +675,7 @@ class EPay extends PaymentModule
         }
 
         $query = 'DELETE FROM ' . _DB_PREFIX_ . 'epay_transactions WHERE epay_transaction_id="' . pSQL($transaction_id) . '"';
+
         return $this->executeDbQuery($query);
     }
 
@@ -685,6 +689,7 @@ class EPay extends PaymentModule
     private function getDbTransactionsByOrderId($id_order)
     {
         $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'epay_transactions WHERE id_order = ' . pSQL($id_order);
+
         return $this->getDbTransactions($query);
     }
 
@@ -698,6 +703,7 @@ class EPay extends PaymentModule
     private function getDbTransactionsByCartId($id_cart)
     {
         $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'epay_transactions WHERE id_cart = ' . pSQL($id_cart);
+
         return $this->getDbTransactions($query);
     }
 
@@ -730,6 +736,7 @@ class EPay extends PaymentModule
     private function setDbCaptured($transaction_id, $amount)
     {
         $query = ' UPDATE ' . _DB_PREFIX_ . 'epay_transactions SET captured = 1, amount_captured = amount_captured + ' . pSQL($amount) . ' WHERE epay_transaction_id = ' . pSQL($transaction_id);
+
         return $this->executeDbQuery($query);
     }
 
@@ -1229,6 +1236,7 @@ class EPay extends PaymentModule
         }
 
         $json_invoice = json_encode($invoice, JSON_UNESCAPED_UNICODE);
+
         return $json_invoice;
     }
 
@@ -1263,6 +1271,7 @@ class EPay extends PaymentModule
                 }
             }
         }
+
         return false;
     }
 
@@ -1329,6 +1338,7 @@ class EPay extends PaymentModule
 
         if (!$transaction) {
             $html .= 'No payment transaction was found';
+
             return $html;
         }
 
@@ -1367,6 +1377,7 @@ class EPay extends PaymentModule
         $html = '</table>';
         $html .= '</div>';
         $html .= '<div class="col-lg-4 text-center hidden-xs hidden-sm hidden-md"></div>';
+
         return $html;
     }
 
@@ -1589,6 +1600,7 @@ class EPay extends PaymentModule
     private function transactionInfoTableRow($name, $value)
     {
         $html = '<tr><td>' . $name . '</td><td><b>' . $value . '</b></td></tr>';
+
         return $html;
     }
 
@@ -1676,6 +1688,7 @@ class EPay extends PaymentModule
                         $amount = EpayTools::convertPriceToMinorUnits($amountSanitized, $minorunits, Configuration::get('EPAY_ROUNDING_MODE'));
                     } else {
                         $epayUiMessage = $this->createEpayUiMessage('issue', $this->l('Inputfield is not a valid number'));
+
                         return $epayUiMessage;
                     }
                 }
@@ -1756,6 +1769,7 @@ class EPay extends PaymentModule
             $message .= "PBS Error: ({$epayApiResponse->epayResponse}) ";
             $message .= $api->getPbsError($merchantNumber, $epayApiResponse->pbsResponse, $language);
         }
+
         return $message;
     }
 
@@ -1932,6 +1946,7 @@ class EPay extends PaymentModule
 
         $html = '<div id="epay_paymentrequest_format_error" class="alert alert-danger"><strong>' . $this->l('Warning') . ' </strong>' . $this->l('The amount you entered was in the wrong format. Please try again!') . '</div>';
         $html .= $helper->generateForm($fields_form);
+
         return $html;
     }
 

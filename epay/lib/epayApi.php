@@ -45,6 +45,7 @@ class EPayApi
         $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->capture($epay_params);
+
         return $result;
     }
 
@@ -65,6 +66,7 @@ class EPayApi
         $epay_params['pwd'] = (string) $this->pwd;
 
         $result = $this->client->move_as_captured($epay_params);
+
         return $result;
     }
 
@@ -88,6 +90,7 @@ class EPayApi
         $epay_params['pbsresponse'] = '-1';
 
         $result = $this->client->credit($epay_params);
+
         return $result;
     }
 
@@ -108,6 +111,7 @@ class EPayApi
         $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->delete($epay_params);
+
         return $result;
     }
 
@@ -181,6 +185,7 @@ class EPayApi
         $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->gettransaction($epay_params);
+
         return $result;
     }
 
