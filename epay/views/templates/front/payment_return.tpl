@@ -20,9 +20,9 @@
   </p>
   <p>
     {$epay_completed_transactionText|escape:'htmlall':'UTF-8'} <b> {$epay_completed_transactionValue|escape:'htmlall':'UTF-8'}</b>
-    <br/>
+    <br>
 	{$epay_completed_cardNoPostFixText|escape:'htmlall':'UTF-8'} <b> {$epay_completed_cardNoPostFixValue|escape:'htmlall':'UTF-8'}</b>
-	<br/>
+	<br>
     {$epay_completed_emailText|escape:'htmlall':'UTF-8'} <b> {$epay_completed_emailValue|escape:'htmlall':'UTF-8'}</b>
   </p>
 </div>
