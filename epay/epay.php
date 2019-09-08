@@ -75,6 +75,7 @@ class EPay extends PaymentModule
             || !$this->registerHook('displayHeader')
             || !$this->registerHook('actionOrderStatusPostUpdate')
             || !$this->registerHook('displayBackOfficeHeader')
+            || !$this->registerHook('actionValidateOrder')
         ) {
             return false;
         }
@@ -857,6 +858,43 @@ class EPay extends PaymentModule
         $paymentOptions[] = $epayPaymentOption;
 
         return $paymentOptions;
+    }
+
+    /**
+     * Updates order details with Transactions Fees
+     *
+     * @param mixed $params
+     *
+     * @return mixed
+     */
+    public function hookActionValidateOrder($params)
+    {
+        $order = $params['order'];
+        if ($order->module == "epay" && Configuration::get('EPAY_ADDFEETOSHIPPING')) {
+            $transaction = $this->getDbTransactionsByCartId($params['order']->id_cart);
+            if ($transaction['transfee'] > 0) {
+                $minorunits = EpayTools::getCurrencyMinorunits($currency->iso_code);
+                $transFee = EpayTools::convertPriceFromMinorUnits($transaction['transfee'], $minorunits);
+
+                $payment = $order->getOrderPayments();
+
+                $payment[0]->transaction_id = $transaction['epay_transaction_id'];
+                $payment[0]->amount = $payment[0]->amount + $transFee;
+                $payment[0]->card_number = "XXXX XXXX XXXX ".$transaction['cardnopostfix'];
+                $payment[0]->card_brand = EpayTools::getCardnameById($transaction['card_type']);
+                $payment[0]->payment_method = $paymentMethod;
+                $payment[0]->save();
+
+                $order->total_paid = $order->total_paid + $transFee;
+                $order->total_paid_tax_incl = $order->total_paid_tax_incl + $transFee;
+                $order->total_paid_tax_excl = $order->total_paid_tax_excl + $transFee;
+                $order->total_paid_real = $order->total_paid_real + $transFee;
+                $order->total_shipping = $order->total_shipping + $transFee;
+                $order->total_shipping_tax_incl = $order->total_shipping_tax_incl + $transFee;
+                $order->total_shipping_tax_excl = $order->total_shipping_tax_excl + $transFee;
+                $order->save();
+            }
+        }
     }
 
     /**

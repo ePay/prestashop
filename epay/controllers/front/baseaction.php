@@ -158,39 +158,6 @@ abstract class BaseAction extends ModuleFrontController
 
                         $order->setCurrentState(Configuration::get('PS_OS_PAYMENT'));
                     }
-
-                    $payment = $order->getOrderPayments();
-                    $payment[0]->transaction_id = $transaction_Id;
-                    $payment[0]->amount = $amount;
-                    $payment[0]->card_number = $cardnopostfix;
-                    $payment[0]->card_brand = EpayTools::getCardnameById($cardId);
-                    $payment[0]->payment_method = $paymentMethod;
-
-                    if ($transfeeInMinorunits > 0) {
-                        $transFee = EpayTools::convertPriceFromMinorUnits($transfeeInMinorunits, $minorunits);
-                        $payment[0]->amount = $payment[0]->amount + $transFee;
-
-                        if (Configuration::get('EPAY_ADDFEETOSHIPPING')) {
-                            $order->total_paid = $order->total_paid + $transFee;
-                            $order->total_paid_tax_incl = $order->total_paid_tax_incl + $transFee;
-                            $order->total_paid_tax_excl = $order->total_paid_tax_excl + $transFee;
-                            $order->total_paid_real = $order->total_paid_real + $transFee;
-                            $order->total_shipping = $order->total_shipping + $transFee;
-                            $order->total_shipping_tax_incl = $order->total_shipping_tax_incl + $transFee;
-                            $order->total_shipping_tax_excl = $order->total_shipping_tax_excl + $transFee;
-                            $order->save();
-
-                            $invoice = new OrderInvoice($order->invoice_number);
-                            if (isset($invoice->id)) {
-                                $invoice->total_paid_tax_incl = $invoice->total_paid_tax_incl + $transFee;
-                                $invoice->total_paid_tax_excl = $invoice->total_paid_tax_excl + $transFee;
-                                $invoice->total_shipping_tax_incl = $invoice->total_shipping_tax_incl + $transFee;
-                                $invoice->total_shipping_tax_excl = $invoice->total_shipping_tax_excl + $transFee;
-                                $invoice->save();
-                            }
-                        }
-                    }
-                    $payment[0]->save();
                     $message = 'Order created';
                     $responseCode = 200;
                 } else {
