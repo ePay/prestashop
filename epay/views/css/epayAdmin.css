@@ -1,0 +1,165 @@
+.epay_overlay_data {
+    width: 500px;
+    height: 100% !important;
+}
+
+#epay_message,
+#epay_overlay_message_container {
+    height: 50%;
+    min-height: 40px;
+}
+
+#epay_overlay_message_container {
+    width: 80%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+    #epay_overlay_message_container p {
+        margin-top: 4px;
+    }
+
+#epay_overlay_message_title {
+    line-height: 4;
+}
+
+#epay_overlay_message_title,
+#epay_overlay_message_title_with_message {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#epay_inline,
+#epay_overlay {
+    display: none;
+}
+
+.epay_checkmark,
+.epay_exclamation {
+    display: inline-block;
+    width: 45px;
+}
+
+.epay_checkmark,
+.epay_exclamation,
+#overlay_message_title {
+    position: absolute;
+    top: 50%;
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.epay_circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 21px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-top: 25px;
+}
+
+.epay_checkmark_circle {
+    background-color: #5cb85c;
+}
+
+.epay_exclamation_circle {
+    background-color: #f0ad4e;
+}
+
+.epay_checkmark_stem {
+    position: relative;
+    left: 13px;
+    top: 6px;
+    width: 9px;
+    height: 20px;
+    border: solid #fff;
+    border-width: 0 4px 4px 0;
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.epay_exclamation_stem {
+    position: relative;
+    width: 5px;
+    height: 17px;
+    background-color: #fff;
+    left: 18px;
+    top: 8px;
+    border-radius: 25px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+}
+
+.epay_exclamation_dot {
+    position: relative;
+    width: 5px;
+    height: 5px;
+    background-color: #fff;
+    left: 18px;
+    top: 11px;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 25px;
+    border-radius: 25px;
+}
+
+.epay_widthAllSpace {
+    width: 100%;
+    clear: both;
+    overflow: auto;
+}
+
+.epay_fraud {
+    color: red;
+    font-weight: bold;
+}
+
+.epay_paymenttype {
+    display: flex;
+    align-items: center;
+}
+
+.epay_paymenttype img {
+    margin-right: 3px;
+}
+
+.epay_button {
+    margin: 3px 3px 3px 0;
+}
+
+.epay_deleted {
+    color: red;
+    font-weight: bold;
+}
+
+.epay_table_title {
+    float: left;
+}
+
+.epay_table th,
+.epay_table td {
+    padding: 5px;
+    text-align: left;
+}
+
+#epay_format_error,
+#epay_paymentrequest_format_error {
+    display: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.epay_admin_heading span {
+    margin-left: 5px;
+}
+
+.bambora_logo {
+    width: 100%;
+    max-width: 300px;
+}
