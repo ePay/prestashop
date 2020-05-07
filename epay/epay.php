@@ -1095,7 +1095,7 @@ class EPay extends PaymentModule
                 $message = 'Autocapture failed with message: ' . $e->getMessage();
                 $this->createStatusChangesMessage($params['id_order'], $message);
                 $id_lang = (int) $this->context->language->id;
-                $dir_mail = __DIR__ . '/mails/';
+                $dir_mail = dirname(__FILE__) . '/mails/';
                 $mailTo = Configuration::get('EPAY_AUTOCAPTURE_FAILUREEMAIL');
                 Mail::Send($id_lang, 'autocapturefailed', 'Auto capture of ' . $params['id_order'] . ' failed', array('{message}' => $e->getMessage()), $mailTo, null, null, null, null, null, $dir_mail);
             }
@@ -1148,7 +1148,7 @@ class EPay extends PaymentModule
         $parameters['instantcallback'] = 0;
 
         if (Configuration::get('EPAY_ENABLE_INVOICE')) {
-            $parameters['epay_invoice'] = $this->createInvoiceData($this->context->customer, $this->context->cart->getSummaryDetails(), $currency);
+            $parameters['epay_invoice'] = $this->createInvoiceData($currency);
         }
 
         $hash = '';
@@ -1164,35 +1164,38 @@ class EPay extends PaymentModule
     /**
      * Collect and create Invoice data.
      *
-     * @param mixed $customer
-     * @param mixed $summary
      * @param mixed $currency
      *
      * @return string
      */
-    private function createInvoiceData($customer, $summary, $currency)
+    private function createInvoiceData($currency)
     {
+        $cartSummary = $this->context->cart->getSummaryDetails();
+        $customer = $this->context->customer;
+
         $invoice = array();
         $invoice['customer']['email'] = $customer->email;
-        $invoice['customer']['name'] = $this->removeSpecialCharacters($summary['invoice']->firstname . ' ' . $summary['invoice']->lastname);
-        $invoice['customer']['address'] = $this->removeSpecialCharacters($summary['invoice']->address1);
-        $invoice['customer']['zip'] = (int) $summary['invoice']->postcode;
-        $invoice['customer']['city'] = $this->removeSpecialCharacters($summary['invoice']->city);
-        $invoice['customer']['country'] = $this->removeSpecialCharacters($summary['invoice']->country);
-
-        $invoice['shippingaddress']['name'] = $this->removeSpecialCharacters($summary['delivery']->firstname . ' ' . $summary['delivery']->lastname);
-        $invoice['shippingaddress']['address'] = $this->removeSpecialCharacters($summary['delivery']->address1);
-        $invoice['shippingaddress']['zip'] = (int) $summary['delivery']->postcode;
-        $invoice['shippingaddress']['city'] = $this->removeSpecialCharacters($summary['delivery']->city);
-        $invoice['shippingaddress']['country'] = $this->removeSpecialCharacters($summary['delivery']->country);
-
+        $invoice['customer']['name'] = $this->removeSpecialCharacters($cartSummary['invoice']->firstname . ' ' . $cartSummary['invoice']->lastname);
+        $invoice['customer']['address'] = $this->removeSpecialCharacters($cartSummary['invoice']->address1);
+        $invoice['customer']['zip'] = (int) $cartSummary['invoice']->postcode;
+        $invoice['customer']['city'] = $this->removeSpecialCharacters($cartSummary['invoice']->city);
+        $invoice['customer']['country'] = $this->removeSpecialCharacters($cartSummary['invoice']->country);
+        if($cartSummary['is_virtual_cart'] === 0) {
+            $invoice['shippingaddress']['name'] = $this->removeSpecialCharacters($cartSummary['delivery']->firstname . ' ' . $cartSummary['delivery']->lastname);
+            $invoice['shippingaddress']['address'] = $this->removeSpecialCharacters($cartSummary['delivery']->address1);
+            $invoice['shippingaddress']['zip'] = (int) $cartSummary['delivery']->postcode;
+            $invoice['shippingaddress']['city'] = $this->removeSpecialCharacters($cartSummary['delivery']->city);
+            $invoice['shippingaddress']['country'] = $this->removeSpecialCharacters($cartSummary['delivery']->country);
+        }
         $minorunits = EpayTools::getCurrencyMinorunits($currency);
         $roundingMode = Configuration::get('EPAY_ROUNDING_MODE');
         $invoice['lines'] = array();
 
-        foreach ($summary['products'] as $product) {
+        //Add Products
+        $products = $cartSummary['products'];
+        foreach ($products as $product) {
             $invoice['lines'][] = array(
-                'id' => ($product['reference'] == '' ? $product['id_product'] : $product['reference']),
+                'id' => $product['id_product'],
                 'description' => $this->removeSpecialCharacters($product['name']),
                 'quantity' => (int) $product['cart_quantity'],
                 'price' => EpayTools::convertPriceToMinorUnits($product['price'], $minorunits, $roundingMode),
@@ -1200,31 +1203,45 @@ class EPay extends PaymentModule
             );
         }
 
-        if ($summary['total_wrapping'] > 0) {
+        //Gift Wrapping
+        $wrappingTotal = $cartSummary['total_wrapping'];
+        if ($wrappingTotal > 0) {
+            $wrappingTotalWithOutTax = $cartSummary['total_wrapping_tax_exc'];
+            $wrappingTotalTax = $wrappingTotal - $wrappingTotalWithOutTax;
             $invoice['lines'][] = array(
                 'id' => $this->l('wrapping'),
                 'description' => $this->l('Gift wrapping'),
                 'quantity' => 1,
-                'price' => EpayTools::convertPriceToMinorUnits($summary['total_wrapping_tax_exc'], $minorunits, $roundingMode),
-                'vat' => $summary['total_wrapping_tax_exc'] > 0 ? round((((float) $summary['total_wrapping'] - (float) $summary['total_wrapping_tax_exc']) / (float) $summary['total_wrapping_tax_exc']) * 100) : 0,
+                'price' => EpayTools::convertPriceToMinorUnits($wrappingTotalWithOutTax, $minorunits, $roundingMode),
+                'vat' =>  round($wrappingTotalTax / $wrappingTotalWithOutTax * 100),
+            );
+        }
+        //Add shipping as an orderline
+        $shippingCostWithTax = $cartSummary['total_shipping'];
+        if ($shippingCostWithTax > 0) {
+            $shippingCostWithoutTax = $cartSummary['total_shipping_tax_exc'];
+            $carrier = $cartSummary['carrier'];
+            $shippingTax = $shippingCostWithTax - $shippingCostWithoutTax;
+            $invoice['lines'][] = array(
+                'id' => $carrier->id_reference,
+                'description' => $this->removeSpecialCharacters("{$carrier->name} - {$carrier->delay}"),
+                'quantity' => 1,
+                'price' => EpayTools::convertPriceToMinorUnits($shippingCostWithoutTax, $minorunits, $roundingMode),
+                'vat' => round($shippingTax / $shippingCostWithoutTax * 100),
             );
         }
 
-        $invoice['lines'][] = array(
-            'id' => $this->l('shipping'),
-            'description' => $this->l('Shipping'),
-            'quantity' => 1,
-            'price' => EpayTools::convertPriceToMinorUnits($summary['total_shipping_tax_exc'], $minorunits, $roundingMode),
-            'vat' => $summary['total_shipping_tax_exc'] > 0 ? round((((float) $summary['total_shipping'] - (float) $summary['total_shipping_tax_exc']) / (float) $summary['total_shipping_tax_exc']) * 100) : 0,
-        );
-
-        foreach ($summary['discounts'] as $discount) {
+        //Discount
+        $discountTotal = $cartSummary['total_discounts'];
+        if($discountTotal > 0) {
+            $discountTotalWithOutTax = $cartSummary['total_discounts_tax_exc'];
+            $discountTotalTax = $discountTotal - $discountTotalWithOutTax;
             $invoice['lines'][] = array(
-                'id' => $discount['id_discount'],
-                'description' => $this->removeSpecialCharacters($discount['description']),
+                'id' => $this->l('discount'),
+                'description' => $this->l('Discount'),
                 'quantity' => 1,
-                'price' => EpayTools::convertPriceToMinorUnits($discount['value_tax_exc'], $minorunits, $roundingMode) * -1,
-                'vat' => $discount['value_tax_exc'] > 0 ? round((((float) $discount['value_real'] - (float) $discount['value_tax_exc']) / (float) $discount['value_tax_exc']) * 100) : 0,
+                'price' => EpayTools::convertPriceToMinorUnits($discountTotalWithOutTax, $minorunits, $roundingMode) * -1,
+                'vat' => round($discountTotalTax / $discountTotalWithOutTax * 100),
             );
         }
 
@@ -1393,7 +1410,7 @@ class EPay extends PaymentModule
             $html .= '<table class="table" cellspacing="0" cellpadding="0">';
             $html .= $this->transactionInfoTableRow($this->l('ePay Administration'), '<a href="https://admin.ditonlinebetalingssystem.dk/admin/login.asp" title="ePay login" target="_blank">' . $this->l('Open') . '</a>');
             $html .= $this->transactionInfoTableRow($this->l('ePay Order ID'), $ePayOrderId);
-            $html .= $this->transactionInfoTableRow($this->l('ePay Transaction ID'), $transactionId);
+            $html .= $this->transactionInfoTableRow($this->l('ePay Transaction ID'),$transactionId);
 
             if ($fraud) {
                 $html .= $this->transactionInfoTableRow($this->l('Fraud'), '<span class="epay_fraud"><img src="../img/admin/bullet_red.png" />' . $this->l('Suspicious Payment!') . '</span>');
