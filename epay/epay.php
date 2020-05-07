@@ -1095,7 +1095,7 @@ class EPay extends PaymentModule
                 $message = 'Autocapture failed with message: ' . $e->getMessage();
                 $this->createStatusChangesMessage($params['id_order'], $message);
                 $id_lang = (int) $this->context->language->id;
-                $dir_mail = dirname(__FILE__) . '/mails/';
+                $dir_mail = __DIR__ . '/mails/';
                 $mailTo = Configuration::get('EPAY_AUTOCAPTURE_FAILUREEMAIL');
                 Mail::Send($id_lang, 'autocapturefailed', 'Auto capture of ' . $params['id_order'] . ' failed', array('{message}' => $e->getMessage()), $mailTo, null, null, null, null, null, $dir_mail);
             }
@@ -1410,7 +1410,7 @@ class EPay extends PaymentModule
             $html .= '<table class="table" cellspacing="0" cellpadding="0">';
             $html .= $this->transactionInfoTableRow($this->l('ePay Administration'), '<a href="https://admin.ditonlinebetalingssystem.dk/admin/login.asp" title="ePay login" target="_blank">' . $this->l('Open') . '</a>');
             $html .= $this->transactionInfoTableRow($this->l('ePay Order ID'), $ePayOrderId);
-            $html .= $this->transactionInfoTableRow($this->l('ePay Transaction ID'),$transactionId);
+            $html .= $this->transactionInfoTableRow($this->l('ePay Transaction ID'), $transactionId);
 
             if ($fraud) {
                 $html .= $this->transactionInfoTableRow($this->l('Fraud'), '<span class="epay_fraud"><img src="../img/admin/bullet_red.png" />' . $this->l('Suspicious Payment!') . '</span>');
