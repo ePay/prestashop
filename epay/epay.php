@@ -49,7 +49,7 @@ class EPay extends PaymentModule
         $this->displayName = 'Bambora Online ePay';
         $this->description = $this->l('Accept online payments quick and secure by Bambora Online ePay');
 
-        if ((Configuration::get('EPAY_ENABLE_REMOTE_API') == 1 || Configuration::get('EPAY_ENABLE_PAYMENTREQUEST') == 1) && !class_exists('SOAPClient')) {
+        if ((Configuration::get('EPAY_ENABLE_REMOTE_API') == 1 || Configuration::get('EPAY_ENABLE_PAYMENTREQUEST') == 1) && (!class_exists('SOAPClient') || !extension_loaded('soap'))) {
             $this->warning = $this->l('You must have SoapClient installed to use Remote API. Contact your hosting provider for further information.');
         }
 
@@ -494,7 +494,7 @@ class EPay extends PaymentModule
     private function buildHelptextForSettings()
     {
         $html = '<div class="panel helpContainer">
-                        <H3>Help for settings</H3>
+                        <H3>Help for settings </H3>
                         <p>Detailed description of these settings are to be found <a href="http://www.prestashopguiden.dk/en/configuration#407" target="_blank">here</a>.</p>
                         <br />
                         <div>
