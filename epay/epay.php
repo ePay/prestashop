@@ -83,7 +83,14 @@ class EPay extends PaymentModule
                 return false;
             }
         }
-
+        if ($this->getPsVersion() === $this::V17){
+            if (!$this->registerHook('displayAdminOrderSideBottom')) {
+                return false;
+            }
+            if (!$this->registerHook('displayAdminOrderMainBottom')) {
+                return false;
+            }
+        }
         if (!$this->createEPayTransactionTable()) {
             return false;
         }
@@ -494,7 +501,7 @@ class EPay extends PaymentModule
     private function buildHelptextForSettings()
     {
         $html = '<div class="panel helpContainer">
-                        <H3>Help for settings </H3>
+                        <H3>Help for settings</H3>
                         <p>Detailed description of these settings are to be found <a href="http://www.prestashopguiden.dk/en/configuration#407" target="_blank">here</a>.</p>
                         <br />
                         <div>
@@ -1320,9 +1327,17 @@ class EPay extends PaymentModule
             $html .= '<div class="panel epay_widthAllSpace">';
         }
 
-        $html .= '<div class="panel-heading epay_admin_heading">';
-        $html .= '<img src="../modules/' . $this->name . '/views/img/logo_small.png" />';
-        $html .= '<span>Bambora Online ePay</span></div>';
+        if ($this->isPsVersionHigherThan177()){
+            $html= '<div class="card-header"> <h3 class="card-header-title">';
+
+            $html .= "Bambora Online ePay";
+
+            $html .= '</h3>';
+        } else {
+            $html .= '<div class="panel-heading epay_admin_heading">';
+            $html .= '<img src="../modules/' . $this->name . '/views/img/logo_small.png" />';
+            $html .= '<span>Bambora Online ePay</span></div>';
+        }
 
         return $html;
     }
@@ -1526,7 +1541,7 @@ class EPay extends PaymentModule
             $form .= '<input type="hidden" name="epay_order_id" value="' . $transaction->orderid . '" />';
             $form .= '<input type="hidden" name="epay_currency_code" value="' . $currencyCode . '" />';
             $form .= '<div class="input-group">';
-            $form .= '<div class="input-group-addon">' . $currencyCode . '</div>';
+            $form .= '<div class="input-group-addon">' . $currencyCode . '&nbsp;</div>';
             $tooltip = $this->l('Example: 1234.56');
             $form .= '<input type="text" data-toggle="tooltip" title="' . $tooltip . '" id="epay_amount" name="epay_amount" value="' . $epay_amount . '" /></div>';
             $form .= '<div id="epay_format_error" class="alert alert-danger"><strong>' . $this->l('Warning') . ' </strong>' . $this->l('The amount you entered was in the wrong format. Please try again!') . '</div>';
@@ -1618,7 +1633,7 @@ class EPay extends PaymentModule
     {
         $text = $this->l('Go to Bambora Online ePay Administration');
         $html = '<a href="https://admin.ditonlinebetalingssystem.dk/admin/login.asp" alt="" title="' . $text . '" target="_blank">';
-        $html .= '<img class="bambora_logo" src="../modules/' . $this->name . '/views/img/bambora.svg" />';
+        $html .= '<img class="bambora-logo" src="https://d3r1pwhfz7unl9.cloudfront.net/bambora/bambora-logo.svg" width="150px;" />';
         $html .= '</a>';
         $html .= '<div><a href="https://admin.ditonlinebetalingssystem.dk/admin/login.asp"  alt="" title="' . $text . '" target="_blank">' . $text . '</a></div>';
 
@@ -2090,6 +2105,19 @@ class EPay extends PaymentModule
         }
     }
 
+    /**
+     * Get if Ps Version Higher than 177
+     *
+     * @return string
+     */
+    public function isPsVersionHigherThan177()
+    {
+        if ( _PS_VERSION_ < "1.7.7.0") {
+            return false;
+        } else {
+            return true;
+        }
+    }
     public function writeLogEntry($message, $severity)
     {
 
