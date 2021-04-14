@@ -1681,7 +1681,7 @@ class EPay extends PaymentModule
                 $api = new EPayApi($pwd);
                 $merchantNumber = Configuration::get('EPAY_MERCHANTNUMBER');
                 $transactionId = Tools::getValue('epay_transaction_id');
-                $errorTitle = $this->l('An issue occured, and the operation was not performed.');
+                $errorTitle = $this->l('An issue occurred, and the operation was not performed.');
                 $amount = 0;
                 $currencyCode = Tools::getValue('epay_currency_code');
                 $minorunits = EpayTools::getCurrencyMinorunits($currencyCode);
@@ -1742,7 +1742,7 @@ class EPay extends PaymentModule
                     }
                 }
                 //For Audit log
-                $employee=$this->context->employee;
+                $employee = $this->context->employee;
                 $orderId = Tools::getValue("epay-order-id");
                 $logText .= " :: OrderId: " . $orderId . " TransactionId: " . $transactionId. " Employee: ".$employee->firstname." ".$employee->lastname." ".$employee->email;
                 $this->writeLogEntry($logText, 1);
