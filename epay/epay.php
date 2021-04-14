@@ -21,7 +21,7 @@ if (!defined('_PS_VERSION_')) {
 
 class EPay extends PaymentModule
 {
-    const MODULE_VERSION = '5.1.0';
+    const MODULE_VERSION = '5.1.1';
 
     const V15 = '15';
 
@@ -32,7 +32,7 @@ class EPay extends PaymentModule
     public function __construct()
     {
         $this->name = 'epay';
-        $this->version = '5.1.0';
+        $this->version = '5.1.1';
         $this->author = 'Bambora Online';
         $this->tab = 'payments_gateways';
 
