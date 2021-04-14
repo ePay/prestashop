@@ -227,7 +227,7 @@ abstract class BaseAction extends ModuleFrontController
             $personString = "Name: {$invoiceAddress->firstname}{$invoiceAddress->lastname} Phone: {$phoneNumber} Mail: {$customer->email} - ";
             $result = $personString;
         }
-        $result .= 'An payment error occured: ' . $message;
+        $result .= 'An payment error occurred: ' . $message;
         if ($this->module->getPsVersion() === Epay::V15) {
             Logger::addLog($result, $severity);
         } else {
