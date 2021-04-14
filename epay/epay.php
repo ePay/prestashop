@@ -1696,13 +1696,14 @@ class EPay extends PaymentModule
                         return $epayUiMessage;
                     }
                 }
-
+                $logText = "";
                 if (Tools::isSubmit('epay_capture')) {
                     $captureResponse = $api->capture($merchantNumber, $transactionId, $amount);
                     if ($captureResponse->captureResult == 'true') {
                         $this->setDbCaptured($transactionId, $amount);
                         $captureText = $this->l('The Payment was captured successfully');
                         $epayUiMessage = $this->createEpayUiMessage('success', $captureText);
+                        $logText = $captureText;
                     } else {
                         $errorMessage = $this->getApiErrorMessage($api, $merchantNumber, $captureResponse);
                         $epayUiMessage = $this->createEpayUiMessage('issue', $errorTitle, $errorMessage);
@@ -1713,6 +1714,7 @@ class EPay extends PaymentModule
                         $this->setDbCredited($transactionId, $amount);
                         $creditText = $this->l('The Payment was credited successfully');
                         $epayUiMessage = $this->createEpayUiMessage('success', $creditText);
+                        $logText = $creditText;
                     } else {
                         $errorMessage = $this->getApiErrorMessage($api, $merchantNumber, $creditResponse);
                         $epayUiMessage = $this->createEpayUiMessage('issue', $errorTitle, $errorMessage);
@@ -1723,6 +1725,7 @@ class EPay extends PaymentModule
                         $this->deleteDbTransaction($transactionId);
                         $deleteText = $this->l('The Payment was deleted successfully');
                         $epayUiMessage = $this->createEpayUiMessage('success', $deleteText);
+                        $logText = $deleteText;
                     } else {
                         $errorMessage = $this->getApiErrorMessage($api, $merchantNumber, $deleteResponse);
                         $epayUiMessage = $this->createEpayUiMessage('issue', $errorTitle, $errorMessage);
@@ -1732,11 +1735,18 @@ class EPay extends PaymentModule
                     if ($moveascapturedResponse->move_as_capturedResult == 'true') {
                         $moveascapturedText = $this->l('The Payment was moved successfully');
                         $epayUiMessage = $this->createEpayUiMessage('success', $moveascapturedText);
+                        $logText = $moveascapturedText;
                     } else {
                         $errorMessage = $this->getApiErrorMessage($api, $merchantNumber, $moveascapturedResponse);
                         $epayUiMessage = $this->createEpayUiMessage('issue', $errorTitle, $errorMessage);
                     }
                 }
+                //For Audit log
+                $employee=$this->context->employee;
+                $orderId = Tools::getValue("epay-order-id");
+                $logText .= " :: OrderId: " . $orderId . " TransactionId: " . $transactionId. " Employee: ".$employee->firstname." ".$employee->lastname." ".$employee->email;
+                $this->writeLogEntry($logText, 1);
+
             } catch (Exception $e) {
                 $this->displayError($e->getMessage());
             }
@@ -2080,5 +2090,14 @@ class EPay extends PaymentModule
         }
     }
 
+    public function writeLogEntry($message, $severity)
+    {
+
+        if ($this->getPsVersion() === Bambora::V15) {
+            Logger::addLog($message, $severity);
+        } else {
+            PrestaShopLogger::addLog($message, $severity);
+        }
+    }
     //endregion
 }
