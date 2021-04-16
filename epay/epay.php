@@ -1541,7 +1541,7 @@ class EPay extends PaymentModule
             $form .= '<input type="hidden" name="epay_order_id" value="' . $transaction->orderid . '" />';
             $form .= '<input type="hidden" name="epay_currency_code" value="' . $currencyCode . '" />';
             $form .= '<div class="input-group">';
-            $form .= '<div class="input-group-addon">' . $currencyCode . '&nbsp;</div>';
+            $form .= '<div class="input-group-addon" style="padding-top: 3px;">' . $currencyCode . '&nbsp;</div>';
             $tooltip = $this->l('Example: 1234.56');
             $form .= '<input type="text" data-toggle="tooltip" title="' . $tooltip . '" id="epay_amount" name="epay_amount" value="' . $epay_amount . '" /></div>';
             $form .= '<div id="epay_format_error" class="alert alert-danger"><strong>' . $this->l('Warning') . ' </strong>' . $this->l('The amount you entered was in the wrong format. Please try again!') . '</div>';
