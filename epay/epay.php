@@ -2014,8 +2014,6 @@ class EPay extends PaymentModule
             $params['authentication']['merchantnumber'] = Configuration::get('EPAY_MERCHANTNUMBER');
             $params['authentication']['password'] = Configuration::get('EPAY_REMOTE_API_PASSWORD');
 
-            $params['language'] = ($languageIso == 'da' ? 'da' : 'en');
-
             $params['paymentrequest'] = array();
             $params['paymentrequest']['reference'] = $orderid;
             $params['paymentrequest']['closeafterxpayments'] = 1;
@@ -2029,6 +2027,7 @@ class EPay extends PaymentModule
             $params['paymentrequest']['parameters']['instantcapture'] = Configuration::get('EPAY_INSTANTCAPTURE') == '1' ? 'automatic' : 'manual';
             $params['paymentrequest']['parameters']['orderid'] = $orderid . 'PAYREQ' . $orderPostfix;
             $params['paymentrequest']['parameters']['windowid'] = Configuration::get('EPAY_WINDOWID');
+            $params["paymentrequest"]["parameters"]["language"] = Language::getLocaleByIso($languageIso);
 
             $soapClient = new SoapClient('https://paymentrequest.api.epay.eu/v1/PaymentRequestSOAP.svc?wsdl');
             $createPaymentRequest = $soapClient->createpaymentrequest(array('createpaymentrequestrequest' => $params));
@@ -2038,8 +2037,8 @@ class EPay extends PaymentModule
 
                 $sendParams['authentication'] = $params['authentication'];
 
-                $sendParams['language'] = ($languageIso == 'da' ? 'da' : 'en');
-
+                $sendParams['language'] = ($languageIso == 'da' ? 'da-DK' : 'en-US');
+                
                 $sendParams['email'] = array();
                 $sendParams['email']['comment'] = $comment;
                 $sendParams['email']['requester'] = $requester;
