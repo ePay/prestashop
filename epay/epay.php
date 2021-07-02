@@ -179,14 +179,19 @@ class EPay extends PaymentModule
 
         if (Tools::isSubmit('submit' . $this->name)) {
             $epay_merchantnumber = (string) Tools::getValue('EPAY_MERCHANTNUMBER');
+            $remote_password = (string)Tools::getValue("EPAY_REMOTE_API_PASSWORD");
             if (!$epay_merchantnumber || empty($epay_merchantnumber) || !Validate::isGenericName($epay_merchantnumber)) {
                 $output .= $this->displayError($this->l('Merchantnumber is required. If you don\'t have one please contact ePay on support@epay.dk in order to obtain one!'));
+            } elseif (Configuration::get('EPAY_ENABLE_PAYMENTREQUEST') == 1 && (!Validate::isGenericName($remote_password) && empty(Configuration::get('EPAY_REMOTE_API_PASSWORD')))) {
+                $output .= $this->displayError($this->l('You must set Remote API password to use payment requests.'));
             } else {
                 Configuration::updateValue('EPAY_MERCHANTNUMBER', Tools::getValue('EPAY_MERCHANTNUMBER'));
                 Configuration::updateValue('EPAY_WINDOWSTATE', Tools::getValue('EPAY_WINDOWSTATE'));
                 Configuration::updateValue('EPAY_WINDOWID', Tools::getValue('EPAY_WINDOWID'));
                 Configuration::updateValue('EPAY_ENABLE_REMOTE_API', Tools::getValue('EPAY_ENABLE_REMOTE_API'));
-                Configuration::updateValue('EPAY_REMOTE_API_PASSWORD', Tools::getValue('EPAY_REMOTE_API_PASSWORD'));
+                if (!empty($remote_password) ) {
+                    Configuration::updateValue('EPAY_REMOTE_API_PASSWORD', Tools::getValue('EPAY_REMOTE_API_PASSWORD'));
+                }
                 Configuration::updateValue('EPAY_INSTANTCAPTURE', Tools::getValue('EPAY_INSTANTCAPTURE'));
                 Configuration::updateValue('EPAY_GROUP', Tools::getValue('EPAY_GROUP'));
                 Configuration::updateValue('EPAY_ADDFEETOSHIPPING', Tools::getValue('EPAY_ADDFEETOSHIPPING'));
@@ -284,7 +289,7 @@ class EPay extends PaymentModule
                     'required' => false,
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'password',
                     'label' => 'Remote API password',
                     'name' => 'EPAY_REMOTE_API_PASSWORD',
                     'size' => 40,
@@ -2038,7 +2043,7 @@ class EPay extends PaymentModule
                 $sendParams['authentication'] = $params['authentication'];
 
                 $sendParams['language'] = ($languageIso == 'da' ? 'da-DK' : 'en-US');
-                
+
                 $sendParams['email'] = array();
                 $sendParams['email']['comment'] = $comment;
                 $sendParams['email']['requester'] = $requester;
