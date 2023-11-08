@@ -612,7 +612,7 @@ class EPay extends PaymentModule
                         <br />
                         <div>
                             <h4>Rounding mode</h4>
-                            <p>Please select how you want the rounding of the amount sendt to the payment system</p>
+                            <p>Please select how you want the rounding of the amount sent to the payment system</p>
                         </div>
                         <br />
                    </div>';
@@ -872,7 +872,7 @@ class EPay extends PaymentModule
     }
 
     /**
-     * Add payment informations to the order confirmation page.
+     * Add payment information to the order confirmation page.
      *
      * @param mixed $params
      *
@@ -912,8 +912,16 @@ class EPay extends PaymentModule
         $this->context->smarty->assign('epay_completed_cardNoPostFixValue', $cardNoPostFixFormated);
 
         $customer = new Customer($order->id_customer);
-        $this->context->smarty->assign('epay_completed_emailText', !empty($customer->email) ? $this->l('An confirmation email has been sendt to:') : '');
-        $this->context->smarty->assign('epay_completed_emailValue', !empty($customer->email) ? $customer->email : '');
+        $this->context->smarty->assign(
+            'epay_completed_emailText',
+            !empty($customer->email) ? $this->l(
+                'An confirmation email has been sent to:'
+            ) : ''
+        );
+        $this->context->smarty->assign(
+            'epay_completed_emailValue',
+            !empty($customer->email) ? $customer->email : ''
+        );
 
         return $this->display(__FILE__, 'views/templates/front/payment_return.tpl');
     }
@@ -954,11 +962,15 @@ class EPay extends PaymentModule
                 }
 
                 if (!$containPaymentWithTransactionId) {
+                    $html .= '<div class="card-header"> ';
+                    $html .= '<h3 class="card-header">Bambora Online ePay</h3>';
+                    $html .= '<div class="card-body"> ';
                     if (Tools::isSubmit('sendpaymentrequest')) {
                         $html .= $this->createPaymentRequest($order);
                     }
 
                     $html .= $this->displayPaymentRequestForm($params) . '<br>';
+                    $html .= "</div></div>";
                 }
             }
             $html .= '</div>';
@@ -1332,12 +1344,12 @@ class EPay extends PaymentModule
             $html .= '<div class="panel epay_widthAllSpace">';
         }
 
-        if ($this->isPsVersionHigherThan177()){
-            $html= '<div class="card-header"> <h3 class="card-header-title">';
+        if ($this->isPsVersionHigherThan177()) {
+            $html = '<div class="card mt-2"><div class="card-header"> <h3 class="card-header-title">';
 
             $html .= "Bambora Online ePay";
 
-            $html .= '</h3>';
+            $html .= '</h3></div>';
         } else {
             $html .= '<div class="panel-heading epay_admin_heading">';
             $html .= '<img src="../modules/' . $this->name . '/views/img/logo_small.png" />';
@@ -1365,12 +1377,16 @@ class EPay extends PaymentModule
         }
 
         if (!$transaction) {
-            $html .= 'No payment transaction was found';
+            $html .= '<div class=card-body"><div class="info-block"> No payment transaction was found</div></div>';
             return $html;
         }
-
+        if ($this->isPsVersionHigherThan177()) {
+            $html .= '<div class="card-body"><div>';
+        } else {
         $html .= '<div class="row">';
         $html .= '<div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">';
+        }
+
         $html .= $this->buildTransactionFormBodyStart($order, $transaction);
 
         if (Configuration::get('EPAY_ENABLE_REMOTE_API') == 1) {
@@ -1766,7 +1782,6 @@ class EPay extends PaymentModule
                 $orderId = Tools::getValue("epay-order-id");
                 $logText .= " :: OrderId: " . $orderId . " TransactionId: " . $transactionId. " Employee: ".$employee->firstname." ".$employee->lastname." ".$employee->email;
                 $this->writeLogEntry($logText, 1);
-
             } catch (Exception $e) {
                 $this->displayError($e->getMessage());
             }
@@ -2089,9 +2104,8 @@ class EPay extends PaymentModule
 
     //endregion
 
-    //endregion
 
-    //region Common Methodes
+    //region Common Methods
 
     /**
      * Get Ps Version.
@@ -2124,7 +2138,6 @@ class EPay extends PaymentModule
     }
     public function writeLogEntry($message, $severity)
     {
-
         if ($this->getPsVersion() === Bambora::V15) {
             Logger::addLog($message, $severity);
         } else {
