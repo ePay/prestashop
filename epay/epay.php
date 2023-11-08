@@ -1165,7 +1165,7 @@ class EPay extends PaymentModule
 
                 if (!$containPaymentWithTransactionId) {
                     $html .= '<div class="card-header"> ';
-                    $html .= '<h3 class="card-header">Bambora Online ePay</h3>';
+                    $html .= '<h3 class="card-header">Bambora Online ePay Payment Request</h3>';
                     $html .= '<div class="card-body"> ';
                     if (Tools::isSubmit('sendpaymentrequest')) {
                         $html .= $this->createPaymentRequest($order);
@@ -2390,7 +2390,7 @@ class EPay extends PaymentModule
         $fields_form[0]['form'] = array(
             'legend' => array(
                 'title' => $this->l('Create payment request'),
-                'image' => $this->_path . '/views/img/logo_small.png',
+
             ),
             'input' => array(
                 array(
