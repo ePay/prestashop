@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2019. All rights reserved ePay A/S (a Bambora Company).
  *
@@ -47,7 +48,8 @@ class EpayPaymentModuleFrontController extends ModuleFrontController
 
         $paymentWindowJsUrl = 'https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js';
 
-        $paymentData = array('epayPaymentWindowJsUrl' => $paymentWindowJsUrl,
+        $paymentData = array(
+            'epayPaymentWindowJsUrl' => $paymentWindowJsUrl,
             'epayPaymentWindowRequest' => json_encode($epayPaymentWindowRequest),
             'epayCancelUrl' => $epayPaymentWindowRequest['epay_cancelurl'],
             'epayWindowState' => $epayPaymentWindowRequest['epay_windowstate'],

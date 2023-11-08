@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2019. All rights reserved ePay A/S (a Bambora Company).
  *
@@ -42,7 +43,11 @@ class EPayAcceptModuleFrontController extends BaseAction
      */
     private function redirectToAccept($cart)
     {
-        Tools::redirectLink(__PS_BASE_URI__ . 'order-confirmation.php?key=' . $cart->secure_key . '&id_cart=' . (int) $cart->id . '&id_module=' . (int) $this->module->id . '&id_order=' . (int) Order::getOrderByCartId($cart->id));
+        Tools::redirectLink(
+            __PS_BASE_URI__ . 'order-confirmation.php?key=' . $cart->secure_key . '&id_cart=' . (int)$cart->id . '&id_module=' . (int)$this->module->id . '&id_order=' . (int)Order::getOrderByCartId(
+                $cart->id
+            )
+        );
     }
 
     private function handleError($message, $cart)
@@ -50,7 +55,9 @@ class EPayAcceptModuleFrontController extends BaseAction
         $this->createLogMessage($message, 3, $cart);
         Context::getContext()->smarty->assign('paymenterror', $message);
         if ($this->module->getPsVersion() === EPay::V17) {
-            $this->setTemplate('module:epay/views/templates/front/paymenterror17.tpl');
+            $this->setTemplate(
+                'module:epay/views/templates/front/paymenterror17.tpl'
+            );
         } else {
             $this->setTemplate('paymenterror.tpl');
         }

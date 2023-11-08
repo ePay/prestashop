@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2019. All rights reserved ePay A/S (a Bambora Company).
  *
@@ -39,8 +40,8 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['amount'] = (string) $amount;
-        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['amount'] = (string)$amount;
+        $epay_params['pwd'] = (string)$this->pwd;
         $epay_params['pbsResponse'] = '-1';
         $epay_params['epayresponse'] = '-1';
 
@@ -62,7 +63,7 @@ class EPayApi
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
         $epay_params['epayresponse'] = '-1';
-        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['pwd'] = (string)$this->pwd;
 
         $result = $this->client->move_as_captured($epay_params);
         return $result;
@@ -82,8 +83,8 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['amount'] = (string) $amount;
-        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['amount'] = (string)$amount;
+        $epay_params['pwd'] = (string)$this->pwd;
         $epay_params['epayresponse'] = '-1';
         $epay_params['pbsresponse'] = '-1';
 
@@ -104,7 +105,7 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['pwd'] = (string)$this->pwd;
         $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->delete($epay_params);
@@ -125,7 +126,7 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['language'] = $language;
-        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['pwd'] = (string)$this->pwd;
         $epay_params['epayresponsecode'] = $epay_response_code;
         $epay_params['epayresponse'] = '-1';
 
@@ -152,7 +153,7 @@ class EPayApi
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['language'] = $language;
         $epay_params['pbsresponsecode'] = $pbs_response_code;
-        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['pwd'] = (string)$this->pwd;
         $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->getPbsError($epay_params);
@@ -177,7 +178,7 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['pwd'] = (string)$this->pwd;
         $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->gettransaction($epay_params);
@@ -197,12 +198,12 @@ class EPayApi
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['transactionid'] = $transactionid;
-        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['pwd'] = (string)$this->pwd;
         $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->gettransaction($epay_params);
 
-        if ($result->gettransactionResult == true) {
+        if ($result->gettransactionResult) {
             return $result->transactionInformation;
         } else {
             return false;
@@ -220,15 +221,20 @@ class EPayApi
      *
      * @return mixed
      */
-    public function getcardinfo($merchantnumber, $cardno_prefix, $amount, $currency, $acquirer)
-    {
+    public function getcardinfo(
+        $merchantnumber,
+        $cardno_prefix,
+        $amount,
+        $currency,
+        $acquirer
+    ) {
         $epay_params = array();
         $epay_params['merchantnumber'] = $merchantnumber;
         $epay_params['cardno_prefix'] = $cardno_prefix;
         $epay_params['amount'] = $amount;
         $epay_params['currency'] = $currency;
         $epay_params['acquirer'] = $acquirer;
-        $epay_params['pwd'] = (string) $this->pwd;
+        $epay_params['pwd'] = (string)$this->pwd;
         $epay_params['epayresponse'] = '-1';
 
         $result = $this->client->getcardinfo($epay_params);
