@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2019. All rights reserved ePay A/S (a Bambora Company).
  *
@@ -91,12 +92,18 @@ abstract class BaseAction extends ModuleFrontController
                 $transaction_Id = Tools::getValue('txnid');
                 $epayOrderId = Tools::getValue('orderid');
                 $cardId = Tools::getValue('paymenttype');
-                $cardnopostfix = Tools::getIsset('cardno') ? Tools::substr(Tools::getValue('cardno'), -4) : 0;
+                $cardnopostfix = Tools::getIsset('cardno') ? Tools::substr(
+                    Tools::getValue('cardno'),
+                    -4
+                ) : 0;
                 $epayCurrency = Tools::getValue('currency', null);
                 $currency = new Currency($cart->id_currency);
                 $amountInMinorunits = Tools::getValue('amount');
                 $minorunits = EpayTools::getCurrencyMinorunits($currency->iso_code);
-                $amount = EpayTools::convertPriceFromMinorUnits($amountInMinorunits, $minorunits);
+                $amount = EpayTools::convertPriceFromMinorUnits(
+                    $amountInMinorunits,
+                    $minorunits
+                );
                 $transfeeInMinorunits = Tools::getValue('txnfee', 0);
                 $fraud = Tools::getValue('fraud', 0);
 
@@ -116,14 +123,16 @@ abstract class BaseAction extends ModuleFrontController
                     $paymentMethod = "{$this->module->displayName} ({$cardName})";
                     $truncatedCard = "XXXX XXXX XXXX {$cardnopostfix}";
 
-                    $mailVars = array('TransactionId' => $transaction_Id,
+                    $mailVars = array(
+                        'TransactionId' => $transaction_Id,
                         'PaymentType' => $paymentMethod,
-                        'CardNumber' => $truncatedCard, );
+                        'CardNumber' => $truncatedCard,
+                    );
 
                     if (!$isPaymentRequest) {
                         try {
                             $this->module->validateOrder(
-                                (int) $id_cart,
+                                (int)$id_cart,
                                 Configuration::get('PS_OS_PAYMENT'),
                                 $amount,
                                 $paymentMethod,
@@ -136,13 +145,18 @@ abstract class BaseAction extends ModuleFrontController
                         } catch (Exception $ex) {
                             $message = 'Prestashop threw an exception on validateOrder: ' . $ex->getMessage();
                             $responseCode = 500;
-                            $this->module->deleteDbRecordedTransaction($transaction_Id);
+                            $this->module->deleteDbRecordedTransaction(
+                                $transaction_Id
+                            );
                             return $message;
                         }
                     }
 
                     $id_order = Order::getOrderByCartId($id_cart);
-                    $this->module->addDbOrderIdToRecordedTransaction($transaction_Id, $id_order);
+                    $this->module->addDbOrderIdToRecordedTransaction(
+                        $transaction_Id,
+                        $id_order
+                    );
                     $order = new Order($id_order);
 
                     if ($isPaymentRequest) {
@@ -151,7 +165,7 @@ abstract class BaseAction extends ModuleFrontController
                         $message = strip_tags($message, '<br>');
                         if (Validate::isCleanHtml($message)) {
                             $msg->message = $message;
-                            $msg->id_order = (int) $order->id;
+                            $msg->id_order = (int)$order->id;
                             $msg->private = 1;
                             $msg->add();
                         }
@@ -167,7 +181,10 @@ abstract class BaseAction extends ModuleFrontController
                     $payment[0]->payment_method = $paymentMethod;
 
                     if ($transfeeInMinorunits > 0) {
-                        $transFee = EpayTools::convertPriceFromMinorUnits($transfeeInMinorunits, $minorunits);
+                        $transFee = EpayTools::convertPriceFromMinorUnits(
+                            $transfeeInMinorunits,
+                            $minorunits
+                        );
                         $payment[0]->amount = $payment[0]->amount + $transFee;
 
                         if (Configuration::get('EPAY_ADDFEETOSHIPPING')) {
@@ -215,14 +232,13 @@ abstract class BaseAction extends ModuleFrontController
      * @param mixed $message
      * @param mixed $cart
      *
-     * @return string
      */
     protected function createLogMessage($message, $severity = 3, $cart = null)
     {
         $result = '';
         if (isset($cart)) {
-            $invoiceAddress = new Address((int) $cart->id_address_invoice);
-            $customer = new Customer((int) $cart->id_customer);
+            $invoiceAddress = new Address((int)$cart->id_address_invoice);
+            $customer = new Customer((int)$cart->id_customer);
             $phoneNumber = EpayTools::getPhoneNumber($invoiceAddress);
             $personString = "Name: {$invoiceAddress->firstname}{$invoiceAddress->lastname} Phone: {$phoneNumber} Mail: {$customer->email} - ";
             $result = $personString;
